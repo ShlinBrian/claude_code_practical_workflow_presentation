@@ -187,10 +187,10 @@
 				.inv .cell .s { font-size: 0.42em; color: var(--faint); margin-top: 3px; }
 
 				/* ── problem → fix rows ── */
-				.pf { display: flex; flex-direction: column; gap: 10px; max-width: 92%; margin: 0.4em auto; }
-				.pf .row { display: grid; grid-template-columns: 1fr auto 1fr; gap: 12px; align-items: stretch; }
+				.pf { display: flex; flex-direction: column; gap: 14px; max-width: 94%; margin: 0.4em auto; }
+				.pf .row { display: grid; grid-template-columns: 1fr auto 1fr; gap: 14px; align-items: stretch; }
 				.pf .p, .pf .f { background: var(--surface); border: 1px solid var(--border);
-					border-radius: 9px; padding: 12px 16px; text-align: left; font-size: 0.5em; line-height: 1.4; }
+					border-radius: 9px; padding: 14px 18px; text-align: left; font-size: 0.54em; line-height: 1.55; }
 				.pf .p { border-left: 4px solid var(--warn); }
 				.pf .f { border-left: 4px solid var(--ok); }
 				.pf .ar { display: flex; align-items: center; color: var(--faint); font-size: 1.1em; }
@@ -764,9 +764,9 @@ return results.filter(r => r.verdict.faithful)</code></pre>
 								<div class="f">app only uses <span class="mono">main / main_write / downloader</span> (all Downloader) — <b>tractable</b></div>
 							</div>
 							<div class="row">
-								<div class="p">SCT made <b>INOUT refcursor</b> procs, but pgjdbc <span class="mono">{call…}</span> needs functions</div>
+								<div class="p">SCT made <b>INOUT refcursor</b> procs — but pgjdbc <span class="mono">{call…}</span> needs functions</div>
 								<div class="ar">→</div>
-								<div class="f">rewrite to <span class="mono">RETURNS SETOF/TABLE</span>; align JDBC binds; <span class="mono">citext</span> for case-insensitive; rebuild views</div>
+								<div class="f">rewrite to <span class="mono">RETURNS SETOF</span> functions; <span class="mono">citext</span> for case; rebuild views</div>
 							</div>
 							<div class="row">
 								<div class="p"><b>Dialect + case</b> — <span class="mono">TOP ISNULL GETDATE() dbo. [brackets]</span></div>
