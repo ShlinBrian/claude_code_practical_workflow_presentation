@@ -94,19 +94,45 @@ up here narratively.
 - **`/workflow`** — multi-agent fan-out, with a short script skeleton.
 - **When each fits** — decision visual; **hybrid** as the realistic answer.
 
-### 5. The experiment as proof (4–5 slides) — REBUILT
+### 5. The experiment as proof (5–6 slides) — REBUILT
 Drop the four-cell matrix and the weighted-token formula entirely. Replace with
-a **three-step progression on the SAME migration task**, simple → complex:
+**four arms on the SAME migration task**, where each arm changes **exactly one
+variable** from the previous so every difference is attributable. A→B→C is a
+strict simple→complex ladder; **D** is the headline "commit fully to the method"
+arm.
 
-| Step | What | Expected story |
+| Arm | What's added vs previous | Isolates |
 |---|---|---|
-| **A — Naive** | one-line prompt (from section 3) | runs, but untrustworthy |
-| **B — +Good environment** | same task, but first apply the hygiene from §2 — clean `CLAUDE.md`, legible repo, memory in place | better, faster to steer, still no correctness guarantee |
-| **C — +Full workflow** | brainstorming → spec w/ DoD → `/goal` or `/workflow` → oracle verifies | trustworthy, evidence-carrying result |
+| **A — Naive** | one-line prompt, repo as-is (no `CLAUDE.md`, no map) | the baseline / the trap (from §3) |
+| **B — +Environment** | hand-prepare `CLAUDE.md` + memory + repo map + worktree isolation; **still** a one-line prompt, no spec/DoD/oracle | does the agent **understanding its workplace** help, holding method fixed? |
+| **C — +Workflow** | on B's environment, add the method: brainstorming → spec w/ DoD → `/goal` or `/workflow` → **oracle** | does **defining + verifying the task** make it trustworthy, holding environment fixed? |
+| **D — Pure Superpowers, end-to-end** | let Superpowers skills drive **the whole thing** — *including generating* the environment (CLAUDE.md, the map) and the spec | does the **integrated method** beat hand-assembling A+B+C piecemeal? |
 
-- **Oracle / DoD**: per-endpoint, per-row **A/B comparison vs a golden MSSQL**
-  instance — the thing that makes "done" objective.
-- **Four metrics compared across A / B / C** (no weighted formula):
+- **Why this is logical + complete:** B and C each isolate one separable
+  question (environment vs method). D is positioned last as the "what if you
+  just let the method run the whole climb — environment included" headline.
+  Avoids the confound where a hand-made environment and a skill-made environment
+  differ on two things at once.
+- **Narrative line for the slide:** A shows the trap → B shows environment helps
+  you *steer* but can't prove correctness → C shows the method buys *trust* → D
+  asks whether the method, taken seriously, builds the environment too.
+- **D's story is intentionally left open** — results AND narrative angle both
+  TBD; present it neutrally as "the fourth arm," let the data speak.
+
+**How a "good environment" (B) is actually achieved** — show this, don't just
+name it (one usage example each):
+  - **`CLAUDE.md`** — not hand-written cold: run the agent over the repo to
+    draft build/test commands, the DAO/proc layout, and the SQL-dialect gotchas
+    (`SELECT TOP`, `[dbo].`, `(NOLOCK)`, `ISNULL`); review + commit.
+  - **memory** — seed durable project facts (`memory.md` → flush into
+    `CLAUDE.md`) so a fresh session starts informed.
+  - **repo legibility** — a short architecture map / README the agent navigates
+    instead of grepping the whole tree.
+  - **isolation** — work in a git worktree (closes one of A's three gaps).
+
+- **Oracle / DoD** (introduced with C): per-endpoint, per-row **A/B comparison
+  vs a golden MSSQL** instance — the thing that makes "done" objective.
+- **Four metrics compared across A / B / C / D** (no weighted formula):
   1. **Correctness** — oracle pass rate (endpoints A/B-faithful).
   2. **Cost** — one simple total (tokens or estimated $).
   3. **Completion time** — wall-clock task → trustworthy result (anchor against
@@ -116,8 +142,6 @@ a **three-step progression on the SAME migration task**, simple → complex:
 - All result values badged **`TBD — fill after run`**; the experiment is framed
   as designed-but-not-yet-run. Keep stat-grid / simple-bar visuals
   structurally; remove the `cost-table` weighted columns.
-- Why this persuades: a single task, three escalating investments, four concrete
-  axes → the audience sees the payoff curve of "define task + environment."
 
 ### 6. Pre-flight checklist + close (2 slides)
 - Keep the 5-question checklist (DoD / goal / boundaries / legibility / stage),
@@ -132,7 +156,8 @@ a **three-step progression on the SAME migration task**, simple → complex:
 - **Deleted:** rigid `ACT N` cover labels.
 - **Moved:** Everyday hygiene → front (section 2), expanded with per-feature
   examples + handover play.
-- **Reframed:** the experiment → A/B/C progression with 4 metrics.
+- **Reframed:** the experiment → 4 isolated arms (A naive / B +environment /
+  C +workflow / D pure-Superpowers), each changing one variable, 4 metrics.
 - **Restyled:** font sizes up; text-heavy slides → diagrams.
 
 ## Form & build
@@ -154,6 +179,7 @@ a **three-step progression on the SAME migration task**, simple → complex:
 - Flow is strictly simple → complex; hygiene leads; no ACT labels.
 - A viewer can name the reproducible workflow and at least 3 do-it-today moves
   (each seen with a usage example).
-- The experiment is an A/B/C progression on one task with 4 metrics; every
+- The experiment is 4 isolated arms (A/B/C/D) on one task with 4 metrics, each
+  arm changing exactly one variable; D presented neutrally; every
   result is visibly TBD; no four-cell matrix or weighted formula remains.
 - Deck builds and renders correctly at 1280×720 (verified via Playwright).
