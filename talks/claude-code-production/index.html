@@ -315,6 +315,47 @@
 				font-family: 'JetBrains Mono', monospace;
 				font-size: 0.38em; color: var(--faint); margin-top: 2em; letter-spacing: 0.05em;
 			}
+
+			/* ── code / terminal blocks ── */
+			.reveal pre.code {
+				width: 90%; margin: 0.4em auto; box-shadow: none;
+				font-size: 0.42em; line-height: 1.5;
+			}
+			.reveal pre.code code {
+				border-radius: 10px; border: 1px solid var(--border);
+				padding: 18px 22px; max-height: none; background: var(--surface);
+				font-family: 'JetBrains Mono', monospace;
+			}
+			.term {
+				background: var(--surface); border: 1px solid var(--border);
+				border-radius: 10px; padding: 18px 22px; text-align: left;
+				font-family: 'JetBrains Mono', monospace; font-size: 0.46em;
+				line-height: 1.6; width: 88%; margin: 0.4em auto;
+			}
+			.term .pr { color: var(--flow); }
+			.term .pr::before { content: '$ '; color: var(--faint); }
+			.term .ag { color: var(--muted); display: block; }
+			.term .ag::before { content: '⏺ '; color: var(--goal); }
+			.term .cm { color: var(--faint); }
+
+			/* ── TBD placeholder badge ── */
+			.tbd {
+				font-family: 'JetBrains Mono', monospace; font-size: 0.72em;
+				letter-spacing: 0.08em; text-transform: uppercase;
+				color: var(--warn); border: 1px dashed var(--warn);
+				border-radius: 5px; padding: 1px 7px; white-space: nowrap;
+			}
+
+			/* ── screenshot placeholder ── */
+			.shot {
+				background: repeating-linear-gradient(45deg, var(--surface), var(--surface) 12px, var(--surface-2) 12px, var(--surface-2) 24px);
+				border: 1px dashed var(--border-2); border-radius: 10px;
+				padding: 36px 24px; text-align: center; width: 82%;
+				margin: 0.4em auto; color: var(--faint);
+				font-family: 'JetBrains Mono', monospace;
+			}
+			.shot .cap { font-size: 0.5em; letter-spacing: 0.06em; }
+			.shot .cap b { color: var(--muted); }
 		</style>
 	</head>
 	<body>
