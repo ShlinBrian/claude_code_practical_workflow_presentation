@@ -94,6 +94,45 @@ up here narratively.
 - **`/workflow`** — multi-agent fan-out, with a short script skeleton.
 - **When each fits** — decision visual; **hybrid** as the realistic answer.
 
+### 4b. The case: why this migration is genuinely hard (2–3 slides) — REAL FACTS
+This is the **real, completed** migration — stated as fact (only the
+A/B/C1/C2 *method-comparison results* in §5 are TBD). It is the credibility
+anchor: a hard, real task, not a toy. Difficulty stacks on two axes — **scale**
+and **semantic gap**. Use visuals (a scale "inventory" panel + a 4-row
+problem→fix table), not prose.
+
+**Not a "swap the JDBC driver" job.** A years-old commercial download backend
+moved off Microsoft SQL Server — data, schema, stored procedures, and dialect
+SQL embedded in Java/JSP — onto PostgreSQL, with the bar that **every API
+returns the correct response on PostgreSQL.**
+
+**Axis 1 — Scale (an inventory panel):**
+- **Downloader** (main DB) — 18 tables, 376,701 rows
+- **Cyberlink** — 3 tables, 8,258 rows
+- **PC** — 1 table, 121 rows
+- **PMS** — 1 table, 4,958 rows
+- **48 stored procedures/functions** + **4 views** (PVM/SID data) in Downloader.
+
+**Axis 2 — Semantic gap (4 problems → how each was beaten):**
+1. **AWS SCT is GUI-only, but had to run fully automated in headless WSL.**
+   → Used SCT's **BatchExecutor CLI + bundled Corretto 17**; used control codes
+   `0x1f`/`0x1e` (never present in the data) as field/row delimiters.
+2. **Cross-DB queries** — MSSQL allows 3-part-name cross-DB joins; PostgreSQL
+   doesn't. → Analysis showed the app only uses `main` / `main_write` /
+   `downloader` connections (all to the Downloader DB), so it was tractable.
+3. **SCT turned result-set procs into INOUT `refcursor` procedures, but Java's
+   pgjdbc `{call …}` needs functions.** → Rewrote every actually-called proc as
+   `RETURNS SETOF` / `TABLE` functions, aligned JDBC bind types one by one, used
+   **`citext`** to restore MSSQL's case-insensitive comparison, rebuilt
+   cross-schema views.
+4. **Embedded SQL dialect + identifier case** — `TOP`, `ISNULL`, `GETDATE()`,
+   `dbo.`, `[brackets]`, mixed-case column names. → Adopted an **all-lowercase**
+   strategy (drop brackets so PostgreSQL folds to lowercase, then it compares),
+   converting case by case.
+
+**The punchline:** the hard part isn't "does it run" — it's "is the answer
+**still correct**." That motivates the oracle, and the §5 experiment.
+
 ### 5. The experiment as proof (5–6 slides) — REBUILT
 Drop the four-cell matrix and the weighted-token formula entirely. The
 "environment quality" axis is also dropped: for *this* task the goal is already
@@ -109,7 +148,7 @@ the Superpowers method drives execution**:
 | **A — Naive** | one-line prompt, repo as-is | the trap: runs, untrustworthy (from §3) |
 | **B — Full Superpowers** | the native skill chain used as designed: `brainstorming` → `writing-plans` → `using-git-worktrees` (isolation) → **subagent TDD** → `systematic-debugging` → code-review → `verification-before-completion` | does the **full disciplined method** give the best, most trustworthy result? |
 | **C1 — Brainstorm + `/goal`** | Superpowers `brainstorming` → spec w/ DoD, then a raw **`/goal`** loop against the oracle (skip the full skill discipline) | is **spec + loop-until-oracle** enough *without* full TDD discipline? |
-| **C2 — Brainstorm + `/workflow`** | same front half, then a **`/workflow`** fan-out against the oracle | same question, but with **parallel fan-out** (the 49-proc shape) |
+| **C2 — Brainstorm + `/workflow`** | same front half, then a **`/workflow`** fan-out against the oracle | same question, but with **parallel fan-out** (the 48-proc shape) |
 
 - **Why this set is logical + persuasive:**
   - **A vs {B, C1, C2}** → the headline: *the method beats a one-liner.*
