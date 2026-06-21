@@ -106,7 +106,7 @@ The principle behind both: encode the process so quality doesn't depend on how g
 
 #### /goal — loop until goal
 
-/goal takes a spec and a machine-checkable goal and runs build/test/fix cycles until the oracle passes. The example shows it being handed the spec and the goal: "All 47 endpoints return HTTP 200 AND each A/B-matches golden MSSQL row-by-row."
+/goal takes a spec and a machine-checkable goal and runs build/test/fix cycles until the oracle passes. The example shows it being handed the spec and the goal: "All N endpoints return HTTP 200 AND each A/B-matches golden MSSQL row-by-row."
 
 The constraint is right there in the slide: **it only works if the goal is machine-checkable.** Without an oracle, the agent loops until it gives up or halts on a vibe. This is why the brainstorming step matters — the spec it produces includes the oracle.
 
@@ -177,7 +177,7 @@ The cost formula:
 
 `cost = input×1 + cache_read×0.1 + cache_write×1.25 + output×5`
 
-This weights token types by their relative price using Sonnet 3.7 as the reference model. Cache reads are cheap (0.1×) because the cache hit saves re-encoding the full context. Cache writes are slightly more than input (1.25×) because writing to cache has a setup cost. Output tokens are the most expensive (5×) because they require full autoregressive generation.
+This weights token types by their relative price using Claude pricing ratios as the reference. Cache reads are cheap (0.1×) because the cache hit saves re-encoding the full context. Cache writes are slightly more than input (1.25×) because writing to cache has a setup cost. Output tokens are the most expensive (5×) because they require full autoregressive generation.
 
 Alongside the weighted cost, two more metrics: wall-clock time and number of human review rounds. Each run will be executed 3× before drawing conclusions, to account for run-to-run variance.
 

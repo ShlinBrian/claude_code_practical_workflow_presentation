@@ -437,7 +437,7 @@
 						<ul class="diag" style="margin-top:0.3em;">
 							<li><span class="who brief">gap</span>No <strong class="c-text">spec</strong> — "keep everything working" is undefined</li>
 							<li><span class="who brief">gap</span>No <strong class="c-text">definition of done</strong> — nothing checks the answers are still correct</li>
-							<li><span class="who code">gap</span>No <strong class="c-text">isolation</strong> — it edited your working tree in place</li>
+							<li><span class="who brief">gap</span>No <strong class="c-text">isolation</strong> — it edited your working tree in place</li>
 						</ul>
 					</section>
 				</section>
@@ -534,7 +534,7 @@
 						<div class="term">
 							<span class="pr">claude</span><br>
 							<span class="cm"># hand it the spec + a checkable goal:</span><br>
-							/goal All 47 endpoints return HTTP 200 AND each<br>
+							/goal All N endpoints return HTTP 200 AND each<br>
 							&nbsp;&nbsp;A/B-matches golden MSSQL row-by-row. Spec:<br>
 							&nbsp;&nbsp;docs/specs/mssql-pg-migration-design.md<br>
 							<span class="ag">…runs build → test → A/B → fix → repeat until the oracle passes</span>
@@ -607,10 +607,6 @@ return results.filter(r => r.verdict.faithful)</code></pre>
 						</div>
 						<p class="mid c-goal fragment" style="margin-top:0.5em;font-weight:600;">The hard part isn't "does it run" — it's "is the answer still correct."</p>
 					</section>
-				</section>
-
-				<!-- ════════ ACT 4 continued — remaining experiment slides (Tasks 6–7) ════════ -->
-				<section>
 
 					<!-- 03-c oracle/DoD -->
 					<section>
