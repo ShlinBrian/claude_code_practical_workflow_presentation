@@ -539,78 +539,67 @@
 				</section>
 
 
-				<!-- ════════ ACT 2 — SUPERPOWERS SKILLS ════════ -->
+				<!-- ════════ SUPERPOWERS SKILLS ════════ -->
 				<section>
-					<section class="section-cover">
-						<div class="act-num">ACT 02 · SKILLS</div>
-						<h2>Superpowers Skills</h2>
-						<p class="act-sub">Reusable, encoded engineering process — not just prompts</p>
-						<p class="act-question">A skill tells the agent <em>how</em> to work, not just <em>what</em> to do</p>
-					</section>
 
 					<section>
-						<div class="takeaway">One catalog, mapped to the dev lifecycle</div>
-						<h3>The skill catalog</h3>
+						<div class="takeaway">The method, part 1 — skills encode the process</div>
+						<h3 style="margin-bottom:0.3em;">Skills map to the dev lifecycle</h3>
 						<div class="two-col" style="margin-top:0.3em;">
 							<div class="col" style="border-top:3px solid var(--goal);">
-								<div class="lbl" style="color:var(--goal);">Define &amp; plan</div>
-								<p class="small" style="margin:0;"><b class="c-text">brainstorming</b> — vague idea → spec<br>
-								<b class="c-text">writing-plans</b> — spec → bite-sized tasks<br>
-								<b class="c-text">using-git-worktrees</b> — isolate the work</p>
+								<div class="lbl" style="color:var(--goal);font-size:0.5em;">Define &amp; plan</div>
+								<p class="mid" style="margin:0;line-height:1.7;"><b class="c-goal">brainstorming</b> · idea→spec<br>
+								<b class="c-text">writing-plans</b> · spec→tasks<br>
+								<b class="c-text">using-git-worktrees</b> · isolate</p>
 							</div>
 							<div class="col" style="border-top:3px solid var(--flow);">
-								<div class="lbl" style="color:var(--flow);">Build &amp; verify</div>
-								<p class="small" style="margin:0;"><b class="c-text">test-driven-development</b> — red/green<br>
-								<b class="c-text">systematic-debugging</b> — when it breaks<br>
-								<b class="c-text">requesting / receiving-code-review</b><br>
-								<b class="c-text">verification-before-completion</b></p>
+								<div class="lbl" style="color:var(--flow);font-size:0.5em;">Build &amp; verify</div>
+								<p class="mid" style="margin:0;line-height:1.7;"><b class="c-text">subagent TDD</b> · red/green<br>
+								<b class="c-text">systematic-debugging</b><br>
+								<b class="c-text">code-review</b> · <b class="c-text">verification</b></p>
 							</div>
 						</div>
-						<p class="xs c-faint" style="margin-top:0.5em;">Today we go deep on <strong class="c-goal">brainstorming</strong>, then touch writing-plans &amp; systematic-debugging.</p>
+						<p class="mid c-muted" style="margin-top:0.5em;">A skill tells the agent <em>how</em> to work — not just <em>what</em> to do.</p>
 					</section>
 
 					<section>
-						<div class="takeaway">The star skill — it turns a request into a spec</div>
-						<h3>brainstorming: requirement → spec</h3>
-						<div class="ladder" style="max-width:78%;margin:0.4em auto;">
-							<div class="rung">Explore project context first</div>
-							<div class="rung"><span class="ar">↓</span>Ask clarifying questions — <b>one at a time</b></div>
-							<div class="rung"><span class="ar">↓</span>Propose 2–3 approaches with trade-offs</div>
-							<div class="rung"><span class="ar">↓</span>Present a design, get approval section by section</div>
-							<div class="rung" style="color:var(--goal);"><span class="ar">↓</span>Write &amp; commit a spec — <b>with a Definition of Done</b></div>
+						<div class="takeaway">The star skill — request → spec</div>
+						<h3 style="margin-bottom:0.3em;">brainstorming</h3>
+						<div class="flow vert" style="max-width:600px;">
+							<div class="step"><span class="t">Explore project context</span></div>
+							<div class="arr">↓</div>
+							<div class="step"><span class="t">Ask clarifying questions — one at a time</span></div>
+							<div class="arr">↓</div>
+							<div class="step"><span class="t">Propose 2–3 approaches with trade-offs</span></div>
+							<div class="arr">↓</div>
+							<div class="step"><span class="t">Present design, approve section by section</span></div>
+							<div class="arr">↓</div>
+							<div class="step on-goal"><span class="t c-goal">Commit a spec — with a Definition of Done</span></div>
 						</div>
-						<p class="mid c-muted" style="margin-top:0.5em;">It refuses to write code until the design is approved. That gate is the point.</p>
+						<p class="mid c-muted" style="margin-top:0.5em;">It refuses to write code until the design is approved. <strong class="c-text">That gate is the point.</strong></p>
 					</section>
 
 					<section>
 						<div class="takeaway">What it looks like on the migration task</div>
-						<h3>From "migrate the DB" to a spec</h3>
-						<div class="term">
-							<span class="ag">What does "keep everything working" mean — same API responses, or same DB state?</span>
+						<h3 style="margin-bottom:0.3em;">"Migrate the DB" → a spec</h3>
+						<div class="term" style="font-size:0.5em;">
+							<span class="ag">"keep everything working" = same API responses, or same DB state?</span>
 							<span class="pr">Same HTTP responses, byte-for-byte where data allows.</span>
-							<span class="ag">How will we verify that automatically?</span>
-							<span class="pr">A/B every endpoint against a golden MSSQL, row-by-row.</span>
-							<span class="ag">Anything off-limits? Irreversible side effects?</span>
-							<span class="pr">No schema drops until A/B passes. Work in a worktree.</span>
-							<span class="cm">→ committed: docs/specs/2026-..-mssql-pg-migration-design.md</span>
+							<span class="ag">How do we verify that automatically?</span>
+							<span class="pr">A/B every endpoint vs a golden MSSQL, row-by-row.</span>
+							<span class="cm">→ committed: docs/specs/mssql-pg-migration-design.md (with DoD)</span>
 						</div>
-						<p class="mid c-goal" style="margin-top:0.5em;font-weight:600;">The output is a committed spec with a testable DoD — exactly what /goal needs.</p>
+						<p class="mid c-goal" style="margin-top:0.5em;font-weight:600;">A committed spec with a testable DoD — exactly what <span class="mono">/goal</span> &amp; <span class="mono">/workflow</span> consume.</p>
 					</section>
 
 					<section>
 						<div class="takeaway">Two more skills you'll reuse constantly</div>
-						<h3>Plan, then debug systematically</h3>
-						<div class="two-col" style="margin-top:0.4em;">
-							<div class="col" style="border-top:3px solid var(--goal);">
-								<div class="lbl" style="color:var(--goal);">writing-plans</div>
-								<p class="small c-muted" style="margin:0;">Turns the spec into <b class="c-text">bite-sized, independently testable tasks</b> — each with files, test, and commit. The agent (or a fleet) executes task-by-task with review gates.</p>
-							</div>
-							<div class="col" style="border-top:3px solid var(--flow);">
-								<div class="lbl" style="color:var(--flow);">systematic-debugging</div>
-								<p class="small c-muted" style="margin:0;">When something breaks, forces <b class="c-text">reproduce → isolate → hypothesis → fix → verify</b> instead of guessing. Stops the agent flailing.</p>
-							</div>
+						<h3 style="margin-bottom:0.3em;">Plan → then debug systematically</h3>
+						<div class="flow">
+							<div class="step on-goal"><span class="t c-goal">writing-plans</span><span class="d">spec → bite-sized, independently testable tasks (files · test · commit)</span></div>
+							<div class="step on-flow"><span class="t c-flow">systematic-debugging</span><span class="d">reproduce → isolate → hypothesis → fix → verify, instead of guessing</span></div>
 						</div>
-						<p class="xs c-faint" style="margin-top:0.5em;">Same idea every time: encode the <em>process</em>, so quality doesn't depend on how good today's prompt was.</p>
+						<p class="mid c-muted" style="margin-top:0.6em;">Encode the <em>process</em> — quality stops depending on how good today's prompt was.</p>
 					</section>
 				</section>
 
