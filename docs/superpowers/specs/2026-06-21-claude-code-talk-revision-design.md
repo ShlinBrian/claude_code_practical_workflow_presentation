@@ -95,44 +95,40 @@ up here narratively.
 - **When each fits** — decision visual; **hybrid** as the realistic answer.
 
 ### 5. The experiment as proof (5–6 slides) — REBUILT
-Drop the four-cell matrix and the weighted-token formula entirely. Replace with
-**four arms on the SAME migration task**, where each arm changes **exactly one
-variable** from the previous so every difference is attributable. A→B→C is a
-strict simple→complex ladder; **D** is the headline "commit fully to the method"
-arm.
+Drop the four-cell matrix and the weighted-token formula entirely. The
+"environment quality" axis is also dropped: for *this* task the goal is already
+unambiguous (migrate MSSQL→PostgreSQL, keep behavior identical), so a
+hand-prepared CLAUDE.md/map is not a cleanly measurable variable — the leverage
+is in the *method and the oracle*, not in describing the workplace.
 
-| Arm | What's added vs previous | Isolates |
+Replace with **four runs on the SAME migration task**, comparing **how much of
+the Superpowers method drives execution**:
+
+| Arm | What | Isolates |
 |---|---|---|
-| **A — Naive** | one-line prompt, repo as-is (no `CLAUDE.md`, no map) | the baseline / the trap (from §3) |
-| **B — +Environment** | hand-prepare `CLAUDE.md` + memory + repo map + worktree isolation; **still** a one-line prompt, no spec/DoD/oracle | does the agent **understanding its workplace** help, holding method fixed? |
-| **C — +Workflow** | on B's environment, add the method: brainstorming → spec w/ DoD → `/goal` or `/workflow` → **oracle** | does **defining + verifying the task** make it trustworthy, holding environment fixed? |
-| **D — Pure Superpowers, end-to-end** | let Superpowers skills drive **the whole thing** — *including generating* the environment (CLAUDE.md, the map) and the spec | does the **integrated method** beat hand-assembling A+B+C piecemeal? |
+| **A — Naive** | one-line prompt, repo as-is | the trap: runs, untrustworthy (from §3) |
+| **B — Full Superpowers** | the native skill chain used as designed: `brainstorming` → `writing-plans` → `using-git-worktrees` (isolation) → **subagent TDD** → `systematic-debugging` → code-review → `verification-before-completion` | does the **full disciplined method** give the best, most trustworthy result? |
+| **C1 — Brainstorm + `/goal`** | Superpowers `brainstorming` → spec w/ DoD, then a raw **`/goal`** loop against the oracle (skip the full skill discipline) | is **spec + loop-until-oracle** enough *without* full TDD discipline? |
+| **C2 — Brainstorm + `/workflow`** | same front half, then a **`/workflow`** fan-out against the oracle | same question, but with **parallel fan-out** (the 49-proc shape) |
 
-- **Why this is logical + complete:** B and C each isolate one separable
-  question (environment vs method). D is positioned last as the "what if you
-  just let the method run the whole climb — environment included" headline.
-  Avoids the confound where a hand-made environment and a skill-made environment
-  differ on two things at once.
-- **Narrative line for the slide:** A shows the trap → B shows environment helps
-  you *steer* but can't prove correctness → C shows the method buys *trust* → D
-  asks whether the method, taken seriously, builds the environment too.
-- **D's story is intentionally left open** — results AND narrative angle both
-  TBD; present it neutrally as "the fourth arm," let the data speak.
+- **Why this set is logical + persuasive:**
+  - **A vs {B, C1, C2}** → the headline: *the method beats a one-liner.*
+  - **B vs C1/C2** → *is the **full** Superpowers discipline worth it, or does
+    brainstorming + a verified loop already get you most of the way?* An honest
+    cost/benefit question the audience actually has.
+  - **C1 vs C2** → the **`/goal` vs `/workflow`** trade-off, now backed by data
+    (cost / wall-clock / parallelism) instead of abstract advice — this becomes
+    the *evidence* for the §4 "when each fits" decision slide.
+- **Honesty caveat (state it):** B differs from C1/C2 on a *bundle* of
+  disciplines, not one atomic knob — so frame B-vs-C as **"full method vs lean
+  method,"** not as isolating a single skill. Accurate, and attributable at the
+  level the audience cares about.
+- The §2 hygiene moves (CLAUDE.md, memory, handover) are **not** an experimental
+  arm — they live in §2 as do-it-today wins; B naturally uses them.
 
-**How a "good environment" (B) is actually achieved** — show this, don't just
-name it (one usage example each):
-  - **`CLAUDE.md`** — not hand-written cold: run the agent over the repo to
-    draft build/test commands, the DAO/proc layout, and the SQL-dialect gotchas
-    (`SELECT TOP`, `[dbo].`, `(NOLOCK)`, `ISNULL`); review + commit.
-  - **memory** — seed durable project facts (`memory.md` → flush into
-    `CLAUDE.md`) so a fresh session starts informed.
-  - **repo legibility** — a short architecture map / README the agent navigates
-    instead of grepping the whole tree.
-  - **isolation** — work in a git worktree (closes one of A's three gaps).
-
-- **Oracle / DoD** (introduced with C): per-endpoint, per-row **A/B comparison
+- **Oracle / DoD** (shared by B/C1/C2): per-endpoint, per-row **A/B comparison
   vs a golden MSSQL** instance — the thing that makes "done" objective.
-- **Four metrics compared across A / B / C / D** (no weighted formula):
+- **Four metrics compared across A / B / C1 / C2** (no weighted formula):
   1. **Correctness** — oracle pass rate (endpoints A/B-faithful).
   2. **Cost** — one simple total (tokens or estimated $).
   3. **Completion time** — wall-clock task → trustworthy result (anchor against
@@ -156,8 +152,10 @@ name it (one usage example each):
 - **Deleted:** rigid `ACT N` cover labels.
 - **Moved:** Everyday hygiene → front (section 2), expanded with per-feature
   examples + handover play.
-- **Reframed:** the experiment → 4 isolated arms (A naive / B +environment /
-  C +workflow / D pure-Superpowers), each changing one variable, 4 metrics.
+- **Reframed:** the experiment → 4 runs on one task (A naive / B full-Superpowers
+  / C1 brainstorm+`/goal` / C2 brainstorm+`/workflow`), comparing how much of the
+  method drives execution; 4 metrics. The "environment quality" axis is dropped
+  (not cleanly measurable for this task).
 - **Restyled:** font sizes up; text-heavy slides → diagrams.
 
 ## Form & build
@@ -179,7 +177,8 @@ name it (one usage example each):
 - Flow is strictly simple → complex; hygiene leads; no ACT labels.
 - A viewer can name the reproducible workflow and at least 3 do-it-today moves
   (each seen with a usage example).
-- The experiment is 4 isolated arms (A/B/C/D) on one task with 4 metrics, each
-  arm changing exactly one variable; D presented neutrally; every
+- The experiment is 4 runs on one task (A naive / B full-Superpowers / C1
+  brainstorm+`/goal` / C2 brainstorm+`/workflow`) with 4 metrics; B-vs-C framed
+  as "full vs lean method"; C1-vs-C2 backs the `/goal`-vs-`/workflow` slide; every
   result is visibly TBD; no four-cell matrix or weighted formula remains.
 - Deck builds and renders correctly at 1280×720 (verified via Playwright).
