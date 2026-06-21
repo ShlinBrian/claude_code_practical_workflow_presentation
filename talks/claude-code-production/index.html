@@ -672,122 +672,117 @@ return results.filter(r => r.verdict.faithful)</code></pre>
 						</div>
 					</section>
 
-					<!-- 03-g 成本帳 -->
+					<!-- results TBD placeholder -->
 					<section>
-						<div class="takeaway">四種跑法、同任務、交付物相同 → 可比</div>
-						<h3>成本帳</h3>
-						<div class="legend">
-							<span><i style="background:var(--c-input)"></i>input ×1</span>
-							<span><i style="background:var(--c-read)"></i>cache_read ×0.1</span>
-							<span><i style="background:var(--c-write)"></i>cache_write ×1.25</span>
-							<span><i style="background:var(--c-output)"></i>output ×5</span>
+						<div class="takeaway">Results go here after the run</div>
+						<h3>Results <span class="tbd">TBD</span></h3>
+						<div class="stats">
+							<div class="stat"><div class="v fl"><span class="tbd">TBD</span></div><div class="l">endpoints<br>HTTP 200</div></div>
+							<div class="stat"><div class="v fl"><span class="tbd">TBD</span></div><div class="l">A/B body<br>faithful</div></div>
+							<div class="stat"><div class="v fl"><span class="tbd">TBD</span></div><div class="l">tables<br>row-aligned</div></div>
+							<div class="stat"><div class="v fl"><span class="tbd">TBD</span></div><div class="l">winning<br>run</div></div>
 						</div>
-						<div class="cost-bars" id="bars">
-							<div class="bar-row cheap">
-								<div class="nm">workflow_skill<small>skill 有用到</small></div>
-								<div class="bar-track"><div class="seg s-input" data-w="0.67"></div><div class="seg s-read" data-w="18.6"></div><div class="seg s-write" data-w="17.6"></div><div class="seg s-output" data-w="13.2"></div></div>
-								<div class="tot">≈ 2.16M</div>
-							</div>
-							<div class="bar-row">
-								<div class="nm">goal</div>
-								<div class="bar-track"><div class="seg s-input" data-w="0.82"></div><div class="seg s-read" data-w="34.9"></div><div class="seg s-write" data-w="10.1"></div><div class="seg s-output" data-w="17.4"></div></div>
-								<div class="tot">≈ 2.73M</div>
-							</div>
-							<div class="bar-row">
-								<div class="nm">workflow</div>
-								<div class="bar-track"><div class="seg s-input" data-w="1.40"></div><div class="seg s-read" data-w="34.6"></div><div class="seg s-write" data-w="11.9"></div><div class="seg s-output" data-w="18.9"></div></div>
-								<div class="tot">≈ 2.88M</div>
-							</div>
-							<div class="bar-row dear">
-								<div class="nm">goal_skill<small>skill 掛了沒用到</small></div>
-								<div class="bar-track"><div class="seg s-input" data-w="0.53"></div><div class="seg s-read" data-w="56.3"></div><div class="seg s-write" data-w="13.9"></div><div class="seg s-output" data-w="29.2"></div></div>
-								<div class="tot">≈ 4.31M</div>
-							</div>
-						</div>
-						<p class="xs c-faint" style="margin-top:0.4em;">n=1，看方向、非定論。要決策先各跑 3 次。</p>
+						<div class="shot" style="margin-top:0.6em;"><div class="cap"><b>📷 SCREENSHOT</b> — A/B comparison report (per-endpoint pass/fail)</div></div>
 					</section>
 
-					<!-- 03-h 成本明細 -->
+					<!-- 03-g cost bars placeholder -->
 					<section>
-						<div class="takeaway">完整數字</div>
-						<h3>成本明細</h3>
+						<div class="takeaway">Cost comparison — to be filled after 3× runs each</div>
+						<h3>Cost by run <span class="tbd">TBD</span></h3>
+						<div class="legend">
+							<span><i style="background:var(--c-input)"></i>input</span>
+							<span><i style="background:var(--c-read)"></i>cache_read</span>
+							<span><i style="background:var(--c-write)"></i>cache_write</span>
+							<span><i style="background:var(--c-output)"></i>output</span>
+						</div>
+						<div class="cost-bars">
+							<div class="bar-row"><div class="nm">goal</div><div class="bar-track"></div><div class="tot"><span class="tbd">TBD</span></div></div>
+							<div class="bar-row"><div class="nm">workflow</div><div class="bar-track"></div><div class="tot"><span class="tbd">TBD</span></div></div>
+							<div class="bar-row"><div class="nm">goal + skill</div><div class="bar-track"></div><div class="tot"><span class="tbd">TBD</span></div></div>
+							<div class="bar-row"><div class="nm">workflow + skill</div><div class="bar-track"></div><div class="tot"><span class="tbd">TBD</span></div></div>
+						</div>
+						<p class="xs c-faint" style="margin-top:0.4em;">Hypothesis to test: "loaded a skill" ≠ "used the skill" — an unused skill can be the <em>most</em> expensive run (wasted cache_read).</p>
+					</section>
+
+					<!-- 03-h cost detail placeholder -->
+					<section>
+						<div class="takeaway">Full numbers land here</div>
+						<h3>Cost detail <span class="tbd">TBD</span></h3>
 						<table class="cost-table">
-							<thead><tr><th>實驗</th><th>input</th><th>cache_read</th><th>cache_write</th><th>output</th><th>加權成本</th><th>subagent</th></tr></thead>
+							<thead><tr><th>run</th><th>input</th><th>cache_read</th><th>cache_write</th><th>output</th><th>weighted</th></tr></thead>
 							<tbody>
-								<tr class="cheap"><td class="exp">workflow_skill</td><td>28,825</td><td>8,015,890</td><td>607,228</td><td>113,894</td><td class="cost">≈ 2,158,919</td><td class="c-faint">+319,948</td></tr>
-								<tr><td class="exp">goal</td><td>35,435</td><td>15,039,374</td><td>347,715</td><td>150,349</td><td class="cost">≈ 2,725,761</td><td class="c-faint">無</td></tr>
-								<tr><td class="exp">workflow</td><td>60,408</td><td>14,898,708</td><td>411,436</td><td>162,879</td><td class="cost">≈ 2,878,969</td><td class="c-faint">+242,091</td></tr>
-								<tr class="dear"><td class="exp">goal_skill</td><td>22,994</td><td>24,287,431</td><td>480,154</td><td>252,091</td><td class="cost">≈ 4,312,385</td><td class="c-faint">未被叫用</td></tr>
+								<tr><td class="exp">goal</td><td>—</td><td>—</td><td>—</td><td>—</td><td class="cost"><span class="tbd">TBD</span></td></tr>
+								<tr><td class="exp">workflow</td><td>—</td><td>—</td><td>—</td><td>—</td><td class="cost"><span class="tbd">TBD</span></td></tr>
+								<tr><td class="exp">goal + skill</td><td>—</td><td>—</td><td>—</td><td>—</td><td class="cost"><span class="tbd">TBD</span></td></tr>
+								<tr><td class="exp">workflow + skill</td><td>—</td><td>—</td><td>—</td><td>—</td><td class="cost"><span class="tbd">TBD</span></td></tr>
 							</tbody>
 						</table>
 					</section>
 
-					<!-- 03-i 成本觀察 -->
+					<!-- 03-i what I expect to learn -->
 					<section>
-						<div class="takeaway">兩個值得記住的觀察</div>
-						<h3>成本觀察</h3>
+						<div class="takeaway">What the run should tell us</div>
+						<h3>What I expect to learn <span class="tbd">TBD</span></h3>
 						<div class="card accent-goal" style="margin-bottom:0.3em;">
-							<div class="card-label">觀察 1</div>
-							<p class="mid" style="margin:0;">
-								<strong class="c-text">掛上 skill ≠ 用到 skill。</strong><br>
-								<span class="c-muted">workflow_skill subagent 有用 → <strong class="c-ok">最便宜</strong>；goal_skill 掛了沒用 → <strong class="c-warn">最貴</strong>（cache_read 24.3M，純浪費）。</span>
-							</p>
+							<div class="card-label">Hypothesis 1</div>
+							<p class="mid" style="margin:0;">Loading a skill ≠ using it. An unused skill may be the most expensive run.</p>
 						</div>
 						<div class="card accent-flow">
-							<div class="card-label">觀察 2</div>
-							<p class="mid" style="margin:0;">
-								<strong class="c-text">錢主要花在 cache_read。</strong><br>
-								<span class="c-muted">長 autonomous loop 的固有成本。Hygiene 只能邊際壓低，但邊際也是錢。</span>
-							</p>
+							<div class="card-label">Hypothesis 2</div>
+							<p class="mid" style="margin:0;">Most cost is cache_read — the inherent price of long autonomous loops. Hygiene only trims it at the margin.</p>
 						</div>
 					</section>
 
-					<!-- 03-j 何時不要 -->
+					<!-- 03-i byproduct -->
 					<section>
-						<div class="takeaway">知道什麼時候不用，跟知道怎麼用一樣重要</div>
-						<h3>什麼時候<span class="c-warn">不要</span>直接自動化</h3>
+						<div class="takeaway">A byproduct to watch for</div>
+						<h3>Byproduct: bugs the oracle catches <span class="tbd">TBD</span></h3>
+						<div class="card accent-goal">
+							<p class="mid" style="margin:0;">Automated A/B comparison tends to surface bugs a human review would miss — e.g. a field silently written as <code class="c-warn">NULL</code>.<br><br><span class="c-muted">Concrete example to be filled after the run.</span></p>
+						</div>
+					</section>
+
+					<!-- 03-j when not to automate -->
+					<section>
+						<div class="takeaway">Knowing when NOT to automate matters as much</div>
+						<h3>When <span class="c-warn">not</span> to automate directly</h3>
 						<div class="card accent-warn">
 							<ul class="mid" style="margin:0;padding-left:1.2em;">
-								<li><strong class="c-text">沒有可自動驗收的 oracle</strong></li>
-								<li><strong class="c-text">需要不可逆的副作用</strong> <span class="c-muted">— 刪資料、打外部 API、動錢</span></li>
-								<li><strong class="c-text">domain knowledge 不在 repo 裡</strong></li>
+								<li>No automatically-checkable oracle</li>
+								<li>Irreversible side effects — deleting data, calling external APIs, moving money</li>
+								<li>Domain knowledge that isn't in the repo</li>
 							</ul>
 						</div>
 					</section>
 
-					<!-- 03-k Human review -->
+					<!-- 03-k human review -->
 					<section>
-						<div class="takeaway">瓶頸從「寫 code」搬到「review PR」</div>
-						<h3>Human review 是新瓶頸</h3>
-						<p class="mid c-muted">
-							PR 動了 DAO、config、49 個 procs→functions、39 處修正。
-						</p>
+						<div class="takeaway">The bottleneck moves from writing code to reviewing PRs</div>
+						<h3>Human review is the new bottleneck</h3>
+						<p class="mid c-muted">A migration PR can touch the DAO layer, config, 49 procs→functions, and dozens of fixes.</p>
 						<div class="card accent-goal" style="margin-top:0.4em;">
-							<p class="mid" style="margin:0;">
-								對策：逼 agent <strong class="c-goal">拆小 PR</strong> + <strong class="c-goal">自帶 A/B 證據</strong>。<br>
-								讓人 review 的是證據，不是逐行 diff。
-							</p>
+							<p class="mid" style="margin:0;">Counter-move: force the agent to <strong class="c-goal">split into small PRs</strong> that <strong class="c-goal">carry their own A/B evidence</strong>. Humans review the evidence, not every diff line.</p>
 						</div>
 					</section>
 
-					<!-- 03-l 日常 hygiene -->
+					<!-- 03-l everyday hygiene -->
 					<section>
-						<div class="takeaway">邊際槓桿：降低重複讀 context 的成本</div>
-						<h3>日常 Hygiene</h3>
+						<div class="takeaway">Marginal leverage: cut the cost of re-reading context</div>
+						<h3>Everyday hygiene</h3>
 						<div class="hy-grid">
 							<div class="hy-card">
-								<h4>Context 管理</h4>
+								<h4>Context management</h4>
 								<ul>
-									<li><b><span class="cmd" style="font-size:1em;">/rewind</span></b> 回到岔路前</li>
-									<li><b><span class="cmd" style="font-size:1em;">/btw</span></b> 即時補充</li>
-									<li><span class="cmd" style="font-size:1em;">/clear</span> 前先寫 <b>handoff.md</b></li>
+									<li><b><span class="cmd" style="font-size:1em;">/rewind</span></b> back to before a wrong turn</li>
+									<li><b><span class="cmd" style="font-size:1em;">/btw</span></b> inject context mid-run</li>
+									<li>write <b>handoff.md</b> before <span class="cmd" style="font-size:1em;">/clear</span></li>
 								</ul>
 							</div>
 							<div class="hy-card">
-								<h4>記憶落地</h4>
+								<h4>Persisting memory</h4>
 								<ul>
-									<li><b>memory.md</b> → flush 進 <b>claude.md</b></li>
-									<li>下段 session 不必從頭交代</li>
+									<li><b>memory.md</b> → flush into <b>claude.md</b></li>
+									<li>next session starts without re-explaining</li>
 								</ul>
 							</div>
 						</div>
@@ -803,42 +798,17 @@ return results.filter(r => r.verdict.faithful)</code></pre>
 
 					<section class="section-cover">
 						<div class="act-num">★</div>
-						<h2>Checklist</h2>
-						<p class="act-sub">下 <span class="cmd goal" style="font-size:1.3em;">/goal</span> 或 <span class="cmd flow" style="font-size:1.3em;">/workflow</span> 前的五句自問</p>
+						<h2>Pre-flight Checklist</h2>
+						<p class="act-sub">Five questions before you type <span class="cmd goal" style="font-size:1.3em;">/goal</span> or <span class="cmd flow" style="font-size:1.3em;">/workflow</span></p>
 					</section>
 
 					<section>
 						<ol class="checklist">
-							<li>
-								<div>
-									<div class="h">完成定義</div>
-									<div class="q">有沒有能<strong class="c-text">自動檢查</strong>的「做完」？沒有 oracle 就先別跑。</div>
-								</div>
-							</li>
-							<li class="fragment">
-								<div>
-									<div class="h">目標</div>
-									<div class="q">要的是<strong class="c-text">成品與決策</strong>，還是只寫了一個動作？</div>
-								</div>
-							</li>
-							<li class="fragment">
-								<div>
-									<div class="h">邊界</div>
-									<div class="q">哪些不要碰？不可逆副作用先圈起來。</div>
-								</div>
-							</li>
-							<li class="fragment">
-								<div>
-									<div class="h">可讀性</div>
-									<div class="q">agent 看得懂嗎？缺 mapping 就<strong class="c-text">先補</strong>（會複利）。</div>
-								</div>
-							</li>
-							<li class="fragment">
-								<div>
-									<div class="h">階段</div>
-									<div class="q">現在要它<strong class="c-text">想、比、決，還是做</strong>？</div>
-								</div>
-							</li>
+							<li><div><div class="h">Definition of done</div><div class="q">Is there a <strong class="c-text">machine-checkable</strong> "done"? No oracle → don't run yet.</div></div></li>
+							<li class="fragment"><div><div class="h">Goal</div><div class="q">Do you want a <strong class="c-text">deliverable and a decision</strong>, or did you just describe one action?</div></div></li>
+							<li class="fragment"><div><div class="h">Boundaries</div><div class="q">What's off-limits? Fence irreversible side effects first.</div></div></li>
+							<li class="fragment"><div><div class="h">Legibility</div><div class="q">Can the agent understand the code? Missing a map → <strong class="c-text">add it first</strong> (it compounds).</div></div></li>
+							<li class="fragment"><div><div class="h">Stage</div><div class="q">Do you want it to <strong class="c-text">think, compare, decide, or do</strong> right now?</div></div></li>
 						</ol>
 					</section>
 
@@ -849,21 +819,12 @@ return results.filter(r => r.verdict.faithful)</code></pre>
 				     CLOSING
 				     ════════════════════════════════════════════════════════════ -->
 				<section class="closing">
-					<div class="eyebrow" style="color:var(--faint);">一句話總結</div>
-					<p class="big">
-						機器側會<span class="c-flow">越來越強</span>，<br>人側不會自動補上。
-					</p>
-					<p class="big fragment" style="margin-top:0.8em;">
-						不要問「agent 現在能不能做」，<br>
-						要問<strong class="c-goal">「我能不能把目標與環境<br>整理到讓 agent 自己能做」</strong>。
-					</p>
-					<p class="mid c-muted fragment" style="margin-top:1em;max-width:600px;margin-left:auto;margin-right:auto;">
-						把人從<strong class="c-text">執行者</strong>，挪到
-						<strong class="c-goal">把任務定義清楚的人</strong> 與
-						<strong class="c-flow">把 code 變好懂的人</strong>。<br>
-						這兩件事 agent 替不了，每一次投資都會隨它變強而複利。
-					</p>
-					<div class="sig fragment">Agentic Engineering · 機器側 × 人側 · 2026</div>
+					<div class="eyebrow" style="color:var(--faint);">In one line</div>
+					<p class="big">The machine side keeps getting <span class="c-flow">stronger</span>.<br>The human side won't fill itself in.</p>
+					<p class="big fragment" style="margin-top:0.8em;">Don't ask <span class="c-warn">"can the agent do it yet?"</span><br>Ask <strong class="c-goal">"can I define the goal and the workspace<br>well enough that it can?"</strong></p>
+					<p class="mid c-muted fragment" style="margin-top:1em;max-width:640px;margin-left:auto;margin-right:auto;">
+						Move yourself from <strong class="c-text">executor</strong> to the person who <strong class="c-goal">defines the task</strong> and <strong class="c-flow">makes the code legible</strong>. Those two the agent can't replace — and every bit of that investment compounds as it gets stronger.</p>
+					<div class="sig fragment">Agentic Engineering · 2026</div>
 				</section>
 
 			</div>
@@ -883,15 +844,6 @@ return results.filter(r => r.verdict.faithful)</code></pre>
 				plugins: [RevealHighlight],
 			});
 
-			// Animate cost bars when slide becomes visible
-			Reveal.on('slidechanged', function(event) {
-				var bars = event.currentSlide.querySelector('#bars');
-				if (bars) {
-					bars.querySelectorAll('.seg').forEach(function(s) {
-						s.style.width = s.dataset.w + '%';
-					});
-				}
-			});
 		</script>
 	</body>
 </html>
