@@ -449,6 +449,64 @@
 				</section>
 
 
+				<!-- ════════ EVERYDAY HYGIENE — do-it-today wins ════════ -->
+				<section>
+
+					<!-- pain-point opener -->
+					<section>
+						<div class="takeaway">Start here — the cheapest wins you can use today</div>
+						<h3 style="margin-bottom:0.5em;">First, stop paying the same tax twice</h3>
+						<div class="ba">
+							<div class="before">
+								<div class="lbl">The pain</div>
+								The run is halfway, context fills up — or the agent &ldquo;forgets&rdquo; a decision. You <strong class="c-text">re-explain the whole task</strong>, every time.
+							</div>
+							<div class="vs">→</div>
+							<div class="after">
+								<div class="lbl">The fix</div>
+								A handful of <strong class="c-text">hygiene moves</strong> make state cheap to restore — so you steer, not re-narrate.
+							</div>
+						</div>
+						<p class="mid c-muted" style="margin-top:0.7em;">Three moves + one handover play. Each with how you actually use it.</p>
+					</section>
+
+					<!-- per-feature examples -->
+					<section>
+						<div class="takeaway">Three moves you can use in your next session</div>
+						<h3 style="margin-bottom:0.4em;">Keep the run on track</h3>
+						<div class="term" style="font-size:0.5em;">
+							<span class="cm"># wrong turn? rewind to before it — no re-explaining</span><br>
+							<span class="pr">/rewind</span> <span class="cm">→ pick the checkpoint before the bad edit</span><br><br>
+							<span class="cm"># mid-run, drop in a fact without derailing the task</span><br>
+							<span class="pr">/btw</span> the staging DB is read-only, never write to it<br><br>
+							<span class="cm"># end of session: flush durable facts so next time needs no setup</span><br>
+							<span class="ag">memory.md  →  CLAUDE.md   (next session starts informed)</span>
+						</div>
+						<p class="mid c-muted" style="margin-top:0.5em;"><span class="c-goal mono">/rewind</span> undo · <span class="c-goal mono">/btw</span> inject · <span class="c-goal mono">memory→CLAUDE.md</span> persist.</p>
+					</section>
+
+					<!-- context-full handover -->
+					<section>
+						<div class="takeaway">When context fills up: hand off, don't re-explain</div>
+						<h3 style="margin-bottom:0.4em;">Context full → handover to a fresh agent</h3>
+						<div class="flow vert" style="max-width:560px;">
+							<div class="step on-goal"><span class="t">1 · Write <span class="mono">handoff.md</span></span><span class="d">what's done · what's next · key decisions &amp; constraints</span></div>
+							<div class="arr">↓</div>
+							<div class="step"><span class="t">2 · <span class="mono">/clear</span> or start a fresh agent</span><span class="d">the bloated context is gone; cost resets</span></div>
+							<div class="arr">↓</div>
+							<div class="step on-flow"><span class="t">3 · New agent reads <span class="mono">handoff.md</span></span><span class="d">resumes cold — no re-explaining the whole task</span></div>
+						</div>
+						<div class="term" style="font-size:0.46em;max-width:560px;margin-top:0.5em;">
+							<span class="cm"># handoff.md</span><br>
+							## Done: DAO layer ported, 30/48 procs converted<br>
+							## Next: convert remaining 18 procs, run A/B oracle<br>
+							## Decisions: all-lowercase identifiers; work in worktree
+						</div>
+					</section>
+
+				</section>
+
+
 				<!-- ════════ THE NAIVE WAY (arm A) ════════ -->
 				<section>
 					<section>
@@ -796,29 +854,6 @@ return results.filter(r => r.verdict.faithful)</code></pre>
 						<p class="mid c-muted">A migration PR can touch the DAO layer, config, 49 procs→functions, and dozens of fixes.</p>
 						<div class="card accent-goal" style="margin-top:0.4em;">
 							<p class="mid" style="margin:0;">Counter-move: force the agent to <strong class="c-goal">split into small PRs</strong> that <strong class="c-goal">carry their own A/B evidence</strong>. Humans review the evidence, not every diff line.</p>
-						</div>
-					</section>
-
-					<!-- 03-l everyday hygiene -->
-					<section>
-						<div class="takeaway">Marginal leverage: cut the cost of re-reading context</div>
-						<h3>Everyday hygiene</h3>
-						<div class="hy-grid">
-							<div class="hy-card">
-								<h4>Context management</h4>
-								<ul>
-									<li><b><span class="cmd" style="font-size:1em;">/rewind</span></b> back to before a wrong turn</li>
-									<li><b><span class="cmd" style="font-size:1em;">/btw</span></b> inject context mid-run</li>
-									<li>write <b>handoff.md</b> before <span class="cmd" style="font-size:1em;">/clear</span></li>
-								</ul>
-							</div>
-							<div class="hy-card">
-								<h4>Persisting memory</h4>
-								<ul>
-									<li><b>memory.md</b> → flush into <b>claude.md</b></li>
-									<li>next session starts without re-explaining</li>
-								</ul>
-							</div>
 						</div>
 					</section>
 
