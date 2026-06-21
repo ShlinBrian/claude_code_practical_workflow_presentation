@@ -38,9 +38,19 @@ Every slide is judged against: **can a viewer act on this tomorrow?**
 - **Bigger base font.** Raise `--r-main-font-size` and retire `.xs`/`.small` as
   body text. Body copy targets ~0.7em+ minimum; captions no smaller than ~0.5em.
   Audit every slide; nothing critical below readable size.
-- **Less text, more visual.** Convert text-heavy slides to diagrams, flows, or
-  before/after visuals. Prose paragraphs become labeled diagram nodes wherever
-  the idea is structural.
+- **Visual-first — hard rule, not a preference.** Default to a **flow diagram or
+  image-text explanation** for every slide; fall back to prose only when an idea
+  genuinely can't be drawn. No "簡報文謅謅" — no dense paragraphs, no long bullet
+  lists that read like an essay.
+  - Anything sequential or causal (a process, a before→after, a decision, a
+    pipeline, a cause→effect) → a **flow diagram** (nodes + arrows), not bullets.
+  - Anything structural (a catalog, a comparison, an inventory, a mapping) →
+    **labeled panels / a compact table / a 2-up**, not a paragraph.
+  - Where a concept needs words, pair a **short caption with a visual** (icon,
+    node, diagram), not a wall of text. Aim: a viewer grasps each slide's shape
+    in ~3 seconds before reading any detail.
+  - Keep words per slide low; one idea per slide; the diagram carries the
+    meaning, text only labels it.
 - **Drop the rigid ACT framing.** No `ACT 01 · MOTIVATION` covers. Sections flow
   by narrative, not by act number. (Section covers may remain as light dividers
   without the "ACT N" label.)
@@ -202,6 +212,11 @@ the Superpowers method drives execution**:
 - Reuse the existing CSS design system (cards, `.pipe`, `.stats`, `.ladder`,
   `.checklist`, `.term`, `.hy-grid`). Adjust the size scale; add/lighten as
   needed for new diagrams.
+- **Add lightweight flow-diagram primitives** (CSS-only): a reusable
+  **node→arrow→node** flow component (horizontal and vertical), step/stage
+  badges, and a **before→after** 2-up — so sequential/causal slides are drawn,
+  not bulleted. Pure HTML/CSS (no image assets); keep it on the dark theme.
+  `.pipe` and `.ladder` are starting points to extend.
 - Code/terminal snippets via the already-loaded highlight plugin and `.term`.
 - Keep `notes.md` in sync with the new structure.
 - Reveal config (`width:1280, height:720, center:true`) unchanged.
@@ -212,7 +227,10 @@ the Superpowers method drives execution**:
 ## Success criteria
 
 - Base/body font visibly larger; nothing critical rendered at unreadable size.
-- Text-heavy slides replaced by diagrams/visuals where the idea is structural.
+- **Visual-first:** every slide leads with a flow diagram or image-text, not
+  prose; no dense paragraphs or essay-like bullet lists; each slide's shape is
+  graspable in ~3 seconds. Sequential/causal ideas are flow diagrams;
+  structural ideas are panels/tables/2-ups.
 - Flow is strictly simple → complex; hygiene leads; no ACT labels.
 - A viewer can name the reproducible workflow and at least 3 do-it-today moves
   (each seen with a usage example).
