@@ -2,19 +2,31 @@
 
 ## Speaker Notes
 
-> Structure: Title/Hook → Everyday hygiene → The naive way (arm A) → The method (skills, then /goal & /workflow) → The real case (why it's hard) → The experiment (A/B/C1/C2) → Checklist → Close.
+> Structure: Title → Agenda → Framing → [Chapter dividers before each chapter] → Everyday hygiene → The naive way (arm A) → The method (skills, then /goal & /workflow) → The real case (why it's hard) → The experiment (A/B/C1/C2) → Checklist → Close.
 
 ---
 
 ### Title
 
-The title states the takeaway directly: one reproducible workflow that turns a requirement into a result you can **trust** — *brainstorm → spec with a Definition of Done → /goal or /workflow → verify with an oracle.* This is not a capabilities tour. The whole talk is that one route, told concretely, with a real migration as the proof. Whatever else they forget, they should leave able to reproduce this workflow.
+Cover slide: title, "A Practical RD Workflow", presenter (BrianSH Lin, RD-CL.com). Keep it minimal — just set the room. The takeaway gets stated on the framing slide, not crammed onto the cover.
 
 ---
 
-### Hook — stop asking the wrong question
+### Agenda
 
-The single most important idea. Don't ask "can the agent do it?" — that question plateaus and leaves you waiting for a better model. Ask "have I defined the task **and the environment** well enough that it can?" The leverage is the spec, the definition of done, and the workspace you hand it. Everything in the talk is one of those two levers. Keep this short and let the two-node visual carry it.
+Six chapters: Everyday hygiene · The naive way · The method · The case · The experiment · Pre-flight checklist. Walk it in one breath so the audience has the map. Each chapter opens with its own divider slide, so they always know where they are.
+
+---
+
+### Framing — two questions, very different leverage
+
+The single most important idea, framed neutrally (not as a scolding). Two questions side by side: "Can the agent do it?" — which plateaus and leaves you waiting for a better model — versus "Have I defined the task **and the environment** well enough that it can?" The leverage is the spec, the definition of done, and the workspace you hand it. Everything in the talk is one of those two levers. Let the two-node visual carry it.
+
+---
+
+### Chapter dividers
+
+Each chapter is preceded by a divider slide (Chapter NN + title + one-line subtitle). Use them to breathe and signal the transition — a sentence of "now we shift from X to Y" is enough.
 
 ---
 
@@ -169,7 +181,7 @@ The take-home card. Five questions before typing `/goal` or `/workflow`; if any 
 
 ### Close
 
-End on the workflow spine as a single visual: **brainstorm → spec + DoD → /goal or /workflow → verify with an oracle** — one reproducible workflow, usable tomorrow. The shift it asks for: from executor to the person who defines the task and makes the code legible. Those two the agent can't replace, and every bit compounds as it gets stronger.
+End on the workflow spine as a single visual: **brainstorm → spec + DoD → /goal or /workflow → verify with an oracle** — one reproducible workflow, usable tomorrow. The shift worth making: from executor to the person who defines the task and makes the code legible. Those two the agent can't replace, and every bit compounds as it gets stronger. Keep the tone an invitation, not a lecture.
 
 ---
 
