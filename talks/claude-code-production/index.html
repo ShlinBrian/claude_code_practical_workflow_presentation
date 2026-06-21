@@ -791,23 +791,15 @@ return results.filter(r => r.verdict.faithful)</code></pre>
 				     CHECKLIST
 				     ════════════════════════════════════════════════════════════ -->
 				<section>
-
-					<section class="section-cover">
-						<div class="act-num">★</div>
-						<h2>Pre-flight Checklist</h2>
-						<p class="act-sub">Five questions before you type <span class="cmd goal" style="font-size:1.3em;">/goal</span> or <span class="cmd flow" style="font-size:1.3em;">/workflow</span></p>
-					</section>
-
-					<section>
-						<ol class="checklist">
-							<li><div><div class="h">Definition of done</div><div class="q">Is there a <strong class="c-text">machine-checkable</strong> "done"? No oracle → don't run yet.</div></div></li>
-							<li class="fragment"><div><div class="h">Goal</div><div class="q">Do you want a <strong class="c-text">deliverable and a decision</strong>, or did you just describe one action?</div></div></li>
-							<li class="fragment"><div><div class="h">Boundaries</div><div class="q">What's off-limits? Fence irreversible side effects first.</div></div></li>
-							<li class="fragment"><div><div class="h">Legibility</div><div class="q">Can the agent understand the code? Missing a map → <strong class="c-text">add it first</strong> (it compounds).</div></div></li>
-							<li class="fragment"><div><div class="h">Stage</div><div class="q">Do you want it to <strong class="c-text">think, compare, decide, or do</strong> right now?</div></div></li>
-						</ol>
-					</section>
-
+					<div class="takeaway">Take this home — five questions before you type <span class="c-goal mono">/goal</span> or <span class="c-flow mono">/workflow</span></div>
+					<h3 style="margin-bottom:0.3em;">Pre-flight checklist</h3>
+					<ol class="checklist" style="max-width:88%;">
+						<li><div><div class="h">Definition of done</div><div class="q">Is there a <strong class="c-text">machine-checkable</strong> "done"? No oracle → don't run yet.</div></div></li>
+						<li><div><div class="h">Goal</div><div class="q">Do you want a <strong class="c-text">deliverable and a decision</strong>, or did you just describe one action?</div></div></li>
+						<li><div><div class="h">Boundaries</div><div class="q">What's off-limits? Fence irreversible side effects first.</div></div></li>
+						<li><div><div class="h">Legibility</div><div class="q">Can the agent understand the code? Missing a map → <strong class="c-text">add it first</strong>.</div></div></li>
+						<li><div><div class="h">Stage</div><div class="q">Do you want it to <strong class="c-text">think, compare, decide, or do</strong> right now?</div></div></li>
+					</ol>
 				</section>
 
 
@@ -815,11 +807,19 @@ return results.filter(r => r.verdict.faithful)</code></pre>
 				     CLOSING
 				     ════════════════════════════════════════════════════════════ -->
 				<section class="closing">
-					<div class="eyebrow" style="color:var(--faint);">In one line</div>
-					<p class="big">The machine side keeps getting <span class="c-flow">stronger</span>.<br>The human side won't fill itself in.</p>
-					<p class="big fragment" style="margin-top:0.8em;">Don't ask <span class="c-warn">"can the agent do it yet?"</span><br>Ask <strong class="c-goal">"can I define the goal and the workspace<br>well enough that it can?"</strong></p>
-					<p class="mid c-muted fragment" style="margin-top:1em;max-width:640px;margin-left:auto;margin-right:auto;">
-						Move yourself from <strong class="c-text">executor</strong> to the person who <strong class="c-goal">defines the task</strong> and <strong class="c-flow">makes the code legible</strong>. Those two the agent can't replace — and every bit of that investment compounds as it gets stronger.</p>
+					<div class="eyebrow" style="color:var(--faint);">The one thing to take home</div>
+					<p class="big" style="margin-bottom:0.6em;">One reproducible workflow — use it tomorrow:</p>
+					<div class="flow" style="max-width:90%;font-size:0.9em;">
+						<div class="step on-skill"><span class="t">brainstorm</span></div>
+						<div class="arr">→</div>
+						<div class="step on-goal"><span class="t">spec + DoD</span></div>
+						<div class="arr">→</div>
+						<div class="step"><span class="t"><span class="mono">/goal</span> or <span class="mono">/workflow</span></span></div>
+						<div class="arr">→</div>
+						<div class="step on-ok" style="border-left-color:var(--ok);"><span class="t c-ok">verify with an oracle</span></div>
+					</div>
+					<p class="mid c-muted fragment" style="margin-top:1.2em;max-width:680px;margin-left:auto;margin-right:auto;">
+						Don't ask <span class="c-warn">"can the agent do it yet?"</span> Move from <strong class="c-text">executor</strong> to the person who <strong class="c-goal">defines the task</strong> and <strong class="c-flow">makes the code legible</strong> — those two the agent can't replace, and every bit compounds as it gets stronger.</p>
 					<div class="sig fragment">Agentic Engineering · 2026</div>
 				</section>
 
