@@ -524,17 +524,17 @@
 					<section>
 						<div class="takeaway">Plausible output, no way to trust it</div>
 						<h3>What you get back</h3>
-						<div class="card accent-warn" style="margin-top:0.4em;">
+						<div class="card accent-warn" style="margin-top:0.4em;max-width:80%;">
 							<p class="mid" style="margin:0;">
 								It rewrites the SQL, swaps the driver, the build goes green — and it confidently says <strong class="c-text">"done."</strong>
 							</p>
 						</div>
-						<p class="mid c-muted" style="margin-top:0.6em;">Three things are missing, and they're the whole game:</p>
-						<ul class="diag" style="margin-top:0.3em;">
-							<li><span class="who brief">gap</span>No <strong class="c-text">spec</strong> — "keep everything working" is undefined</li>
-							<li><span class="who brief">gap</span>No <strong class="c-text">definition of done</strong> — nothing checks the answers are still correct</li>
-							<li><span class="who brief">gap</span>No <strong class="c-text">isolation</strong> — it edited your working tree in place</li>
-						</ul>
+						<p class="mid c-muted" style="margin:0.6em 0 0.2em;">Three things are missing — and they're the whole game:</p>
+						<div class="flow">
+							<div class="step on-warn"><span class="t c-warn">No spec</span><span class="d">&ldquo;keep everything working&rdquo; is undefined</span></div>
+							<div class="step on-warn"><span class="t c-warn">No definition of done</span><span class="d">nothing checks the answers are still correct</span></div>
+							<div class="step on-warn"><span class="t c-warn">No isolation</span><span class="d">it edited your working tree in place</span></div>
+						</div>
 					</section>
 				</section>
 
