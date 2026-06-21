@@ -362,130 +362,84 @@
 		<div class="reveal">
 			<div class="slides">
 
-				<!-- ════════════════════════════════════════════
-				     1. TITLE
-				     ════════════════════════════════════════════ -->
+				<!-- ════════ 1. TITLE ════════ -->
 				<section>
-					<div class="eyebrow" style="color:var(--flow);">Agentic Engineering · 內部分享 · 2026</div>
-					<h1 style="font-size:2.2em;line-height:1.05;margin-bottom:0;">Claude Code<br>in Production</h1>
+					<div class="eyebrow" style="color:var(--flow);">Agentic Engineering · Internal · 2026</div>
+					<h1 style="font-size:2.1em;line-height:1.05;margin-bottom:0;">Claude Code<br>in Production</h1>
 					<p style="font-size:0.7em;color:var(--goal);font-weight:500;margin-top:0.3em;">A Practical RD Workflow</p>
-					<p class="mid c-muted" style="max-width:560px;margin:1.2em auto 0;line-height:1.6;">
-						Agent 只會越來越強。<br>
-						這場分享講的是：<strong class="c-text">我們怎麼調整工作方式來跟上。</strong>
+					<p class="mid c-muted" style="max-width:600px;margin:1.2em auto 0;line-height:1.6;">
+						Stop writing one-line prompts and hoping.<br>
+						This talk shows <strong class="c-text">how to turn a requirement into a plan an agent can actually execute</strong> — with skills, <span class="cmd goal">/goal</span>, and <span class="cmd flow">/workflow</span>.
 					</p>
 				</section>
 
 
-				<!-- ════════════════════════════════════════════
-				     2. AGENDA
-				     ════════════════════════════════════════════ -->
+				<!-- ════════ 2. AGENDA ════════ -->
 				<section>
 					<h2 style="font-size:1.4em;">Agenda</h2>
 					<ol class="agenda-list">
-						<li>
-							<span class="num">01</span>
-							<div>
-								<div class="title">前提與終局</div>
-								<div class="desc">為什麼要為「成長曲線」優化，而不是今天的快照</div>
-							</div>
-						</li>
-						<li>
-							<span class="num">02</span>
-							<div>
-								<div class="title">方法論：機器側 × 人側</div>
-								<div class="desc">給對工具 + 把任務定義清楚，缺一不可</div>
-							</div>
-						</li>
-						<li>
-							<span class="num">03</span>
-							<div>
-								<div class="title">證據與實踐</div>
-								<div class="desc">MSSQL→PG migration 案例、成本帳、何時別自動化</div>
-							</div>
-						</li>
-						<li>
-							<span class="num">★</span>
-							<div>
-								<div class="title">Checklist</div>
-								<div class="desc">下 /goal 或 /workflow 前的五句自問</div>
-							</div>
-						</li>
+						<li><span class="num">01</span><div>
+							<div class="title">Superpowers Skills</div>
+							<div class="desc">A skill catalog for the dev lifecycle — and brainstorming, the requirement→spec engine</div></div></li>
+						<li><span class="num">02</span><div>
+							<div class="title">/goal &amp; /workflow</div>
+							<div class="desc">Loop-until-goal vs multi-agent fan-out — what they are, how to use them, when each fits</div></div></li>
+						<li><span class="num">03</span><div>
+							<div class="title">The Experiment</div>
+							<div class="desc">MSSQL→PostgreSQL migration: why it's hard, how I'll measure it, placeholder results</div></div></li>
+						<li><span class="num">★</span><div>
+							<div class="title">Pre-flight Checklist</div>
+							<div class="desc">Five questions to ask before you type /goal or /workflow</div></div></li>
 					</ol>
 				</section>
 
 
-				<!-- ════════════════════════════════════════════
-				     3. 終局 PIPELINE（先給聽眾一個畫面）
-				     ════════════════════════════════════════════ -->
+				<!-- ════════ ACT 0 — FRAMING (single slide) ════════ -->
 				<section>
-					<div class="takeaway">我們要收斂到的那個終局長這樣</div>
-					<h3 style="font-size:1.2em;">終局 Pipeline</h3>
-					<div class="pipe" style="margin-top:0.6em;">
-						<div class="node"><span class="k">PM / Manager</span><span class="s">提出 request</span></div>
-						<div class="arrow">→</div>
-						<div class="node agent"><span class="k">AI Agent</span><span class="s">/goal · /workflow</span></div>
-						<div class="arrow">→</div>
-						<div class="node"><span class="k">Pull Request</span><span class="s">完成 + 自帶證據</span></div>
-						<div class="arrow">→</div>
-						<div class="node human"><span class="k">Human</span><span class="s">review 證據，不是 diff</span></div>
-					</div>
-					<p class="mid c-muted" style="margin-top:1em;">
-						後面三幕都是在回答：<strong class="c-text">怎麼穩定地往這條 pipeline 收斂。</strong>
-					</p>
+					<div class="takeaway">The one idea behind everything that follows</div>
+					<h3 style="font-size:1.3em;">Don't ask <span class="c-warn">"can the agent do it?"</span></h3>
+					<blockquote style="margin-top:0.6em;">
+						Ask: <strong class="c-goal">"Have I defined the task well enough that it can?"</strong><br><br>
+						Polishing prompts plateaus. The leverage is in the <strong class="c-text">spec, the definition of done, and the workspace</strong> you hand the agent — that's what this talk teaches.
+					</blockquote>
 				</section>
 
 
-				<!-- ════════════════════════════════════════════════════════════
-				     ACT 01 — 前提與終局
-				     ════════════════════════════════════════════════════════════ -->
+				<!-- ════════ ACT 1 — THE WRONG WAY ════════ -->
 				<section>
-
-					<!-- 01 cover -->
 					<section class="section-cover">
-						<div class="act-num">ACT 01</div>
-						<h2>前提與終局</h2>
-						<p class="act-sub">承接 Isaac & Sherlock 的 Agentic Engineering 報告</p>
-						<p class="act-question">核心問題：agent 越來越強，我們怎麼跟上？</p>
+						<div class="act-num">ACT 01 · MOTIVATION</div>
+						<h2>The Wrong Way</h2>
+						<p class="act-question">What most people actually type — and why it fails</p>
 					</section>
 
-					<!-- 01-a 核心假設 -->
 					<section>
-						<div class="takeaway">這場分享只有一個假設</div>
-						<h3>Agent 是一條還在往上走的曲線</h3>
-						<blockquote>
-							Agent 會持續變強，甚至有能力自己做 harness。<br>
-							我們不把它當成今天的工具快照，而是一條<strong class="c-goal">成長曲線</strong>。
-						</blockquote>
-					</section>
-
-					<!-- 01-b 轉變 -->
-					<section>
-						<div class="takeaway">大多數人還在用錯的模式</div>
-						<h3>實習生 → 資深夥伴</h3>
-						<div class="two-col" style="margin-top:0.5em;">
-							<div class="col" style="border-top:3px solid var(--warn);">
-								<div class="lbl" style="color:var(--warn);">多數人還在這裡</div>
-								<p class="mid c-muted" style="margin:0;">拚命加 example、reasoning<br>把 prompt 寫得更精緻——</p>
-								<p class="mid c-warn" style="margin:0.5em 0 0;"><strong>但任務本身沒定義清楚</strong></p>
-							</div>
-							<div class="col" style="border-top:3px solid var(--ok);">
-								<div class="lbl" style="color:var(--ok);">該到的地方</div>
-								<p class="mid c-muted" style="margin:0;">給方向、講清楚要什麼<br>它自己判斷、甚至反過來挑戰你</p>
-								<p class="mid c-ok" style="margin:0.5em 0 0;"><strong>目標與環境定義清楚</strong></p>
-							</div>
+						<div class="takeaway">A real-looking one-line prompt</div>
+						<h3>"Just migrate the database"</h3>
+						<div class="term">
+							<span class="pr">claude</span><br>
+							<span class="cm"># the prompt most people would write:</span><br>
+							Migrate this Java service from MSSQL to PostgreSQL.<br>
+							Keep everything working.
 						</div>
+						<p class="mid c-muted" style="margin-top:0.8em;">Looks reasonable. It is a trap.</p>
 					</section>
 
-					<!-- 01-c 推論 -->
 					<section>
-						<div class="takeaway">由此推出的一條原則</div>
-						<h3>為成長曲線優化，<br>不是為今天的快照優化</h3>
-						<p class="mid c-muted" style="margin-top:0.8em;">
-							會隨 agent 變強而複利的 = <strong class="c-ok">通用投資</strong>（讓 code 好懂、驗收自動）<br>
-							綁死在某一代 agent 怪癖上的 = <strong class="c-warn">hack，不算</strong>
-						</p>
+						<div class="takeaway">Plausible output, no way to trust it</div>
+						<h3>What you get back</h3>
+						<div class="card accent-warn" style="margin-top:0.4em;">
+							<p class="mid" style="margin:0;">
+								It rewrites the SQL, swaps the driver, the build goes green — and it confidently says <strong class="c-text">"done."</strong>
+							</p>
+						</div>
+						<p class="mid c-muted" style="margin-top:0.6em;">Three things are missing, and they're the whole game:</p>
+						<ul class="diag" style="margin-top:0.3em;">
+							<li><span class="who brief">gap</span>No <strong class="c-text">spec</strong> — "keep everything working" is undefined</li>
+							<li><span class="who brief">gap</span>No <strong class="c-text">definition of done</strong> — nothing checks the answers are still correct</li>
+							<li><span class="who code">gap</span>No <strong class="c-text">isolation</strong> — it edited your working tree in place</li>
+						</ul>
 					</section>
-
 				</section>
 
 
