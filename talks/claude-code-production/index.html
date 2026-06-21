@@ -423,54 +423,36 @@
 					<div class="eyebrow" style="color:var(--flow);">Agentic Engineering · Internal · 2026</div>
 					<h1 style="font-size:2.1em;line-height:1.05;margin-bottom:0;">Claude Code<br>in Production</h1>
 					<p style="font-size:0.7em;color:var(--goal);font-weight:500;margin-top:0.3em;">A Practical RD Workflow</p>
-					<p class="mid c-muted" style="max-width:600px;margin:1.2em auto 0;line-height:1.6;">
-						Stop writing one-line prompts and hoping.<br>
-						This talk shows <strong class="c-text">how to turn a requirement into a plan an agent can actually execute</strong> — with skills, <span class="cmd goal">/goal</span>, and <span class="cmd flow">/workflow</span>.
+					<p class="mid c-muted" style="max-width:780px;margin:1.2em auto 0;line-height:1.7;">
+						One reproducible workflow that turns a requirement into a result you can <strong class="c-text">trust</strong>:<br>
+						<span class="c-skill">brainstorm</span> → <span class="c-text">spec with a Definition of Done</span> → <span class="c-goal mono">/goal</span> or <span class="c-flow mono">/workflow</span> → <span class="c-ok">verify with an oracle</span>.
 					</p>
 				</section>
 
 
-				<!-- ════════ 2. AGENDA ════════ -->
-				<section>
-					<h2 style="font-size:1.4em;">Agenda</h2>
-					<ol class="agenda-list">
-						<li><span class="num">01</span><div>
-							<div class="title">Superpowers Skills</div>
-							<div class="desc">A skill catalog for the dev lifecycle — and brainstorming, the requirement→spec engine</div></div></li>
-						<li><span class="num">02</span><div>
-							<div class="title">/goal &amp; /workflow</div>
-							<div class="desc">Loop-until-goal vs multi-agent fan-out — what they are, how to use them, when each fits</div></div></li>
-						<li><span class="num">03</span><div>
-							<div class="title">The Experiment</div>
-							<div class="desc">MSSQL→PostgreSQL migration: why it's hard, how I'll measure it, placeholder results</div></div></li>
-						<li><span class="num">★</span><div>
-							<div class="title">Pre-flight Checklist</div>
-							<div class="desc">Five questions to ask before you type /goal or /workflow</div></div></li>
-					</ol>
-				</section>
-
-
-				<!-- ════════ ACT 0 — FRAMING (single slide) ════════ -->
+				<!-- ════════ 2. HOOK — THE ONE REFRAME ════════ -->
 				<section>
 					<div class="takeaway">The one idea behind everything that follows</div>
-					<h3 style="font-size:1.3em;">Don't ask <span class="c-warn">"can the agent do it?"</span></h3>
-					<blockquote style="margin-top:0.6em;">
-						Ask: <strong class="c-goal">"Have I defined the task well enough that it can?"</strong><br><br>
-						Polishing prompts plateaus. The leverage is in the <strong class="c-text">spec, the definition of done, and the workspace</strong> you hand the agent — that's what this talk teaches.
-					</blockquote>
+					<h3 style="font-size:1.35em;margin-bottom:0.5em;">Stop asking the wrong question</h3>
+					<div class="flow" style="margin-top:0.4em;">
+						<div class="step on-warn" style="max-width:340px;">
+							<span class="t c-warn">❌ &ldquo;Can the agent do it?&rdquo;</span>
+							<span class="d">Polishing prompts plateaus. You wait for a better model.</span>
+						</div>
+						<div class="arr">→</div>
+						<div class="step on-goal" style="max-width:380px;">
+							<span class="t c-goal">✅ &ldquo;Have I defined the task <em>and the environment</em> well enough that it can?&rdquo;</span>
+							<span class="d">The leverage is the spec, the definition of done, and the workspace you hand it.</span>
+						</div>
+					</div>
+					<p class="mid c-muted" style="margin-top:0.8em;">Everything in this talk is one of those two levers.</p>
 				</section>
 
 
-				<!-- ════════ ACT 1 — THE WRONG WAY ════════ -->
+				<!-- ════════ THE NAIVE WAY (arm A) ════════ -->
 				<section>
-					<section class="section-cover">
-						<div class="act-num">ACT 01 · MOTIVATION</div>
-						<h2>The Wrong Way</h2>
-						<p class="act-question">What most people actually type — and why it fails</p>
-					</section>
-
 					<section>
-						<div class="takeaway">A real-looking one-line prompt</div>
+						<div class="takeaway">A real-looking one-line prompt · <span class="badge">A</span> naive run</div>
 						<h3>"Just migrate the database"</h3>
 						<div class="term">
 							<span class="pr">claude</span><br>
