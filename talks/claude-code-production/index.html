@@ -576,48 +576,41 @@ return results.filter(r => r.verdict.faithful)</code></pre>
 				</section>
 
 
-				<!-- ════════════════════════════════════════════════════════════
-				     ACT 03 — 證據與實踐
-				     ════════════════════════════════════════════════════════════ -->
+				<!-- ════════ ACT 4 — THE EXPERIMENT ════════ -->
 				<section>
-
-					<!-- 03 cover -->
 					<section class="section-cover">
-						<div class="act-num">ACT 03</div>
-						<h2>證據與實踐</h2>
-						<p class="act-sub">一個真實案例、一份成本帳、知道何時別自動化</p>
-						<p class="act-question">前面講的方法論，跑起來長什麼樣？</p>
+						<div class="act-num">ACT 04 · EXPERIMENT</div>
+						<h2>The Experiment</h2>
+						<p class="act-sub">A hard, real task to stress-test the whole method</p>
+						<p class="act-question">Not run yet — here is the case, the design, and where results will go</p>
 					</section>
 
-					<!-- 03-a 案例引入 -->
 					<section>
-						<div class="takeaway">壓力測試：一個夠大夠難的真實任務</div>
-						<h3>案例：MSSQL → PostgreSQL Migration</h3>
+						<div class="takeaway">A stress test: swap the engine, change nothing observable</div>
+						<h3>Case: MSSQL → PostgreSQL migration</h3>
 						<p class="mid c-muted">
-							在系統底層換掉引擎，<br>
-							但<strong class="c-text">每一個對外行為都得一模一樣</strong>。
+							A Java service. Replace the database engine underneath, but
+							<strong class="c-text">every externally observable behavior must stay identical.</strong>
 						</p>
+						<div class="card accent-goal" style="margin-top:0.5em;">
+							<p class="mid" style="margin:0;">I did a migration like this <strong class="c-text">by hand once</strong>, with weaker LLMs — it took about <strong class="c-goal">a month</strong> of development and testing. This time I want to measure how the method changes that.</p>
+						</div>
 					</section>
 
-					<!-- 03-b 為什麼難 -->
 					<section>
-						<div class="takeaway">難不在需求模糊，在三件事疊加</div>
-						<h3>為什麼這是硬骨頭？</h3>
+						<div class="takeaway">Why this is hard — three problems stacked</div>
+						<h3>Why it's a hard problem</h3>
 						<div class="card" style="text-align:left;">
-							<p class="mid" style="margin:0 0 0.5em;">
-								<strong class="c-flow">1.</strong> SQL 方言散落整個 stack — <span class="c-muted mono" style="font-size:0.8em;">SELECT TOP · [dbo]. · (NOLOCK) · ISNULL</span>
-							</p>
-							<p class="mid fragment" style="margin:0 0 0.5em;">
-								<strong class="c-flow">2.</strong> 結構性差異 — 49 proc / 4 view，SCT 只有 GUI 沒自動化
-							</p>
-							<p class="mid fragment" style="margin:0 0 0.5em;">
-								<strong class="c-flow">3.</strong> 型別 + 大小寫靜默出錯 — 一個沒對齊就<strong class="c-warn">不報錯但答案錯</strong>
-							</p>
+							<p class="mid" style="margin:0 0 0.5em;"><strong class="c-flow">1.</strong> SQL dialect is sprinkled across the whole stack — <span class="c-muted mono" style="font-size:0.8em;">SELECT TOP · [dbo]. · (NOLOCK) · ISNULL</span> all differ in PG.</p>
+							<p class="mid fragment" style="margin:0 0 0.5em;"><strong class="c-flow">2.</strong> Structural gap — <strong class="c-text">49 stored procedures + 4 views</strong> to port; the vendor tool is GUI-only, no automation.</p>
+							<p class="mid fragment" style="margin:0;"><strong class="c-flow">3.</strong> Type &amp; case mismatches fail <strong class="c-warn">silently</strong> — no error thrown, just a wrong answer.</p>
 						</div>
-						<p class="mid c-goal fragment" style="margin-top:0.5em;font-weight:600;">
-							最難的不是「跑不跑得起來」，而是「答案對不對」。
-						</p>
+						<p class="mid c-goal fragment" style="margin-top:0.5em;font-weight:600;">The hard part isn't "does it run" — it's "is the answer still correct."</p>
 					</section>
+				</section>
+
+				<!-- ════════ ACT 4 continued — remaining experiment slides (Tasks 6–7) ════════ -->
+				<section>
 
 					<!-- 03-c 完成定義 -->
 					<section>
