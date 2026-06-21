@@ -2,11 +2,7 @@
 <html lang="zh-Hant">
 	<head>
 		<meta charset="utf-8" />
-		<meta
-			name="viewport"
-			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-		/>
-
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 		<title>Claude Code in Production: A Practical RD Workflow</title>
 
 		<link rel="stylesheet" href="../../dist/reset.css" />
@@ -14,60 +10,310 @@
 		<link rel="stylesheet" href="../../dist/theme/black.css" />
 		<link rel="stylesheet" href="../../dist/plugin/highlight/monokai.css" />
 
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
 		<style>
 			:root {
-				--r-heading-font: system-ui, -apple-system, sans-serif;
-				--r-main-font: system-ui, -apple-system, sans-serif;
+				--bg: #0b0f14;
+				--surface: #11171f;
+				--surface-2: #161e28;
+				--border: #222c38;
+				--border-2: #2c3947;
+				--text: #dbe2ea;
+				--muted: #8593a3;
+				--faint: #5d6b7a;
+				--goal: #e3b341;
+				--goal-dim: #7a6526;
+				--flow: #4ec9c0;
+				--flow-dim: #2c6661;
+				--skill: #b48ead;
+				--ok: #5ec27a;
+				--warn: #cf5c5c;
+				--c-input: #3d4752;
+				--c-read: #4c7fd0;
+				--c-write: #c98a3a;
+				--c-output: #cf5c5c;
+
+				--r-background-color: var(--bg);
+				--r-main-color: var(--text);
+				--r-heading-color: var(--text);
+				--r-link-color: var(--flow);
+				--r-heading-font: 'Space Grotesk', 'Noto Sans TC', system-ui, sans-serif;
+				--r-main-font: 'Noto Sans TC', 'Inter', system-ui, sans-serif;
+				--r-heading-text-transform: none;
+				--r-heading-letter-spacing: -0.02em;
+				--r-main-font-size: 28px;
 			}
-			.reveal h1, .reveal h2, .reveal h3 {
-				text-transform: none;
+
+			.reveal { font-weight: 400; }
+			.reveal h1, .reveal h2, .reveal h3, .reveal h4 { text-transform: none; font-weight: 600; }
+			.reveal h1 { letter-spacing: -0.03em; }
+			.reveal ul, .reveal ol { text-align: left; }
+			.reveal li { margin-bottom: 0.4em; }
+
+			/* ── sizes ── */
+			.small { font-size: 0.55em; line-height: 1.5; }
+			.mid   { font-size: 0.72em; line-height: 1.6; }
+			.xs    { font-size: 0.48em; line-height: 1.5; }
+			.mono  { font-family: 'JetBrains Mono', monospace; }
+
+			/* ── colors ── */
+			.c-goal  { color: var(--goal) !important; }
+			.c-flow  { color: var(--flow) !important; }
+			.c-skill { color: var(--skill) !important; }
+			.c-ok    { color: var(--ok) !important; }
+			.c-warn  { color: var(--warn) !important; }
+			.c-muted { color: var(--muted) !important; }
+			.c-faint { color: var(--faint) !important; }
+			.c-text  { color: var(--text) !important; }
+
+			/* ── eyebrow ── */
+			.eyebrow {
+				font-family: 'JetBrains Mono', monospace;
+				font-size: 0.42em; letter-spacing: 0.18em;
+				text-transform: uppercase; color: var(--faint);
+				margin-bottom: 0.5em;
 			}
-			.reveal .small { font-size: 0.6em; }
-			.reveal .mid { font-size: 0.75em; }
-			.reveal ul { text-align: left; }
-			.reveal ol { text-align: left; }
-			.reveal .highlight-orange { color: #f5a623; }
-			.reveal .highlight-green { color: #7ec850; }
-			.reveal .highlight-red { color: #e74c3c; }
-			.reveal .highlight-blue { color: #3498db; }
-			.reveal .dim { opacity: 0.5; }
-			.reveal .box {
-				background: rgba(255,255,255,0.08);
-				border-radius: 12px;
-				padding: 20px 30px;
-				margin: 10px 0;
+
+			/* ── cmd tag ── */
+			.cmd {
+				font-family: 'JetBrains Mono', monospace; font-size: 0.85em;
+				background: var(--surface-2); border: 1px solid var(--border);
+				border-radius: 5px; padding: 2px 8px; white-space: nowrap;
 			}
-			.reveal .two-col {
-				display: flex;
-				gap: 40px;
+			.cmd.goal { color: var(--goal); border-color: var(--goal-dim); }
+			.cmd.flow { color: var(--flow); border-color: var(--flow-dim); }
+
+			/* ── card ── */
+			.card {
+				background: var(--surface); border: 1px solid var(--border);
+				border-radius: 12px; padding: 28px 32px;
+				text-align: left; margin: 0.3em auto; max-width: 88%;
+			}
+			.card.accent-goal { border-left: 4px solid var(--goal); }
+			.card.accent-flow { border-left: 4px solid var(--flow); }
+			.card.accent-warn { border-left: 4px solid var(--warn); }
+			.card.accent-skill { border-left: 4px solid var(--skill); }
+			.card .card-label {
+				font-family: 'JetBrains Mono', monospace;
+				font-size: 0.42em; letter-spacing: 0.12em;
+				text-transform: uppercase; margin-bottom: 0.8em;
+			}
+			.card.accent-goal .card-label { color: var(--goal); }
+			.card.accent-flow .card-label { color: var(--flow); }
+			.card.accent-warn .card-label { color: var(--warn); }
+			.card.accent-skill .card-label { color: var(--skill); }
+
+			/* ── two-col ── */
+			.two-col {
+				display: grid; grid-template-columns: 1fr 1fr;
+				gap: 20px; text-align: left;
+			}
+			.col {
+				background: var(--surface); border: 1px solid var(--border);
+				border-radius: 10px; padding: 22px 24px;
+			}
+			.col .lbl {
+				font-family: 'JetBrains Mono', monospace;
+				font-size: 0.4em; letter-spacing: 0.14em;
+				text-transform: uppercase; margin-bottom: 0.8em;
+			}
+
+			/* ── pipeline ── */
+			.pipe {
+				display: flex; align-items: stretch; gap: 0;
+				font-family: 'JetBrains Mono', monospace; font-size: 0.48em;
+				margin: 0 auto; justify-content: center;
+			}
+			.pipe .node {
+				background: var(--surface); border: 1px solid var(--border);
+				border-radius: 8px; padding: 14px 18px;
+				display: flex; flex-direction: column; gap: 4px;
+			}
+			.pipe .node .k { color: var(--text); font-weight: 600; }
+			.pipe .node .s { font-size: 0.82em; color: var(--faint); }
+			.pipe .node.agent { border-color: var(--flow-dim); }
+			.pipe .node.agent .k { color: var(--flow); }
+			.pipe .node.human { border-color: var(--goal-dim); }
+			.pipe .node.human .k { color: var(--goal); }
+			.pipe .arrow { display: flex; align-items: center; color: var(--faint); padding: 0 14px; font-size: 1.2em; }
+
+			/* ── stat grid ── */
+			.stats {
+				display: grid; grid-template-columns: repeat(4, 1fr);
+				gap: 14px; margin: 0.4em auto; max-width: 92%;
+			}
+			.stat {
+				background: var(--surface); border: 1px solid var(--border);
+				border-radius: 10px; padding: 18px 14px; text-align: center;
+			}
+			.stat .v { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1.6em; line-height: 1; }
+			.stat .v.ok { color: var(--ok); }
+			.stat .v.fl { color: var(--flow); }
+			.stat .l { font-size: 0.42em; color: var(--faint); margin-top: 8px; line-height: 1.4; }
+
+			/* ── cost bars ── */
+			.cost-bars { max-width: 90%; margin: 0 auto; }
+			.bar-row {
+				display: grid; grid-template-columns: 160px 1fr 90px;
+				align-items: center; gap: 14px; margin-bottom: 12px;
+			}
+			.bar-row .nm { font-family: 'JetBrains Mono', monospace; font-size: 0.48em; color: var(--text); text-align: right; line-height: 1.3; }
+			.bar-row .nm small { display: block; color: var(--faint); font-size: 0.82em; }
+			.bar-track {
+				background: var(--surface); border: 1px solid var(--border);
+				border-radius: 6px; height: 22px; overflow: hidden; display: flex;
+			}
+			.seg { height: 100%; transition: width 1.2s cubic-bezier(0.2,0.7,0.2,1); width: 0; }
+			.seg.s-input  { background: var(--c-input); }
+			.seg.s-read   { background: var(--c-read); }
+			.seg.s-write  { background: var(--c-write); }
+			.seg.s-output { background: var(--c-output); }
+			.bar-row .tot { font-family: 'JetBrains Mono', monospace; font-size: 0.52em; text-align: right; }
+			.bar-row.cheap .tot { color: var(--ok); }
+			.bar-row.dear .tot  { color: var(--warn); }
+
+			/* ── legend ── */
+			.legend {
+				display: flex; gap: 18px; justify-content: center;
+				font-family: 'JetBrains Mono', monospace; font-size: 0.42em; color: var(--muted); margin: 0.5em 0;
+			}
+			.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+
+			/* ── cost table ── */
+			.reveal table.cost-table {
+				width: 90%; border-collapse: collapse; font-size: 0.42em;
+				margin: 0.4em auto; font-family: 'JetBrains Mono', monospace;
+			}
+			.reveal table.cost-table th, .reveal table.cost-table td {
+				text-align: right; padding: 8px 10px; border-bottom: 1px solid var(--border); border: none;
+			}
+			.reveal table.cost-table th:first-child, .reveal table.cost-table td:first-child { text-align: left; }
+			.reveal table.cost-table th { color: var(--faint); font-weight: 500; font-size: 0.92em; text-transform: uppercase; letter-spacing: 0.06em; background: transparent; }
+			.reveal table.cost-table tr.cheap td.cost { color: var(--ok); }
+			.reveal table.cost-table tr.dear td.cost  { color: var(--warn); }
+			.reveal table.cost-table td.exp { color: var(--text); }
+
+			/* ── diagnosis ── */
+			.diag { counter-reset: d; list-style: none; padding: 0; max-width: 85%; margin: 0.3em auto; }
+			.diag li {
+				position: relative; padding: 10px 14px 10px 80px;
+				background: var(--surface); border: 1px solid var(--border);
+				border-radius: 8px; margin-bottom: 8px; font-size: 0.62em;
+			}
+			.diag li::before {
+				counter-increment: d; content: counter(d);
+				position: absolute; left: 12px; top: 9px;
+				font-family: 'JetBrains Mono', monospace; font-size: 0.85em; color: var(--warn);
+				border: 1px solid var(--border-2); border-radius: 5px;
+				width: 22px; height: 22px; display: flex; align-items: center; justify-content: center;
+			}
+			.diag li .who {
+				position: absolute; left: 42px; top: 10px;
+				font-family: 'JetBrains Mono', monospace; font-size: 0.72em;
+				padding: 1px 6px; border-radius: 4px; border: 1px solid var(--border-2);
+			}
+			.diag li .who.code { color: var(--flow); }
+			.diag li .who.brief { color: var(--goal); }
+
+			/* ── ladder ── */
+			.ladder { display: flex; flex-direction: column; gap: 6px; font-family: 'JetBrains Mono', monospace; font-size: 0.52em; }
+			.rung { background: var(--surface-2); border: 1px solid var(--border); border-radius: 7px; padding: 10px 14px; }
+			.rung .ar { color: var(--faint); font-size: 0.82em; display: block; text-align: center; margin: -2px 0 3px; }
+
+			/* ── checklist ── */
+			.checklist { counter-reset: chk; list-style: none; padding: 0; max-width: 82%; margin: 0 auto; }
+			.checklist li {
+				counter-increment: chk; display: grid; grid-template-columns: 36px 1fr;
+				gap: 8px; align-items: start; padding: 14px 0; border-bottom: 1px solid var(--border); font-size: 0.65em;
+			}
+			.checklist li:last-child { border-bottom: none; }
+			.checklist li::before {
+				content: counter(chk); font-family: 'JetBrains Mono', monospace; font-size: 0.82em;
+				color: var(--goal); border: 1px solid var(--goal-dim); border-radius: 6px;
+				width: 26px; height: 26px; display: flex; align-items: center; justify-content: center;
+			}
+			.checklist li .h { font-weight: 600; font-size: 1.05em; }
+			.checklist li .q { color: var(--muted); margin-top: 2px; }
+
+			/* ── blockquote ── */
+			.reveal blockquote {
+				background: linear-gradient(135deg, rgba(227,179,65,0.06), transparent);
+				border-left: 4px solid var(--goal); padding: 20px 28px;
+				font-style: normal; font-size: 0.72em; width: 82%;
+				margin: 0.5em auto; border-radius: 0 10px 10px 0; color: var(--text);
+			}
+
+			/* ── hygiene grid ── */
+			.hy-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 88%; margin: 0.4em auto; }
+			.hy-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; text-align: left; }
+			.hy-card h4 { font-size: 0.58em; margin: 0 0 12px; }
+			.hy-card ul { list-style: none; padding: 0; margin: 0; font-size: 0.5em; }
+			.hy-card li { padding: 5px 0 5px 18px; position: relative; color: var(--muted); margin-bottom: 2px; }
+			.hy-card li::before { content: '›'; position: absolute; left: 4px; color: var(--flow); }
+			.hy-card li b { color: var(--text); font-weight: 500; }
+
+			/* ══════════════════════════════════════
+			   AGENDA specific
+			   ══════════════════════════════════════ */
+			.agenda-list {
+				list-style: none; padding: 0;
+				max-width: 680px; margin: 0.6em auto 0;
 				text-align: left;
 			}
-			.reveal .two-col > div { flex: 1; }
-			.reveal blockquote {
-				background: rgba(255,255,255,0.05);
-				border-left: 4px solid #f5a623;
-				padding: 15px 25px;
-				font-style: italic;
-				width: 85%;
+			.agenda-list li {
+				display: grid; grid-template-columns: 60px 1fr;
+				gap: 8px; align-items: baseline;
+				padding: 16px 0;
+				border-bottom: 1px solid var(--border);
+				font-size: 0.68em;
 			}
-			.reveal table {
-				font-size: 0.65em;
-				margin: 0 auto;
+			.agenda-list li:last-child { border-bottom: none; }
+			.agenda-list .num {
+				font-family: 'JetBrains Mono', monospace;
+				font-size: 0.8em; color: var(--faint);
+				text-align: right; padding-right: 12px;
 			}
-			.reveal table th {
-				background: rgba(245,166,35,0.2);
+			.agenda-list .title { font-weight: 600; }
+			.agenda-list .desc { color: var(--muted); font-size: 0.88em; margin-top: 2px; }
+
+			/* section cover with position indicator */
+			.section-cover {
+				/* empty - handled by content */
 			}
-			.reveal table td, .reveal table th {
-				padding: 8px 14px;
-				border: 1px solid rgba(255,255,255,0.15);
+			.section-cover .act-num {
+				font-family: 'JetBrains Mono', monospace;
+				font-size: 0.38em; color: var(--faint); letter-spacing: 0.1em;
 			}
-			.reveal .checklist li {
-				list-style: none;
-				padding-left: 0;
+			.section-cover h2 { font-size: 1.8em; margin-bottom: 0.1em; }
+			.section-cover .act-sub { font-size: 0.52em; color: var(--muted); margin-top: 0.2em; }
+			.section-cover .act-question {
+				font-size: 0.62em; color: var(--goal);
+				margin-top: 0.8em; font-weight: 500;
 			}
-			.reveal .checklist li::before {
-				content: "☐ ";
-				color: #f5a623;
+
+			/* page takeaway bar at top */
+			.takeaway {
+				font-family: 'JetBrains Mono', monospace;
+				font-size: 0.38em; letter-spacing: 0.08em;
+				color: var(--goal); text-transform: uppercase;
+				margin-bottom: 0.3em;
+			}
+
+			/* big number */
+			.big-num {
+				font-family: 'Space Grotesk', sans-serif;
+				font-weight: 700; font-size: 4em; line-height: 1;
+				color: var(--flow);
+			}
+
+			/* closing */
+			.closing .big { font-size: 0.82em; line-height: 1.4; max-width: 700px; margin: 0 auto; }
+			.closing .sig {
+				font-family: 'JetBrains Mono', monospace;
+				font-size: 0.38em; color: var(--faint); margin-top: 2em; letter-spacing: 0.05em;
 			}
 		</style>
 	</head>
@@ -75,358 +321,594 @@
 		<div class="reveal">
 			<div class="slides">
 
-				<!-- ==================== TITLE ==================== -->
+				<!-- ════════════════════════════════════════════
+				     1. TITLE
+				     ════════════════════════════════════════════ -->
 				<section>
-					<h1 style="font-size: 1.8em;">Claude Code in Production</h1>
-					<h3 class="highlight-orange">A Practical RD Workflow</h3>
-					<br>
-					<p class="mid">為「越來越強的 agent」而設計</p>
+					<div class="eyebrow" style="color:var(--flow);">Agentic Engineering · 內部分享 · 2026</div>
+					<h1 style="font-size:2.2em;line-height:1.05;margin-bottom:0;">Claude Code<br>in Production</h1>
+					<p style="font-size:0.7em;color:var(--goal);font-weight:500;margin-top:0.3em;">A Practical RD Workflow</p>
+					<p class="mid c-muted" style="max-width:560px;margin:1.2em auto 0;line-height:1.6;">
+						Agent 只會越來越強。<br>
+						這場分享講的是：<strong class="c-text">我們怎麼調整工作方式來跟上。</strong>
+					</p>
 				</section>
 
-				<!-- ==================== 核心問題 ==================== -->
+
+				<!-- ════════════════════════════════════════════
+				     2. AGENDA
+				     ════════════════════════════════════════════ -->
 				<section>
-					<h2>核心問題</h2>
-					<p class="fragment">Agent 只會越來越強</p>
-					<p class="fragment">→ <span class="highlight-orange">機器側</span>與<span class="highlight-blue">人側</span>都要到位</p>
-					<p class="fragment">→ 逼近終局</p>
+					<h2 style="font-size:1.4em;">Agenda</h2>
+					<ol class="agenda-list">
+						<li>
+							<span class="num">01</span>
+							<div>
+								<div class="title">前提與終局</div>
+								<div class="desc">為什麼要為「成長曲線」優化，而不是今天的快照</div>
+							</div>
+						</li>
+						<li>
+							<span class="num">02</span>
+							<div>
+								<div class="title">方法論：機器側 × 人側</div>
+								<div class="desc">給對工具 + 把任務定義清楚，缺一不可</div>
+							</div>
+						</li>
+						<li>
+							<span class="num">03</span>
+							<div>
+								<div class="title">證據與實踐</div>
+								<div class="desc">MSSQL→PG migration 案例、成本帳、何時別自動化</div>
+							</div>
+						</li>
+						<li>
+							<span class="num">★</span>
+							<div>
+								<div class="title">Checklist</div>
+								<div class="desc">下 /goal 或 /workflow 前的五句自問</div>
+							</div>
+						</li>
+					</ol>
 				</section>
 
-				<!-- 終局 pipeline -->
+
+				<!-- ════════════════════════════════════════════
+				     3. 終局 PIPELINE（先給聽眾一個畫面）
+				     ════════════════════════════════════════════ -->
 				<section>
-					<h2>終局 Pipeline</h2>
-					<div class="box" style="font-size: 0.8em;">
-						<p>
-							PM request → AI agent
-							<span class="highlight-orange">(<code>/goal</code> · <code>/workflow</code>)</span>
-							→ PR<span class="dim">(完成 + 自帶證據)</span>
-							→ Human review<span class="dim">(看證據，不是 diff)</span>
-						</p>
+					<div class="takeaway">我們要收斂到的那個終局長這樣</div>
+					<h3 style="font-size:1.2em;">終局 Pipeline</h3>
+					<div class="pipe" style="margin-top:0.6em;">
+						<div class="node"><span class="k">PM / Manager</span><span class="s">提出 request</span></div>
+						<div class="arrow">→</div>
+						<div class="node agent"><span class="k">AI Agent</span><span class="s">/goal · /workflow</span></div>
+						<div class="arrow">→</div>
+						<div class="node"><span class="k">Pull Request</span><span class="s">完成 + 自帶證據</span></div>
+						<div class="arrow">→</div>
+						<div class="node human"><span class="k">Human</span><span class="s">review 證據，不是 diff</span></div>
 					</div>
+					<p class="mid c-muted" style="margin-top:1em;">
+						後面三幕都是在回答：<strong class="c-text">怎麼穩定地往這條 pipeline 收斂。</strong>
+					</p>
 				</section>
 
-				<!-- ==================== 01 前提與終局 ==================== -->
+
+				<!-- ════════════════════════════════════════════════════════════
+				     ACT 01 — 前提與終局
+				     ════════════════════════════════════════════════════════════ -->
 				<section>
-					<section>
-						<h2>01 前提與終局</h2>
+
+					<!-- 01 cover -->
+					<section class="section-cover">
+						<div class="act-num">ACT 01</div>
+						<h2>前提與終局</h2>
+						<p class="act-sub">承接 Isaac & Sherlock 的 Agentic Engineering 報告</p>
+						<p class="act-question">核心問題：agent 越來越強，我們怎麼跟上？</p>
 					</section>
 
+					<!-- 01-a 核心假設 -->
 					<section>
-						<h3>承接 Isaac & Sherlock</h3>
-						<p>核心假設：agent 持續變強、甚至能自建 harness</p>
+						<div class="takeaway">這場分享只有一個假設</div>
+						<h3>Agent 是一條還在往上走的曲線</h3>
+						<blockquote>
+							Agent 會持續變強，甚至有能力自己做 harness。<br>
+							我們不把它當成今天的工具快照，而是一條<strong class="c-goal">成長曲線</strong>。
+						</blockquote>
 					</section>
 
+					<!-- 01-b 轉變 -->
 					<section>
-						<h3>轉變</h3>
-						<div class="two-col">
-							<div class="box">
-								<p class="highlight-red" style="text-align:center;">實習生模式</p>
-								<p class="small">猛加 example / reasoning<br>但任務沒定義清楚</p>
+						<div class="takeaway">大多數人還在用錯的模式</div>
+						<h3>實習生 → 資深夥伴</h3>
+						<div class="two-col" style="margin-top:0.5em;">
+							<div class="col" style="border-top:3px solid var(--warn);">
+								<div class="lbl" style="color:var(--warn);">多數人還在這裡</div>
+								<p class="mid c-muted" style="margin:0;">拚命加 example、reasoning<br>把 prompt 寫得更精緻——</p>
+								<p class="mid c-warn" style="margin:0.5em 0 0;"><strong>但任務本身沒定義清楚</strong></p>
 							</div>
-							<div class="box">
-								<p class="highlight-green" style="text-align:center;">資深夥伴模式</p>
-								<p class="small">把目標與環境定義清楚<br>讓 agent 自主完成</p>
+							<div class="col" style="border-top:3px solid var(--ok);">
+								<div class="lbl" style="color:var(--ok);">該到的地方</div>
+								<p class="mid c-muted" style="margin:0;">給方向、講清楚要什麼<br>它自己判斷、甚至反過來挑戰你</p>
+								<p class="mid c-ok" style="margin:0.5em 0 0;"><strong>目標與環境定義清楚</strong></p>
 							</div>
 						</div>
 					</section>
 
+					<!-- 01-c 推論 -->
 					<section>
-						<h3>推論</h3>
-						<p>為<span class="highlight-orange">「成長曲線」</span>優化</p>
-						<p>不是為今天的快照</p>
+						<div class="takeaway">由此推出的一條原則</div>
+						<h3>為成長曲線優化，<br>不是為今天的快照優化</h3>
+						<p class="mid c-muted" style="margin-top:0.8em;">
+							會隨 agent 變強而複利的 = <strong class="c-ok">通用投資</strong>（讓 code 好懂、驗收自動）<br>
+							綁死在某一代 agent 怪癖上的 = <strong class="c-warn">hack，不算</strong>
+						</p>
 					</section>
 
-					<section>
-						<h3>邊界</h3>
-						<ul class="mid">
-							<li>不是萬用擋箭牌</li>
-							<li>會複利的是：<span class="highlight-green">讓 code 好懂、驗收自動</span></li>
-							<li>不是綁某代 agent 的 hack</li>
-						</ul>
-					</section>
 				</section>
 
-				<!-- ==================== 02 方法論 ==================== -->
+
+				<!-- ════════════════════════════════════════════════════════════
+				     ACT 02 — 方法論
+				     ════════════════════════════════════════════════════════════ -->
 				<section>
-					<section>
-						<h2>02 方法論</h2>
-						<p class="mid">兩側都要到位</p>
+
+					<!-- 02 cover -->
+					<section class="section-cover">
+						<div class="act-num">ACT 02</div>
+						<h2>方法論</h2>
+						<p class="act-sub">逼近終局要兩側都到位</p>
+						<p class="act-question">機器側給對工具 × 人側把任務定義清楚</p>
 					</section>
 
-					<!-- 機器側 -->
+					<!-- 02-a 兩側總覽 -->
 					<section>
-						<h3><span class="highlight-orange">機器側</span>：給對工具</h3>
-						<ul class="mid">
-							<li><code>/goal</code> — loop until goal</li>
-							<li><code>/workflow</code> — multi-agent 扇出</li>
-							<li><strong>hybrid</strong>（主控 loop + workflow 扇出）= 最實際</li>
-						</ul>
-						<br>
-						<p class="small dim">日常習慣：<code>/clear</code> · <code>/rewind</code> · subagent · skills</p>
+						<div class="takeaway">整套方法論的全貌</div>
+						<h3>兩側都要到位</h3>
+						<div class="two-col" style="margin-top:0.4em;">
+							<div class="col" style="border-top:3px solid var(--flow);">
+								<div class="lbl" style="color:var(--flow);">機器側 · 給對工具</div>
+								<p class="mid"><strong><span class="cmd goal">/goal</span></strong> — loop until goal</p>
+								<p class="mid"><strong><span class="cmd flow">/workflow</span></strong> — multi-agent 扇出</p>
+								<p class="mid"><strong>hybrid</strong> — 主控 loop + workflow 扇出<br><span class="c-faint" style="font-size:0.85em;">（最實際的跑法）</span></p>
+							</div>
+							<div class="col" style="border-top:3px solid var(--goal);">
+								<div class="lbl" style="color:var(--goal);">人側 · 把任務定義清楚</div>
+								<p class="mid"><strong>完成定義（DoD）</strong><br><span class="c-muted">做完要能被自動檢查</span></p>
+								<p class="mid"><strong>邊界</strong><br><span class="c-muted">哪些不要碰</span></p>
+								<p class="mid"><strong>階段判斷</strong><br><span class="c-muted">想 / 比 / 決 / 做</span></p>
+							</div>
+						</div>
 					</section>
 
-					<!-- 人側 -->
+					<!-- 02-b DoD — 最關鍵 -->
 					<section>
-						<h3><span class="highlight-blue">人側</span>：把任務定義清楚</h3>
-						<blockquote>提示詞是地板，定義任務決定高度</blockquote>
+						<div class="takeaway">整場最重要的一頁</div>
+						<h3>沒有完成定義，<br>loop until goal 沒有意義</h3>
+						<div class="card accent-goal" style="margin-top:0.5em;">
+							<p class="mid" style="margin:0;">
+								能不能用 <span class="cmd goal">/goal</span> 或 <span class="cmd flow">/workflow</span>，<br>
+								第一個要問的不是工具，而是——<br><br>
+								<strong class="c-text" style="font-size:1.15em;">你能不能把驗收自動化？</strong>
+							</p>
+						</div>
+						<p class="xs c-muted" style="margin-top:0.6em;">沒有可驗收的 DoD，agent 只會繞圈或自我感覺良好地停下。</p>
 					</section>
 
+					<!-- 02-c 以終為始 -->
 					<section>
-						<h3>人側三要素</h3>
-						<ol class="mid">
-							<li><span class="highlight-orange">完成定義（DoD）</span><br>
-								<span class="small">← <code>loop until goal</code> 的前提：沒有可驗收的 DoD = 沒有達標可言</span></li>
-							<li class="fragment"><span class="highlight-orange">邊界（Boundaries）</span><br>
-								<span class="small">哪些不要碰</span></li>
-							<li class="fragment"><span class="highlight-orange">階段判斷</span><br>
-								<span class="small">想 / 比 / 決 / 做</span></li>
-						</ol>
-					</section>
-
-					<!-- 以終為始 -->
-					<section>
+						<div class="takeaway">預設直接丟，失敗了再回來問「為什麼」</div>
 						<h3>以終為始</h3>
-						<p class="mid">預設直接丟 <code>/goal</code> 或 <code>/workflow</code></p>
-						<p class="mid fragment">結果不好 → 問<span class="highlight-orange">「為什麼 agent 自己到不了？」</span></p>
+						<p class="mid">
+							預設就是直接把 <span class="cmd goal">/goal</span> 或 <span class="cmd flow">/workflow</span> 丟向問題。
+						</p>
+						<p class="mid fragment" style="margin-top:0.8em;">
+							結果不好時，問的不是「我該怎麼補刀」，而是——
+						</p>
+						<h3 class="fragment c-goal" style="margin-top:0.5em;font-size:1.3em;">
+							為什麼 agent 自己到不了？
+						</h3>
 					</section>
 
+					<!-- 02-d 四根因 -->
 					<section>
-						<h3>四根因</h3>
-						<ol class="mid">
-							<li>看不懂 code</li>
-							<li>缺 domain knowledge</li>
-							<li>無法 mapping 需求到邏輯</li>
-							<li>prompt 沒講到重點（缺 DoD）</li>
-						</ol>
+						<div class="takeaway">四個常見根因，分屬兩側</div>
+						<h3>診斷：agent 到不了的四個原因</h3>
+						<ul class="diag">
+							<li class="fragment"><span class="who code">code</span>看不懂我們寫的程式</li>
+							<li class="fragment"><span class="who code">code</span>缺 domain knowledge</li>
+							<li class="fragment"><span class="who code">code</span>無法 mapping 需求到應該修改的邏輯</li>
+							<li class="fragment"><span class="who brief">brief</span>prompt 沒講到重點 / 沒有完成定義</li>
+						</ul>
 					</section>
 
+					<!-- 02-e 兩軌處方 -->
 					<section>
+						<div class="takeaway">處方也分兩軌——不能只加註解</div>
 						<h3>兩軌處方</h3>
-						<div class="two-col mid">
-							<div class="box">
-								<p class="highlight-green" style="text-align:center;">Code 側（會複利）</p>
-								<ol class="small">
-									<li>加註解</li>
-									<li>加 mapping index</li>
-									<li>重構段落</li>
-								</ol>
+						<div class="two-col" style="margin-top:0.3em;">
+							<div class="col" style="border-top:3px solid var(--flow);">
+								<div class="lbl" style="color:var(--flow);">Code 側 · 會複利</div>
+								<div class="ladder">
+									<div class="rung">加註解</div>
+									<div class="rung"><span class="ar">↓</span>加 mapping index</div>
+									<div class="rung"><span class="ar">↓</span>重構段落</div>
+								</div>
 							</div>
-							<div class="box">
-								<p class="highlight-blue" style="text-align:center;">Brief 側（不可外包）</p>
-								<ol class="small">
-									<li>寫成可測的 goal</li>
-									<li>補背景與邊界</li>
-									<li>整理成 brief</li>
-								</ol>
-							</div>
-						</div>
-					</section>
-
-					<!-- 鏡子 -->
-					<section>
-						<h3>鏡子</h3>
-						<ul class="mid">
-							<li>AI 挑戰內容、不質疑意圖</li>
-							<li>餵模糊 → 反射模糊</li>
-							<li class="highlight-orange">能幫你問，不能替你想</li>
-						</ul>
-					</section>
-
-					<!-- Superpowers -->
-					<section>
-						<h3>Superpowers</h3>
-						<p class="mid">把流程編碼成 skill</p>
-						<blockquote class="small">Jesse Vincent 2025/10：問題不在能力，在缺專業開發流程；把 brainstorm → plan → TDD → review 編碼成 skills</blockquote>
-					</section>
-
-					<section>
-						<h3>判斷軸：任務大小 / 風險</h3>
-						<p class="small dim">做錯重來貴不貴，不是人資不資深</p>
-						<div class="two-col mid">
-							<div class="box">
-								<p style="text-align:center;">簡單</p>
-								<p class="small">typo / 小函式<br>→ <code>/goal</code> 直接做<br>流程囉嗦</p>
-							</div>
-							<div class="box">
-								<p style="text-align:center;">中大型</p>
-								<p class="small">多檔 / 越改越歪<br>→ 流程才划算</p>
+							<div class="col" style="border-top:3px solid var(--goal);">
+								<div class="lbl" style="color:var(--goal);">Brief 側 · 你不可外包</div>
+								<div class="ladder">
+									<div class="rung" style="color:var(--goal);">寫成可測的 goal（DoD）</div>
+									<div class="rung"><span class="ar">↓</span>補背景與邊界</div>
+									<div class="rung"><span class="ar">↓</span>整理成可交辦的 brief</div>
+								</div>
 							</div>
 						</div>
 					</section>
 
+					<!-- 02-f 閉環 -->
 					<section>
-						<h3>兩道圍欄</h3>
-						<ol class="mid">
-							<li><span class="highlight-red">幫你問 ≠ 替你想</span><br>
-								<span class="small">結構漂亮的錯任務更難抓</span></li>
-							<li class="fragment"><span class="highlight-red">DoD 品質仍靠 domain knowledge</span></li>
-						</ol>
-						<p class="fragment mid highlight-green">正面：brief 側並非完全不複利 — 流程可編碼、教會團隊</p>
+						<div class="takeaway">兩軌的關係 = 整份報告的閉環</div>
+						<h3>Code 側會複利，Brief 側人來扛</h3>
+						<div class="card accent-flow" style="margin-bottom:0.3em;">
+							<p class="mid" style="margin:0;">
+								Code 側把 codebase 改造得更 <strong class="c-flow">agent-legible</strong>，會隨 agent 變強而複利。
+							</p>
+						</div>
+						<div class="card accent-goal">
+							<p class="mid" style="margin:0;">
+								Brief 側<strong class="c-goal">不會被 agent 自動補上</strong>，是人永遠要扛的部分。
+							</p>
+						</div>
 					</section>
+
+					<!-- 02-g 鏡子 -->
+					<section>
+						<div class="takeaway">為什麼 brief 側 agent 補不了</div>
+						<h3>AI 是一面鏡子</h3>
+						<div class="card accent-skill">
+							<p class="mid" style="margin:0;">
+								它會挑戰你的內容，但<strong class="c-text">不會質疑你的意圖</strong>。<br><br>
+								你餵它模糊，它就把沒想清楚的指令原封反射回來。<br>
+								頂多把申論題變成填空題，空格還是你來填。
+							</p>
+						</div>
+						<p class="mid c-goal" style="margin-top:0.6em;font-weight:600;">
+							它能幫你問，沒辦法替你想。
+						</p>
+					</section>
+
+					<!-- 02-h Superpowers -->
+					<section>
+						<div class="takeaway">把流程編碼成 skill，讓團隊都能用</div>
+						<h3>Superpowers：流程 → Skill</h3>
+						<div class="card accent-skill" style="margin-bottom:0.3em;">
+							<div class="card-label">Jesse Vincent · 2025/10</div>
+							<p class="mid" style="margin:0;">
+								問題不在 Claude 的能力，在<strong class="c-text">缺專業開發流程</strong>。<br>
+								把 brainstorm → plan → TDD → review 編碼成 skills。
+							</p>
+						</div>
+						<div class="two-col" style="margin-top:0.3em;">
+							<div class="col" style="border-top:3px solid var(--ok);padding:16px 18px;">
+								<div class="lbl" style="color:var(--ok);">簡單任務 → 跳過流程</div>
+								<p class="small c-muted" style="margin:0;">typo、小函式：<strong class="c-text">goal 直接做</strong></p>
+							</div>
+							<div class="col" style="border-top:3px solid var(--goal);padding:16px 18px;">
+								<div class="lbl" style="color:var(--goal);">中大型 → 流程才划算</div>
+								<p class="small c-muted" style="margin:0;">多檔、越改越歪：<strong class="c-text">流程紀律拉開差距</strong></p>
+							</div>
+						</div>
+						<p class="xs c-faint" style="margin-top:0.4em;">判斷軸 = 做錯重來貴不貴，不是人資不資深</p>
+					</section>
+
+					<!-- 02-i 兩道圍欄 -->
+					<section>
+						<div class="takeaway">skill 不是銀彈，兩道圍欄</div>
+						<h3>幫你問 ≠ 替你想</h3>
+						<div class="card accent-warn" style="margin-bottom:0.3em;">
+							<p class="mid" style="margin:0;">
+								<strong class="c-warn">1.</strong> 餵模糊進去，會產出<strong class="c-text">結構漂亮的錯任務</strong>——比明顯的爛 prompt 更難抓。
+							</p>
+						</div>
+						<div class="card accent-warn">
+							<p class="mid" style="margin:0;">
+								<strong class="c-warn">2.</strong> DoD 的<strong class="c-text">品質</strong>仍靠 domain knowledge。Skill 幫你把 DoD 寫下來，不能替你判斷 DoD 對不對。
+							</p>
+						</div>
+						<p class="mid c-muted fragment" style="margin-top:0.5em;">
+							正面：思考外包不了，但<strong class="c-text">流程可以編碼、教會整個團隊</strong>。
+						</p>
+					</section>
+
 				</section>
 
-				<!-- ==================== 03 證據與實踐 ==================== -->
+
+				<!-- ════════════════════════════════════════════════════════════
+				     ACT 03 — 證據與實踐
+				     ════════════════════════════════════════════════════════════ -->
 				<section>
-					<section>
-						<h2>03 證據與實踐</h2>
+
+					<!-- 03 cover -->
+					<section class="section-cover">
+						<div class="act-num">ACT 03</div>
+						<h2>證據與實踐</h2>
+						<p class="act-sub">一個真實案例、一份成本帳、知道何時別自動化</p>
+						<p class="act-question">前面講的方法論，跑起來長什麼樣？</p>
 					</section>
 
-					<!-- 案例 -->
+					<!-- 03-a 案例引入 -->
 					<section>
-						<h3>案例：MSSQL → PostgreSQL</h3>
-						<p class="mid">換引擎但對外行為要一致</p>
+						<div class="takeaway">壓力測試：一個夠大夠難的真實任務</div>
+						<h3>案例：MSSQL → PostgreSQL Migration</h3>
+						<p class="mid c-muted">
+							在系統底層換掉引擎，<br>
+							但<strong class="c-text">每一個對外行為都得一模一樣</strong>。
+						</p>
 					</section>
 
+					<!-- 03-b 為什麼難 -->
 					<section>
-						<h3>為什麼難？</h3>
-						<ul class="mid">
-							<li>SQL 方言散落整個 stack<br>
-								<span class="small dim"><code>SELECT TOP</code> · <code>[dbo].</code> · <code>(NOLOCK)</code> · <code>GETUTCDATE()</code> · <code>ISNULL</code></span></li>
-							<li class="fragment">結構性差異：跨庫引用 + 49 proc / 4 view<br>
-								<span class="small dim">SCT 只有 GUI</span></li>
-							<li class="fragment">型別 + 大小寫靜默出錯</li>
-							<li class="fragment highlight-orange">最難：「答案對不對」不是「跑不跑得起來」</li>
-						</ul>
+						<div class="takeaway">難不在需求模糊，在三件事疊加</div>
+						<h3>為什麼這是硬骨頭？</h3>
+						<div class="card" style="text-align:left;">
+							<p class="mid" style="margin:0 0 0.5em;">
+								<strong class="c-flow">1.</strong> SQL 方言散落整個 stack — <span class="c-muted mono" style="font-size:0.8em;">SELECT TOP · [dbo]. · (NOLOCK) · ISNULL</span>
+							</p>
+							<p class="mid fragment" style="margin:0 0 0.5em;">
+								<strong class="c-flow">2.</strong> 結構性差異 — 49 proc / 4 view，SCT 只有 GUI 沒自動化
+							</p>
+							<p class="mid fragment" style="margin:0 0 0.5em;">
+								<strong class="c-flow">3.</strong> 型別 + 大小寫靜默出錯 — 一個沒對齊就<strong class="c-warn">不報錯但答案錯</strong>
+							</p>
+						</div>
+						<p class="mid c-goal fragment" style="margin-top:0.5em;font-weight:600;">
+							最難的不是「跑不跑得起來」，而是「答案對不對」。
+						</p>
 					</section>
 
+					<!-- 03-c 完成定義 -->
 					<section>
-						<h3>完成定義（Oracle）</h3>
-						<div class="box">
-							<p>逐 endpoint、逐 row<br>跟 golden MSSQL 做 <span class="highlight-orange">A/B</span></p>
+						<div class="takeaway">讓方法論落地的關鍵：有一個 oracle</div>
+						<h3>這次的完成定義</h3>
+						<div class="card accent-goal">
+							<div class="card-label">DoD = Oracle</div>
+							<p class="mid" style="margin:0;">
+								逐 endpoint、逐 row，跟 golden MSSQL 做 <strong class="c-goal">A/B 比對</strong>。<br><br>
+								<strong class="c-text">這就是讓 loop until goal 有意義的那個 oracle。</strong><br>
+								沒有它，agent 不知道自己有沒有做對。
+							</p>
 						</div>
 					</section>
 
+					<!-- 03-d 硬證據 -->
 					<section>
+						<div class="takeaway">結論：goal 與 workflow 都能完整跑完</div>
 						<h3>硬證據</h3>
-						<table>
-							<tr>
-								<th>指標</th>
-								<th>結果</th>
-							</tr>
-							<tr>
-								<td>Endpoints HTTP 200</td>
-								<td class="highlight-green">47 / 47</td>
-							</tr>
-							<tr>
-								<td>Response body 相同</td>
-								<td>44 / 47 <span class="small dim">(+3 資料狀態差)</span></td>
-							</tr>
-							<tr>
-								<td>忠實度</td>
-								<td class="highlight-green">47 / 47</td>
-							</tr>
-							<tr>
-								<td>表 row 對齊</td>
-								<td class="highlight-green">18 / 18 <span class="small dim">(376,653 rows)</span></td>
-							</tr>
-						</table>
-					</section>
-
-					<section>
-						<h3>真正架構 = Hybrid</h3>
-						<div class="box mid">
-							<p><span class="highlight-orange">Opus 主控</span> loop<br>
-							+ <span class="highlight-blue">workflow 扇出</span> 52-agent 轉 proc</p>
+						<div class="stats">
+							<div class="stat"><div class="v ok">47/47</div><div class="l">endpoints<br>HTTP 200</div></div>
+							<div class="stat"><div class="v fl">44/47</div><div class="l">A/B body 相同<br>+3 資料狀態差 → 47/47 忠實</div></div>
+							<div class="stat"><div class="v ok">18/18</div><div class="l">表 row 對齊<br>376,653 rows</div></div>
+							<div class="stat"><div class="v fl">hybrid</div><div class="l">Opus 主控<br>+ workflow 52-agent</div></div>
 						</div>
-						<p class="small dim">goal 與 workflow 都能完整跑完</p>
 					</section>
 
+					<!-- 03-e Hybrid 架構 -->
 					<section>
-						<h3>副產品 Bug</h3>
-						<p class="mid"><code>incrementalReleaseRatio</code> 被硬寫 NULL</p>
-						<p class="mid">人工難發現 → <span class="highlight-orange">A/B 逼出來</span></p>
+						<div class="takeaway">goal vs workflow 其實是假對立</div>
+						<h3>真正的架構 = Hybrid</h3>
+						<div class="card accent-flow">
+							<p class="mid" style="margin:0;">
+								<strong class="c-flow">Opus 主控</strong> — worktree、Docker、.bak 還原、build/deploy 迴圈<br><br>
+								<strong class="c-flow">/workflow 扇出</strong> — 52-agent 轉 procs、逐 endpoint 診斷
+							</p>
+						</div>
 					</section>
 
-					<!-- 成本帳 -->
+					<!-- 03-f 副產品 bug -->
 					<section>
+						<div class="takeaway">自動驗收逼出人工 review 抓不到的 bug</div>
+						<h3>副產品</h3>
+						<div class="card accent-goal">
+							<p class="mid" style="margin:0;">
+								A/B 比對抓出 <code class="c-flow">incrementalReleaseRatio</code> 被硬寫 <code class="c-warn">NULL</code>。<br><br>
+								人工 review 很難發現——是<strong class="c-goal">有了自動驗收才被逼出來的</strong>。
+							</p>
+						</div>
+					</section>
+
+					<!-- 03-g 成本帳 -->
+					<section>
+						<div class="takeaway">四種跑法、同任務、交付物相同 → 可比</div>
 						<h3>成本帳</h3>
-						<p class="small dim">四種跑法，同任務、交付物相同 → 可比</p>
-						<p class="small"><code>cost = input×1 + cache_read×0.1 + cache_write×1.25 + output×5</code></p>
-						<table>
-							<tr>
-								<th>方法</th>
-								<th>Input-token 當量</th>
-							</tr>
-							<tr>
-								<td>workflow_skill</td>
-								<td class="highlight-green">≈ 2.16M（最便宜）</td>
-							</tr>
-							<tr>
-								<td>goal</td>
-								<td>≈ 2.73M</td>
-							</tr>
-							<tr>
-								<td>workflow</td>
-								<td>≈ 2.88M</td>
-							</tr>
-							<tr>
-								<td>goal_skill</td>
-								<td class="highlight-red">≈ 4.31M（最貴）</td>
-							</tr>
+						<div class="legend">
+							<span><i style="background:var(--c-input)"></i>input ×1</span>
+							<span><i style="background:var(--c-read)"></i>cache_read ×0.1</span>
+							<span><i style="background:var(--c-write)"></i>cache_write ×1.25</span>
+							<span><i style="background:var(--c-output)"></i>output ×5</span>
+						</div>
+						<div class="cost-bars" id="bars">
+							<div class="bar-row cheap">
+								<div class="nm">workflow_skill<small>skill 有用到</small></div>
+								<div class="bar-track"><div class="seg s-input" data-w="0.67"></div><div class="seg s-read" data-w="18.6"></div><div class="seg s-write" data-w="17.6"></div><div class="seg s-output" data-w="13.2"></div></div>
+								<div class="tot">≈ 2.16M</div>
+							</div>
+							<div class="bar-row">
+								<div class="nm">goal</div>
+								<div class="bar-track"><div class="seg s-input" data-w="0.82"></div><div class="seg s-read" data-w="34.9"></div><div class="seg s-write" data-w="10.1"></div><div class="seg s-output" data-w="17.4"></div></div>
+								<div class="tot">≈ 2.73M</div>
+							</div>
+							<div class="bar-row">
+								<div class="nm">workflow</div>
+								<div class="bar-track"><div class="seg s-input" data-w="1.40"></div><div class="seg s-read" data-w="34.6"></div><div class="seg s-write" data-w="11.9"></div><div class="seg s-output" data-w="18.9"></div></div>
+								<div class="tot">≈ 2.88M</div>
+							</div>
+							<div class="bar-row dear">
+								<div class="nm">goal_skill<small>skill 掛了沒用到</small></div>
+								<div class="bar-track"><div class="seg s-input" data-w="0.53"></div><div class="seg s-read" data-w="56.3"></div><div class="seg s-write" data-w="13.9"></div><div class="seg s-output" data-w="29.2"></div></div>
+								<div class="tot">≈ 4.31M</div>
+							</div>
+						</div>
+						<p class="xs c-faint" style="margin-top:0.4em;">n=1，看方向、非定論。要決策先各跑 3 次。</p>
+					</section>
+
+					<!-- 03-h 成本明細 -->
+					<section>
+						<div class="takeaway">完整數字</div>
+						<h3>成本明細</h3>
+						<table class="cost-table">
+							<thead><tr><th>實驗</th><th>input</th><th>cache_read</th><th>cache_write</th><th>output</th><th>加權成本</th><th>subagent</th></tr></thead>
+							<tbody>
+								<tr class="cheap"><td class="exp">workflow_skill</td><td>28,825</td><td>8,015,890</td><td>607,228</td><td>113,894</td><td class="cost">≈ 2,158,919</td><td class="c-faint">+319,948</td></tr>
+								<tr><td class="exp">goal</td><td>35,435</td><td>15,039,374</td><td>347,715</td><td>150,349</td><td class="cost">≈ 2,725,761</td><td class="c-faint">無</td></tr>
+								<tr><td class="exp">workflow</td><td>60,408</td><td>14,898,708</td><td>411,436</td><td>162,879</td><td class="cost">≈ 2,878,969</td><td class="c-faint">+242,091</td></tr>
+								<tr class="dear"><td class="exp">goal_skill</td><td>22,994</td><td>24,287,431</td><td>480,154</td><td>252,091</td><td class="cost">≈ 4,312,385</td><td class="c-faint">未被叫用</td></tr>
+							</tbody>
 						</table>
-						<p class="small dim">n=1，看方向、非定論</p>
+					</section>
+
+					<!-- 03-i 成本觀察 -->
+					<section>
+						<div class="takeaway">兩個值得記住的觀察</div>
+						<h3>成本觀察</h3>
+						<div class="card accent-goal" style="margin-bottom:0.3em;">
+							<div class="card-label">觀察 1</div>
+							<p class="mid" style="margin:0;">
+								<strong class="c-text">掛上 skill ≠ 用到 skill。</strong><br>
+								<span class="c-muted">workflow_skill subagent 有用 → <strong class="c-ok">最便宜</strong>；goal_skill 掛了沒用 → <strong class="c-warn">最貴</strong>（cache_read 24.3M，純浪費）。</span>
+							</p>
+						</div>
+						<div class="card accent-flow">
+							<div class="card-label">觀察 2</div>
+							<p class="mid" style="margin:0;">
+								<strong class="c-text">錢主要花在 cache_read。</strong><br>
+								<span class="c-muted">長 autonomous loop 的固有成本。Hygiene 只能邊際壓低，但邊際也是錢。</span>
+							</p>
+						</div>
+					</section>
+
+					<!-- 03-j 何時不要 -->
+					<section>
+						<div class="takeaway">知道什麼時候不用，跟知道怎麼用一樣重要</div>
+						<h3>什麼時候<span class="c-warn">不要</span>直接自動化</h3>
+						<div class="card accent-warn">
+							<ul class="mid" style="margin:0;padding-left:1.2em;">
+								<li><strong class="c-text">沒有可自動驗收的 oracle</strong></li>
+								<li><strong class="c-text">需要不可逆的副作用</strong> <span class="c-muted">— 刪資料、打外部 API、動錢</span></li>
+								<li><strong class="c-text">domain knowledge 不在 repo 裡</strong></li>
+							</ul>
+						</div>
+					</section>
+
+					<!-- 03-k Human review -->
+					<section>
+						<div class="takeaway">瓶頸從「寫 code」搬到「review PR」</div>
+						<h3>Human review 是新瓶頸</h3>
+						<p class="mid c-muted">
+							PR 動了 DAO、config、49 個 procs→functions、39 處修正。
+						</p>
+						<div class="card accent-goal" style="margin-top:0.4em;">
+							<p class="mid" style="margin:0;">
+								對策：逼 agent <strong class="c-goal">拆小 PR</strong> + <strong class="c-goal">自帶 A/B 證據</strong>。<br>
+								讓人 review 的是證據，不是逐行 diff。
+							</p>
+						</div>
+					</section>
+
+					<!-- 03-l 日常 hygiene -->
+					<section>
+						<div class="takeaway">邊際槓桿：降低重複讀 context 的成本</div>
+						<h3>日常 Hygiene</h3>
+						<div class="hy-grid">
+							<div class="hy-card">
+								<h4>Context 管理</h4>
+								<ul>
+									<li><b><span class="cmd" style="font-size:1em;">/rewind</span></b> 回到岔路前</li>
+									<li><b><span class="cmd" style="font-size:1em;">/btw</span></b> 即時補充</li>
+									<li><span class="cmd" style="font-size:1em;">/clear</span> 前先寫 <b>handoff.md</b></li>
+								</ul>
+							</div>
+							<div class="hy-card">
+								<h4>記憶落地</h4>
+								<ul>
+									<li><b>memory.md</b> → flush 進 <b>claude.md</b></li>
+									<li>下段 session 不必從頭交代</li>
+								</ul>
+							</div>
+						</div>
+					</section>
+
+				</section>
+
+
+				<!-- ════════════════════════════════════════════════════════════
+				     CHECKLIST
+				     ════════════════════════════════════════════════════════════ -->
+				<section>
+
+					<section class="section-cover">
+						<div class="act-num">★</div>
+						<h2>Checklist</h2>
+						<p class="act-sub">下 <span class="cmd goal" style="font-size:1.3em;">/goal</span> 或 <span class="cmd flow" style="font-size:1.3em;">/workflow</span> 前的五句自問</p>
 					</section>
 
 					<section>
-						<h3>成本觀察</h3>
-						<ol class="mid">
-							<li><span class="highlight-orange">掛上 skill ≠ 用到 skill</span><br>
-								<span class="small">workflow_skill subagent 有用 → 最便宜<br>
-								goal_skill 掛了沒叫用 → cache_read 24.3M 最高、純浪費</span></li>
-							<li class="fragment">錢主要花在 <code>cache_read</code><br>
-								<span class="small">部分是長 loop 固有成本；hygiene 只能邊際壓低</span></li>
+						<ol class="checklist">
+							<li>
+								<div>
+									<div class="h">完成定義</div>
+									<div class="q">有沒有能<strong class="c-text">自動檢查</strong>的「做完」？沒有 oracle 就先別跑。</div>
+								</div>
+							</li>
+							<li class="fragment">
+								<div>
+									<div class="h">目標</div>
+									<div class="q">要的是<strong class="c-text">成品與決策</strong>，還是只寫了一個動作？</div>
+								</div>
+							</li>
+							<li class="fragment">
+								<div>
+									<div class="h">邊界</div>
+									<div class="q">哪些不要碰？不可逆副作用先圈起來。</div>
+								</div>
+							</li>
+							<li class="fragment">
+								<div>
+									<div class="h">可讀性</div>
+									<div class="q">agent 看得懂嗎？缺 mapping 就<strong class="c-text">先補</strong>（會複利）。</div>
+								</div>
+							</li>
+							<li class="fragment">
+								<div>
+									<div class="h">階段</div>
+									<div class="q">現在要它<strong class="c-text">想、比、決，還是做</strong>？</div>
+								</div>
+							</li>
 						</ol>
 					</section>
 
-					<!-- 何時不要 -->
-					<section>
-						<h3>何時<span class="highlight-red">「不要」</span>直接自動化？</h3>
-						<ul class="mid">
-							<li>沒有 oracle</li>
-							<li>不可逆副作用</li>
-							<li>domain knowledge 不在 repo</li>
-						</ul>
-					</section>
-
-					<!-- Human review -->
-					<section>
-						<h3>Human Review 是新瓶頸</h3>
-						<p class="mid">PR 動 DAO、config、49 proc→function、39 修正</p>
-						<div class="box mid">
-							<p>對策：<span class="highlight-orange">拆小 PR</span> · <span class="highlight-orange">自帶 A/B 證據</span></p>
-						</div>
-					</section>
-
-					<!-- 日常 hygiene -->
-					<section>
-						<h3>日常 Hygiene</h3>
-						<ul class="mid">
-							<li>Context 管理：<code>/rewind</code> · <code>/btw</code> · <code>/clear</code> 前寫 <code>handoff.md</code></li>
-							<li>記憶落地：<code>memory.md</code> flush 進 <code>claude.md</code></li>
-						</ul>
-					</section>
 				</section>
 
-				<!-- ==================== Checklist ==================== -->
-				<section>
-					<h2>Checklist</h2>
-					<p class="small dim">下 <code>/goal</code> 或 <code>/workflow</code> 前的五句自問</p>
-					<ul class="checklist mid">
-						<li>完成定義 — 有沒有自動可檢查的「做完」？</li>
-						<li class="fragment">目標 — 成品與決策，不是動作</li>
-						<li class="fragment">邊界 — 哪些不要碰？</li>
-						<li class="fragment">可讀性 — agent 看得懂嗎？缺 mapping 先補</li>
-						<li class="fragment">階段 — 我要它想、比、決，還是做？</li>
-					</ul>
-				</section>
 
-				<!-- ==================== 一句話總結 ==================== -->
-				<section>
-					<h2>一句話總結</h2>
-					<p class="fragment mid">機器側越來越強，人側不會自動補上</p>
-					<p class="fragment mid">不要問「agent 現在能不能做」<br>
-						要問<span class="highlight-orange">「我能不能把目標與環境整理到讓 agent 自己能做」</span></p>
-					<p class="fragment mid">把人從<span class="dim">執行者</span> →<br>
-						<span class="highlight-green">「把任務定義清楚的人」</span>+<span class="highlight-green">「把 code 變好懂的人」</span></p>
+				<!-- ════════════════════════════════════════════════════════════
+				     CLOSING
+				     ════════════════════════════════════════════════════════════ -->
+				<section class="closing">
+					<div class="eyebrow" style="color:var(--faint);">一句話總結</div>
+					<p class="big">
+						機器側會<span class="c-flow">越來越強</span>，<br>人側不會自動補上。
+					</p>
+					<p class="big fragment" style="margin-top:0.8em;">
+						不要問「agent 現在能不能做」，<br>
+						要問<strong class="c-goal">「我能不能把目標與環境<br>整理到讓 agent 自己能做」</strong>。
+					</p>
+					<p class="mid c-muted fragment" style="margin-top:1em;max-width:600px;margin-left:auto;margin-right:auto;">
+						把人從<strong class="c-text">執行者</strong>，挪到
+						<strong class="c-goal">把任務定義清楚的人</strong> 與
+						<strong class="c-flow">把 code 變好懂的人</strong>。<br>
+						這兩件事 agent 替不了，每一次投資都會隨它變強而複利。
+					</p>
+					<div class="sig fragment">Agentic Engineering · 機器側 × 人側 · 2026</div>
 				</section>
 
 			</div>
@@ -438,7 +920,22 @@
 			Reveal.initialize({
 				hash: true,
 				transition: 'slide',
+				backgroundTransition: 'fade',
+				center: true,
+				width: 1280,
+				height: 720,
+				margin: 0.08,
 				plugins: [RevealHighlight],
+			});
+
+			// Animate cost bars when slide becomes visible
+			Reveal.on('slidechanged', function(event) {
+				var bars = event.currentSlide.querySelector('#bars');
+				if (bars) {
+					bars.querySelectorAll('.seg').forEach(function(s) {
+						s.style.width = s.dataset.w + '%';
+					});
+				}
 			});
 		</script>
 	</body>
