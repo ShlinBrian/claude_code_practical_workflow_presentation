@@ -44,7 +44,7 @@
 				--r-main-font: 'Noto Sans TC', 'Inter', system-ui, sans-serif;
 				--r-heading-text-transform: none;
 				--r-heading-letter-spacing: -0.02em;
-				--r-main-font-size: 28px;
+				--r-main-font-size: 32px;
 			}
 
 			.reveal { font-weight: 400; }
@@ -54,9 +54,9 @@
 			.reveal li { margin-bottom: 0.4em; }
 
 			/* ── sizes ── */
-			.small { font-size: 0.55em; line-height: 1.5; }
-			.mid   { font-size: 0.72em; line-height: 1.6; }
-			.xs    { font-size: 0.48em; line-height: 1.5; }
+			.small { font-size: 0.62em; line-height: 1.5; }
+			.mid   { font-size: 0.78em; line-height: 1.6; }
+			.xs    { font-size: 0.5em; line-height: 1.5; }
 			.mono  { font-family: 'JetBrains Mono', monospace; }
 
 			/* ── colors ── */
@@ -139,6 +139,62 @@
 			.pipe .node.human { border-color: var(--goal-dim); }
 			.pipe .node.human .k { color: var(--goal); }
 			.pipe .arrow { display: flex; align-items: center; color: var(--faint); padding: 0 14px; font-size: 1.2em; }
+
+				/* ── flow diagram (node → arrow → node) ── */
+				.flow { display: flex; align-items: stretch; justify-content: center;
+				        gap: 0; flex-wrap: wrap; margin: 0.5em auto; max-width: 95%; }
+				.flow.vert { flex-direction: column; align-items: center; }
+				.flow .step {
+					background: var(--surface); border: 1px solid var(--border);
+					border-left: 4px solid var(--border-2); border-radius: 10px;
+					padding: 16px 20px; text-align: left; min-width: 150px;
+					display: flex; flex-direction: column; gap: 4px; }
+				.flow .step .t { font-weight: 600; font-size: 0.7em; }
+				.flow .step .d { color: var(--muted); font-size: 0.52em; line-height: 1.4; }
+				.flow .step.on-goal  { border-left-color: var(--goal); }
+				.flow .step.on-flow  { border-left-color: var(--flow); }
+				.flow .step.on-warn  { border-left-color: var(--warn); }
+				.flow .step.on-skill { border-left-color: var(--skill); }
+				.flow .arr { display: flex; align-items: center; justify-content: center;
+					color: var(--faint); font-size: 1.3em; padding: 0 14px; }
+				.flow.vert .arr { padding: 8px 0; }
+
+				/* ── step/stage badge ── */
+				.badge { font-family: 'JetBrains Mono', monospace; font-weight: 700;
+					font-size: 0.6em; color: var(--goal); border: 1px solid var(--goal-dim);
+					border-radius: 6px; padding: 2px 9px; }
+
+				/* ── before → after 2-up ── */
+				.ba { display: grid; grid-template-columns: 1fr auto 1fr; gap: 16px;
+					align-items: center; max-width: 92%; margin: 0.5em auto; text-align: left; }
+				.ba .before, .ba .after { background: var(--surface); border: 1px solid var(--border);
+					border-radius: 10px; padding: 18px 20px; font-size: 0.62em; line-height: 1.5; }
+				.ba .before { border-left: 4px solid var(--warn); }
+				.ba .after  { border-left: 4px solid var(--ok); }
+				.ba .vs { color: var(--faint); font-size: 1.4em; text-align: center; }
+				.ba .lbl { font-family: 'JetBrains Mono', monospace; font-size: 0.62em;
+					letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.6em; }
+				.ba .before .lbl { color: var(--warn); } .ba .after .lbl { color: var(--ok); }
+
+				/* ── inventory panel (scale facts) ── */
+				.inv { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+					max-width: 95%; margin: 0.5em auto; }
+				.inv .cell { background: var(--surface); border: 1px solid var(--border);
+					border-radius: 10px; padding: 18px 14px; text-align: center; }
+				.inv .cell .n { font-family: 'Space Grotesk', sans-serif; font-weight: 700;
+					font-size: 1.5em; color: var(--flow); line-height: 1; }
+				.inv .cell .k { font-size: 0.5em; color: var(--text); margin-top: 8px; font-weight: 600; }
+				.inv .cell .s { font-size: 0.42em; color: var(--faint); margin-top: 3px; }
+
+				/* ── problem → fix rows ── */
+				.pf { display: flex; flex-direction: column; gap: 10px; max-width: 92%; margin: 0.4em auto; }
+				.pf .row { display: grid; grid-template-columns: 1fr auto 1fr; gap: 12px; align-items: stretch; }
+				.pf .p, .pf .f { background: var(--surface); border: 1px solid var(--border);
+					border-radius: 9px; padding: 12px 16px; text-align: left; font-size: 0.5em; line-height: 1.4; }
+				.pf .p { border-left: 4px solid var(--warn); }
+				.pf .f { border-left: 4px solid var(--ok); }
+				.pf .ar { display: flex; align-items: center; color: var(--faint); font-size: 1.1em; }
+				.pf .p b, .pf .f b { color: var(--text); font-weight: 600; }
 
 			/* ── stat grid ── */
 			.stats {
