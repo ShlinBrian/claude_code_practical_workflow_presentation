@@ -443,179 +443,79 @@
 				</section>
 
 
-				<!-- ════════════════════════════════════════════════════════════
-				     ACT 02 — 方法論
-				     ════════════════════════════════════════════════════════════ -->
+				<!-- ════════ ACT 2 — SUPERPOWERS SKILLS ════════ -->
 				<section>
-
-					<!-- 02 cover -->
 					<section class="section-cover">
-						<div class="act-num">ACT 02</div>
-						<h2>方法論</h2>
-						<p class="act-sub">逼近終局要兩側都到位</p>
-						<p class="act-question">機器側給對工具 × 人側把任務定義清楚</p>
+						<div class="act-num">ACT 02 · SKILLS</div>
+						<h2>Superpowers Skills</h2>
+						<p class="act-sub">Reusable, encoded engineering process — not just prompts</p>
+						<p class="act-question">A skill tells the agent <em>how</em> to work, not just <em>what</em> to do</p>
 					</section>
 
-					<!-- 02-a 兩側總覽 -->
 					<section>
-						<div class="takeaway">整套方法論的全貌</div>
-						<h3>兩側都要到位</h3>
+						<div class="takeaway">One catalog, mapped to the dev lifecycle</div>
+						<h3>The skill catalog</h3>
+						<div class="two-col" style="margin-top:0.3em;">
+							<div class="col" style="border-top:3px solid var(--goal);">
+								<div class="lbl" style="color:var(--goal);">Define &amp; plan</div>
+								<p class="small" style="margin:0;"><b class="c-text">brainstorming</b> — vague idea → spec<br>
+								<b class="c-text">writing-plans</b> — spec → bite-sized tasks<br>
+								<b class="c-text">using-git-worktrees</b> — isolate the work</p>
+							</div>
+							<div class="col" style="border-top:3px solid var(--flow);">
+								<div class="lbl" style="color:var(--flow);">Build &amp; verify</div>
+								<p class="small" style="margin:0;"><b class="c-text">test-driven-development</b> — red/green<br>
+								<b class="c-text">systematic-debugging</b> — when it breaks<br>
+								<b class="c-text">requesting / receiving-code-review</b><br>
+								<b class="c-text">verification-before-completion</b></p>
+							</div>
+						</div>
+						<p class="xs c-faint" style="margin-top:0.5em;">Today we go deep on <strong class="c-goal">brainstorming</strong>, then touch writing-plans &amp; systematic-debugging.</p>
+					</section>
+
+					<section>
+						<div class="takeaway">The star skill — it turns a request into a spec</div>
+						<h3>brainstorming: requirement → spec</h3>
+						<div class="ladder" style="max-width:78%;margin:0.4em auto;">
+							<div class="rung">Explore project context first</div>
+							<div class="rung"><span class="ar">↓</span>Ask clarifying questions — <b>one at a time</b></div>
+							<div class="rung"><span class="ar">↓</span>Propose 2–3 approaches with trade-offs</div>
+							<div class="rung"><span class="ar">↓</span>Present a design, get approval section by section</div>
+							<div class="rung" style="color:var(--goal);"><span class="ar">↓</span>Write &amp; commit a spec — <b>with a Definition of Done</b></div>
+						</div>
+						<p class="mid c-muted" style="margin-top:0.5em;">It refuses to write code until the design is approved. That gate is the point.</p>
+					</section>
+
+					<section>
+						<div class="takeaway">What it looks like on the migration task</div>
+						<h3>From "migrate the DB" to a spec</h3>
+						<div class="term">
+							<span class="ag">What does "keep everything working" mean — same API responses, or same DB state?</span>
+							<span class="pr">Same HTTP responses, byte-for-byte where data allows.</span>
+							<span class="ag">How will we verify that automatically?</span>
+							<span class="pr">A/B every endpoint against a golden MSSQL, row-by-row.</span>
+							<span class="ag">Anything off-limits? Irreversible side effects?</span>
+							<span class="pr">No schema drops until A/B passes. Work in a worktree.</span>
+							<span class="cm">→ committed: docs/specs/2026-..-mssql-pg-migration-design.md</span>
+						</div>
+						<p class="mid c-goal" style="margin-top:0.5em;font-weight:600;">The output is a committed spec with a testable DoD — exactly what /goal needs.</p>
+					</section>
+
+					<section>
+						<div class="takeaway">Two more skills you'll reuse constantly</div>
+						<h3>Plan, then debug systematically</h3>
 						<div class="two-col" style="margin-top:0.4em;">
-							<div class="col" style="border-top:3px solid var(--flow);">
-								<div class="lbl" style="color:var(--flow);">機器側 · 給對工具</div>
-								<p class="mid"><strong><span class="cmd goal">/goal</span></strong> — loop until goal</p>
-								<p class="mid"><strong><span class="cmd flow">/workflow</span></strong> — multi-agent 扇出</p>
-								<p class="mid"><strong>hybrid</strong> — 主控 loop + workflow 扇出<br><span class="c-faint" style="font-size:0.85em;">（最實際的跑法）</span></p>
-							</div>
 							<div class="col" style="border-top:3px solid var(--goal);">
-								<div class="lbl" style="color:var(--goal);">人側 · 把任務定義清楚</div>
-								<p class="mid"><strong>完成定義（DoD）</strong><br><span class="c-muted">做完要能被自動檢查</span></p>
-								<p class="mid"><strong>邊界</strong><br><span class="c-muted">哪些不要碰</span></p>
-								<p class="mid"><strong>階段判斷</strong><br><span class="c-muted">想 / 比 / 決 / 做</span></p>
+								<div class="lbl" style="color:var(--goal);">writing-plans</div>
+								<p class="small c-muted" style="margin:0;">Turns the spec into <b class="c-text">bite-sized, independently testable tasks</b> — each with files, test, and commit. The agent (or a fleet) executes task-by-task with review gates.</p>
 							</div>
-						</div>
-					</section>
-
-					<!-- 02-b DoD — 最關鍵 -->
-					<section>
-						<div class="takeaway">整場最重要的一頁</div>
-						<h3>沒有完成定義，<br>loop until goal 沒有意義</h3>
-						<div class="card accent-goal" style="margin-top:0.5em;">
-							<p class="mid" style="margin:0;">
-								能不能用 <span class="cmd goal">/goal</span> 或 <span class="cmd flow">/workflow</span>，<br>
-								第一個要問的不是工具，而是——<br><br>
-								<strong class="c-text" style="font-size:1.15em;">你能不能把驗收自動化？</strong>
-							</p>
-						</div>
-						<p class="xs c-muted" style="margin-top:0.6em;">沒有可驗收的 DoD，agent 只會繞圈或自我感覺良好地停下。</p>
-					</section>
-
-					<!-- 02-c 以終為始 -->
-					<section>
-						<div class="takeaway">預設直接丟，失敗了再回來問「為什麼」</div>
-						<h3>以終為始</h3>
-						<p class="mid">
-							預設就是直接把 <span class="cmd goal">/goal</span> 或 <span class="cmd flow">/workflow</span> 丟向問題。
-						</p>
-						<p class="mid fragment" style="margin-top:0.8em;">
-							結果不好時，問的不是「我該怎麼補刀」，而是——
-						</p>
-						<h3 class="fragment c-goal" style="margin-top:0.5em;font-size:1.3em;">
-							為什麼 agent 自己到不了？
-						</h3>
-					</section>
-
-					<!-- 02-d 四根因 -->
-					<section>
-						<div class="takeaway">四個常見根因，分屬兩側</div>
-						<h3>診斷：agent 到不了的四個原因</h3>
-						<ul class="diag">
-							<li class="fragment"><span class="who code">code</span>看不懂我們寫的程式</li>
-							<li class="fragment"><span class="who code">code</span>缺 domain knowledge</li>
-							<li class="fragment"><span class="who code">code</span>無法 mapping 需求到應該修改的邏輯</li>
-							<li class="fragment"><span class="who brief">brief</span>prompt 沒講到重點 / 沒有完成定義</li>
-						</ul>
-					</section>
-
-					<!-- 02-e 兩軌處方 -->
-					<section>
-						<div class="takeaway">處方也分兩軌——不能只加註解</div>
-						<h3>兩軌處方</h3>
-						<div class="two-col" style="margin-top:0.3em;">
 							<div class="col" style="border-top:3px solid var(--flow);">
-								<div class="lbl" style="color:var(--flow);">Code 側 · 會複利</div>
-								<div class="ladder">
-									<div class="rung">加註解</div>
-									<div class="rung"><span class="ar">↓</span>加 mapping index</div>
-									<div class="rung"><span class="ar">↓</span>重構段落</div>
-								</div>
-							</div>
-							<div class="col" style="border-top:3px solid var(--goal);">
-								<div class="lbl" style="color:var(--goal);">Brief 側 · 你不可外包</div>
-								<div class="ladder">
-									<div class="rung" style="color:var(--goal);">寫成可測的 goal（DoD）</div>
-									<div class="rung"><span class="ar">↓</span>補背景與邊界</div>
-									<div class="rung"><span class="ar">↓</span>整理成可交辦的 brief</div>
-								</div>
+								<div class="lbl" style="color:var(--flow);">systematic-debugging</div>
+								<p class="small c-muted" style="margin:0;">When something breaks, forces <b class="c-text">reproduce → isolate → hypothesis → fix → verify</b> instead of guessing. Stops the agent flailing.</p>
 							</div>
 						</div>
+						<p class="xs c-faint" style="margin-top:0.5em;">Same idea every time: encode the <em>process</em>, so quality doesn't depend on how good today's prompt was.</p>
 					</section>
-
-					<!-- 02-f 閉環 -->
-					<section>
-						<div class="takeaway">兩軌的關係 = 整份報告的閉環</div>
-						<h3>Code 側會複利，Brief 側人來扛</h3>
-						<div class="card accent-flow" style="margin-bottom:0.3em;">
-							<p class="mid" style="margin:0;">
-								Code 側把 codebase 改造得更 <strong class="c-flow">agent-legible</strong>，會隨 agent 變強而複利。
-							</p>
-						</div>
-						<div class="card accent-goal">
-							<p class="mid" style="margin:0;">
-								Brief 側<strong class="c-goal">不會被 agent 自動補上</strong>，是人永遠要扛的部分。
-							</p>
-						</div>
-					</section>
-
-					<!-- 02-g 鏡子 -->
-					<section>
-						<div class="takeaway">為什麼 brief 側 agent 補不了</div>
-						<h3>AI 是一面鏡子</h3>
-						<div class="card accent-skill">
-							<p class="mid" style="margin:0;">
-								它會挑戰你的內容，但<strong class="c-text">不會質疑你的意圖</strong>。<br><br>
-								你餵它模糊，它就把沒想清楚的指令原封反射回來。<br>
-								頂多把申論題變成填空題，空格還是你來填。
-							</p>
-						</div>
-						<p class="mid c-goal" style="margin-top:0.6em;font-weight:600;">
-							它能幫你問，沒辦法替你想。
-						</p>
-					</section>
-
-					<!-- 02-h Superpowers -->
-					<section>
-						<div class="takeaway">把流程編碼成 skill，讓團隊都能用</div>
-						<h3>Superpowers：流程 → Skill</h3>
-						<div class="card accent-skill" style="margin-bottom:0.3em;">
-							<div class="card-label">Jesse Vincent · 2025/10</div>
-							<p class="mid" style="margin:0;">
-								問題不在 Claude 的能力，在<strong class="c-text">缺專業開發流程</strong>。<br>
-								把 brainstorm → plan → TDD → review 編碼成 skills。
-							</p>
-						</div>
-						<div class="two-col" style="margin-top:0.3em;">
-							<div class="col" style="border-top:3px solid var(--ok);padding:16px 18px;">
-								<div class="lbl" style="color:var(--ok);">簡單任務 → 跳過流程</div>
-								<p class="small c-muted" style="margin:0;">typo、小函式：<strong class="c-text">goal 直接做</strong></p>
-							</div>
-							<div class="col" style="border-top:3px solid var(--goal);padding:16px 18px;">
-								<div class="lbl" style="color:var(--goal);">中大型 → 流程才划算</div>
-								<p class="small c-muted" style="margin:0;">多檔、越改越歪：<strong class="c-text">流程紀律拉開差距</strong></p>
-							</div>
-						</div>
-						<p class="xs c-faint" style="margin-top:0.4em;">判斷軸 = 做錯重來貴不貴，不是人資不資深</p>
-					</section>
-
-					<!-- 02-i 兩道圍欄 -->
-					<section>
-						<div class="takeaway">skill 不是銀彈，兩道圍欄</div>
-						<h3>幫你問 ≠ 替你想</h3>
-						<div class="card accent-warn" style="margin-bottom:0.3em;">
-							<p class="mid" style="margin:0;">
-								<strong class="c-warn">1.</strong> 餵模糊進去，會產出<strong class="c-text">結構漂亮的錯任務</strong>——比明顯的爛 prompt 更難抓。
-							</p>
-						</div>
-						<div class="card accent-warn">
-							<p class="mid" style="margin:0;">
-								<strong class="c-warn">2.</strong> DoD 的<strong class="c-text">品質</strong>仍靠 domain knowledge。Skill 幫你把 DoD 寫下來，不能替你判斷 DoD 對不對。
-							</p>
-						</div>
-						<p class="mid c-muted fragment" style="margin-top:0.5em;">
-							正面：思考外包不了，但<strong class="c-text">流程可以編碼、教會整個團隊</strong>。
-						</p>
-					</section>
-
 				</section>
 
 
