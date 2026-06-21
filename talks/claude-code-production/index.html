@@ -648,188 +648,139 @@ return results.filter(r => r.verdict.faithful)</code></pre>
 				</section>
 
 
-				<!-- ════════ ACT 4 — THE EXPERIMENT ════════ -->
+				<!-- ════════ THE CASE — why this migration is hard (REAL FACTS) ════════ -->
 				<section>
-					<section class="section-cover">
-						<div class="act-num">ACT 04 · EXPERIMENT</div>
-						<h2>The Experiment</h2>
-						<p class="act-sub">A hard, real task to stress-test the whole method</p>
-						<p class="act-question">Not run yet — here is the case, the design, and where results will go</p>
-					</section>
 
 					<section>
-						<div class="takeaway">A stress test: swap the engine, change nothing observable</div>
-						<h3>Case: MSSQL → PostgreSQL migration</h3>
-						<p class="mid c-muted">
-							A Java service. Replace the database engine underneath, but
-							<strong class="c-text">every externally observable behavior must stay identical.</strong>
-						</p>
-						<div class="card accent-goal" style="margin-top:0.5em;">
-							<p class="mid" style="margin:0;">I did a migration like this <strong class="c-text">by hand once</strong>, with weaker LLMs — it took about <strong class="c-goal">a month</strong> of development and testing. This time I want to measure how the method changes that.</p>
+						<div class="takeaway">A real, completed migration — the credibility anchor</div>
+						<h3 style="margin-bottom:0.3em;">Not a "swap the JDBC driver" job</h3>
+						<div class="card accent-goal" style="max-width:84%;">
+							<p class="mid" style="margin:0;">A years-old commercial download backend moved off <strong class="c-text">Microsoft SQL Server</strong> — data, schema, stored procedures, and dialect SQL embedded in Java/JSP — onto <strong class="c-text">PostgreSQL</strong>.<br><br>The bar: <strong class="c-goal">every API returns the correct response on PostgreSQL.</strong></p>
+						</div>
+						<p class="mid c-muted" style="margin-top:0.5em;">Difficulty stacks on two axes — <strong class="c-text">scale</strong> and <strong class="c-text">semantic gap</strong>.</p>
+					</section>
+
+					<!-- scale inventory -->
+					<section>
+						<div class="takeaway">Axis 1 — scale</div>
+						<h3 style="margin-bottom:0.3em;">What had to move</h3>
+						<div class="inv">
+							<div class="cell"><div class="n">376,701</div><div class="k">Downloader</div><div class="s">main DB · 18 tables</div></div>
+							<div class="cell"><div class="n">8,258</div><div class="k">Cyberlink</div><div class="s">3 tables</div></div>
+							<div class="cell"><div class="n">121</div><div class="k">PC</div><div class="s">1 table</div></div>
+							<div class="cell"><div class="n">4,958</div><div class="k">PMS</div><div class="s">1 table</div></div>
+						</div>
+						<div class="card accent-flow" style="margin-top:0.5em;max-width:70%;">
+							<p class="mid" style="margin:0;text-align:center;"><strong class="c-flow">48</strong> stored procedures / functions &nbsp;+&nbsp; <strong class="c-flow">4</strong> views <span class="c-faint">(PVM/SID)</span> in Downloader</p>
 						</div>
 					</section>
 
+					<!-- semantic gap problems → fixes -->
 					<section>
-						<div class="takeaway">Why this is hard — three problems stacked</div>
-						<h3>Why it's a hard problem</h3>
-						<div class="card" style="text-align:left;">
-							<p class="mid" style="margin:0 0 0.5em;"><strong class="c-flow">1.</strong> SQL dialect is sprinkled across the whole stack — <span class="c-muted mono" style="font-size:0.8em;">SELECT TOP · [dbo]. · (NOLOCK) · ISNULL</span> all differ in PG.</p>
-							<p class="mid fragment" style="margin:0 0 0.5em;"><strong class="c-flow">2.</strong> Structural gap — <strong class="c-text">49 stored procedures + 4 views</strong> to port; the vendor tool is GUI-only, no automation.</p>
-							<p class="mid fragment" style="margin:0;"><strong class="c-flow">3.</strong> Type &amp; case mismatches fail <strong class="c-warn">silently</strong> — no error thrown, just a wrong answer.</p>
-						</div>
-						<p class="mid c-goal fragment" style="margin-top:0.5em;font-weight:600;">The hard part isn't "does it run" — it's "is the answer still correct."</p>
-					</section>
-
-					<!-- 03-c oracle/DoD -->
-					<section>
-						<div class="takeaway">The key to making loop-until-goal meaningful: an oracle</div>
-						<h3>Definition of Done = an oracle</h3>
-						<div class="card accent-goal">
-							<div class="card-label">DoD = Oracle</div>
-							<p class="mid" style="margin:0;">
-								Per-endpoint, per-row <strong class="c-goal">A/B comparison</strong> against a golden MSSQL instance.<br><br>
-								<strong class="c-text">This is the oracle that makes "loop until goal" mean something.</strong> Without it the agent can't know whether it's right.
-							</p>
-						</div>
-					</section>
-
-					<!-- 03-d runs to compare -->
-					<section>
-						<div class="takeaway">Four runs, same task, same deliverable → comparable</div>
-						<h3>The runs I'll compare</h3>
-						<div class="two-col" style="margin-top:0.3em;">
-							<div class="col" style="border-top:3px solid var(--goal);">
-								<div class="lbl" style="color:var(--goal);">Without skills</div>
-								<p class="mid" style="margin:0;"><b class="c-text">goal</b> — plain /goal loop<br><b class="c-text">workflow</b> — plain /workflow fan-out</p>
+						<div class="takeaway">Axis 2 — the semantic gap, and how each was beaten</div>
+						<h3 style="margin-bottom:0.2em;">4 problems → 4 fixes</h3>
+						<div class="pf">
+							<div class="row">
+								<div class="p"><b>SCT is GUI-only</b>, but had to run fully automated in headless WSL</div>
+								<div class="ar">→</div>
+								<div class="f">SCT <b>BatchExecutor CLI</b> + bundled Corretto 17; control codes <span class="mono">0x1f/0x1e</span> as delimiters</div>
 							</div>
-							<div class="col" style="border-top:3px solid var(--skill);">
-								<div class="lbl" style="color:var(--skill);">With Superpowers skills</div>
-								<p class="mid" style="margin:0;"><b class="c-text">goal + skill</b><br><b class="c-text">workflow + skill</b></p>
+							<div class="row">
+								<div class="p"><b>Cross-DB joins</b> — MSSQL 3-part names; PostgreSQL can't</div>
+								<div class="ar">→</div>
+								<div class="f">app only uses <span class="mono">main / main_write / downloader</span> (all Downloader) — <b>tractable</b></div>
+							</div>
+							<div class="row">
+								<div class="p">SCT made <b>INOUT refcursor</b> procs, but pgjdbc <span class="mono">{call…}</span> needs functions</div>
+								<div class="ar">→</div>
+								<div class="f">rewrite to <span class="mono">RETURNS SETOF/TABLE</span>; align JDBC binds; <span class="mono">citext</span> for case-insensitive; rebuild views</div>
+							</div>
+							<div class="row">
+								<div class="p"><b>Dialect + case</b> — <span class="mono">TOP ISNULL GETDATE() dbo. [brackets]</span></div>
+								<div class="ar">→</div>
+								<div class="f"><b>all-lowercase</b> strategy — drop brackets so PostgreSQL folds &amp; compares</div>
 							</div>
 						</div>
-						<p class="xs c-faint" style="margin-top:0.5em;">Same spec, same oracle, same target deliverable for all four → differences are attributable to method.</p>
+						<p class="mid c-goal" style="margin-top:0.5em;font-weight:600;text-align:center;">The hard part isn't "does it run" — it's "is the answer <em>still correct</em>."</p>
 					</section>
 
-					<!-- 03-e cost metric -->
+				</section>
+
+
+				<!-- ════════ THE EXPERIMENT — A / B / C1 / C2 ════════ -->
+				<section>
+
+					<!-- 4 arms -->
 					<section>
-						<div class="takeaway">How I'll measure cost — weighted tokens</div>
-						<h3>Cost metric</h3>
-						<div class="card accent-flow">
-							<p class="mid mono" style="margin:0;font-size:0.9em;">cost = input×1 + cache_read×0.1<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ cache_write×1.25 + output×5</p>
+						<div class="takeaway">The proof — 4 runs, same task, designed-but-not-yet-run</div>
+						<h3 style="margin-bottom:0.2em;">How much method should drive it?</h3>
+						<div class="flow vert" style="max-width:820px;gap:0;">
+							<div class="step on-warn" style="padding:11px 18px;"><span class="t"><span class="badge" style="color:var(--warn);border-color:var(--warn);">A</span> &nbsp;Naive</span><span class="d">one-line prompt, repo as-is → the trap</span></div>
+							<div class="arr" style="font-size:0.9em;padding:5px 0;">↓ &nbsp;add the full method</div>
+							<div class="step on-skill" style="padding:11px 18px;"><span class="t"><span class="badge" style="color:var(--skill);border-color:var(--skill);">B</span> &nbsp;Full Superpowers</span><span class="d">brainstorming → writing-plans → worktrees → subagent TDD → debugging → review → verification</span></div>
+							<div class="arr" style="font-size:0.9em;padding:5px 0;">↓ &nbsp;keep brainstorm, swap to a lean executor</div>
+							<div class="flow" style="margin:0;gap:14px;">
+								<div class="step on-goal" style="min-width:210px;padding:11px 18px;"><span class="t"><span class="badge">C1</span> &nbsp;Brainstorm + <span class="mono">/goal</span></span><span class="d">spec w/ DoD → raw /goal loop to oracle</span></div>
+								<div class="step on-flow" style="min-width:210px;padding:11px 18px;"><span class="t"><span class="badge" style="color:var(--flow);border-color:var(--flow-dim);">C2</span> &nbsp;Brainstorm + <span class="mono">/workflow</span></span><span class="d">same front half → /workflow fan-out</span></div>
+							</div>
 						</div>
-						<div class="legend" style="margin-top:0.6em;">
-							<span><i style="background:var(--c-input)"></i>input ×1</span>
-							<span><i style="background:var(--c-read)"></i>cache_read ×0.1</span>
-							<span><i style="background:var(--c-write)"></i>cache_write ×1.25</span>
-							<span><i style="background:var(--c-output)"></i>output ×5</span>
-						</div>
-						<p class="mid c-muted" style="margin-top:0.5em;">Plus wall-clock and number of human review rounds. Each run executed <strong class="c-text">3×</strong> before drawing conclusions.</p>
+						<p class="xs c-faint" style="margin-top:0.4em;">A vs rest = method beats one-liner · B vs C = full vs lean · C1 vs C2 = /goal vs /workflow</p>
 					</section>
 
-					<!-- 03-f success criteria -->
+					<!-- oracle -->
 					<section>
-						<div class="takeaway">What counts as success</div>
-						<h3>Success criteria</h3>
-						<div class="card accent-goal">
-							<ul class="mid" style="margin:0;padding-left:1.2em;">
-								<li>All endpoints return HTTP 200</li>
-								<li>Every endpoint <strong class="c-text">A/B-faithful</strong> to golden MSSQL (data-state differences explained, not hand-waved)</li>
-								<li>All migrated tables row-aligned</li>
-								<li>Deliverable: small, reviewable PRs that <strong class="c-text">carry their own A/B evidence</strong></li>
-							</ul>
+						<div class="takeaway">What makes "done" objective</div>
+						<h3 style="margin-bottom:0.3em;">The oracle = Definition of Done</h3>
+						<div class="flow" style="max-width:80%;">
+							<div class="step on-flow"><span class="t">PostgreSQL response</span></div>
+							<div class="arr">vs</div>
+							<div class="step on-goal"><span class="t">golden MSSQL response</span></div>
+							<div class="arr">=</div>
+							<div class="step on-ok" style="border-left-color:var(--ok);"><span class="t c-ok">per-endpoint, per-row A/B</span></div>
 						</div>
+						<p class="mid c-muted" style="margin-top:0.6em;">Without a machine-checkable oracle, "loop until goal" means nothing — shared by B / C1 / C2.</p>
 					</section>
 
-					<!-- results TBD placeholder -->
+					<!-- 4 metrics -->
 					<section>
-						<div class="takeaway">Results go here after the run</div>
-						<h3>Results <span class="tbd">TBD</span></h3>
-						<div class="stats">
-							<div class="stat"><div class="v fl"><span class="tbd">TBD</span></div><div class="l">endpoints<br>HTTP 200</div></div>
-							<div class="stat"><div class="v fl"><span class="tbd">TBD</span></div><div class="l">A/B body<br>faithful</div></div>
-							<div class="stat"><div class="v fl"><span class="tbd">TBD</span></div><div class="l">tables<br>row-aligned</div></div>
-							<div class="stat"><div class="v fl"><span class="tbd">TBD</span></div><div class="l">winning<br>run</div></div>
+						<div class="takeaway">Four metrics across A / B / C1 / C2</div>
+						<h3 style="margin-bottom:0.3em;">How they're compared</h3>
+						<div class="inv">
+							<div class="cell"><div class="k c-ok" style="font-size:0.6em;">Correctness</div><div class="s">oracle pass rate (endpoints A/B-faithful)</div></div>
+							<div class="cell"><div class="k c-goal" style="font-size:0.6em;">Cost</div><div class="s">one simple total (tokens or $)</div></div>
+							<div class="cell"><div class="k c-flow" style="font-size:0.6em;">Completion time</div><div class="s">wall-clock task → trustworthy result</div></div>
+							<div class="cell"><div class="k c-skill" style="font-size:0.6em;">Code quality</div><div class="s">scored by a separate review agent</div></div>
 						</div>
-						<div class="shot" style="margin-top:0.6em;"><div class="cap"><b>📷 SCREENSHOT</b> — A/B comparison report (per-endpoint pass/fail)</div></div>
+						<p class="mid c-muted" style="margin-top:0.6em;">Anchor: I did this kind of migration <strong class="c-text">by hand once</strong>, with weaker LLMs — about <strong class="c-goal">a month</strong>.</p>
 					</section>
 
-					<!-- 03-g cost bars placeholder -->
+					<!-- TBD results -->
 					<section>
-						<div class="takeaway">Cost comparison — to be filled after 3× runs each</div>
-						<h3>Cost by run <span class="tbd">TBD</span></h3>
-						<div class="legend">
-							<span><i style="background:var(--c-input)"></i>input</span>
-							<span><i style="background:var(--c-read)"></i>cache_read</span>
-							<span><i style="background:var(--c-write)"></i>cache_write</span>
-							<span><i style="background:var(--c-output)"></i>output</span>
-						</div>
-						<div class="cost-bars">
-							<div class="bar-row"><div class="nm">goal</div><div class="bar-track"></div><div class="tot"><span class="tbd">TBD</span></div></div>
-							<div class="bar-row"><div class="nm">workflow</div><div class="bar-track"></div><div class="tot"><span class="tbd">TBD</span></div></div>
-							<div class="bar-row"><div class="nm">goal + skill</div><div class="bar-track"></div><div class="tot"><span class="tbd">TBD</span></div></div>
-							<div class="bar-row"><div class="nm">workflow + skill</div><div class="bar-track"></div><div class="tot"><span class="tbd">TBD</span></div></div>
-						</div>
-						<p class="xs c-faint" style="margin-top:0.4em;">Hypothesis to test: "loaded a skill" ≠ "used the skill" — an unused skill can be the <em>most</em> expensive run (wasted cache_read).</p>
-					</section>
-
-					<!-- 03-h cost detail placeholder -->
-					<section>
-						<div class="takeaway">Full numbers land here</div>
-						<h3>Cost detail <span class="tbd">TBD</span></h3>
-						<table class="cost-table">
-							<thead><tr><th>run</th><th>input</th><th>cache_read</th><th>cache_write</th><th>output</th><th>weighted</th></tr></thead>
+						<div class="takeaway">Results land here after the run</div>
+						<h3 style="margin-bottom:0.3em;">Results <span class="tbd">TBD</span></h3>
+						<table class="cost-table" style="font-size:0.5em;">
+							<thead><tr><th>run</th><th>correctness</th><th>cost</th><th>time</th><th>code quality</th></tr></thead>
 							<tbody>
-								<tr><td class="exp">goal</td><td>—</td><td>—</td><td>—</td><td>—</td><td class="cost"><span class="tbd">TBD</span></td></tr>
-								<tr><td class="exp">workflow</td><td>—</td><td>—</td><td>—</td><td>—</td><td class="cost"><span class="tbd">TBD</span></td></tr>
-								<tr><td class="exp">goal + skill</td><td>—</td><td>—</td><td>—</td><td>—</td><td class="cost"><span class="tbd">TBD</span></td></tr>
-								<tr><td class="exp">workflow + skill</td><td>—</td><td>—</td><td>—</td><td>—</td><td class="cost"><span class="tbd">TBD</span></td></tr>
+								<tr><td class="exp">A · naive</td><td><span class="tbd">TBD</span></td><td><span class="tbd">TBD</span></td><td><span class="tbd">TBD</span></td><td><span class="tbd">TBD</span></td></tr>
+								<tr><td class="exp">B · full superpowers</td><td><span class="tbd">TBD</span></td><td><span class="tbd">TBD</span></td><td><span class="tbd">TBD</span></td><td><span class="tbd">TBD</span></td></tr>
+								<tr><td class="exp">C1 · brainstorm + /goal</td><td><span class="tbd">TBD</span></td><td><span class="tbd">TBD</span></td><td><span class="tbd">TBD</span></td><td><span class="tbd">TBD</span></td></tr>
+								<tr><td class="exp">C2 · brainstorm + /workflow</td><td><span class="tbd">TBD</span></td><td><span class="tbd">TBD</span></td><td><span class="tbd">TBD</span></td><td><span class="tbd">TBD</span></td></tr>
 							</tbody>
 						</table>
+						<div class="shot" style="margin-top:0.5em;"><div class="cap"><b>📷 SCREENSHOT</b> — A/B comparison report (per-endpoint pass/fail)</div></div>
 					</section>
 
-					<!-- 03-i what I expect to learn -->
-					<section>
-						<div class="takeaway">What the run should tell us</div>
-						<h3>What I expect to learn <span class="tbd">TBD</span></h3>
-						<div class="card accent-goal" style="margin-bottom:0.3em;">
-							<div class="card-label">Hypothesis 1</div>
-							<p class="mid" style="margin:0;">Loading a skill ≠ using it. An unused skill may be the most expensive run.</p>
-						</div>
-						<div class="card accent-flow">
-							<div class="card-label">Hypothesis 2</div>
-							<p class="mid" style="margin:0;">Most cost is cache_read — the inherent price of long autonomous loops. Hygiene only trims it at the margin.</p>
-						</div>
-					</section>
-
-					<!-- 03-i byproduct -->
-					<section>
-						<div class="takeaway">A byproduct to watch for</div>
-						<h3>Byproduct: bugs the oracle catches <span class="tbd">TBD</span></h3>
-						<div class="card accent-goal">
-							<p class="mid" style="margin:0;">Automated A/B comparison tends to surface bugs a human review would miss — e.g. a field silently written as <code class="c-warn">NULL</code>.<br><br><span class="c-muted">Concrete example to be filled after the run.</span></p>
-						</div>
-					</section>
-
-					<!-- 03-j when not to automate -->
+					<!-- when NOT to automate -->
 					<section>
 						<div class="takeaway">Knowing when NOT to automate matters as much</div>
-						<h3>When <span class="c-warn">not</span> to automate directly</h3>
-						<div class="card accent-warn">
-							<ul class="mid" style="margin:0;padding-left:1.2em;">
-								<li>No automatically-checkable oracle</li>
-								<li>Irreversible side effects — deleting data, calling external APIs, moving money</li>
-								<li>Domain knowledge that isn't in the repo</li>
-							</ul>
+						<h3 style="margin-bottom:0.3em;">When <span class="c-warn">not</span> to automate directly</h3>
+						<div class="flow">
+							<div class="step on-warn"><span class="t c-warn">No oracle</span><span class="d">nothing machine-checkable to loop against</span></div>
+							<div class="step on-warn"><span class="t c-warn">Irreversible side effects</span><span class="d">deleting data · external APIs · moving money</span></div>
+							<div class="step on-warn"><span class="t c-warn">Domain knowledge not in the repo</span><span class="d">the agent can't read what isn't written down</span></div>
 						</div>
-					</section>
-
-					<!-- 03-k human review -->
-					<section>
-						<div class="takeaway">The bottleneck moves from writing code to reviewing PRs</div>
-						<h3>Human review is the new bottleneck</h3>
-						<p class="mid c-muted">A migration PR can touch the DAO layer, config, 49 procs→functions, and dozens of fixes.</p>
-						<div class="card accent-goal" style="margin-top:0.4em;">
-							<p class="mid" style="margin:0;">Counter-move: force the agent to <strong class="c-goal">split into small PRs</strong> that <strong class="c-goal">carry their own A/B evidence</strong>. Humans review the evidence, not every diff line.</p>
+						<div class="card accent-goal" style="margin-top:0.6em;max-width:88%;">
+							<p class="mid" style="margin:0;">Human review is the new bottleneck → force <strong class="c-goal">small PRs that carry their own A/B evidence</strong>. Review the evidence, not every diff line.</p>
 						</div>
 					</section>
 
