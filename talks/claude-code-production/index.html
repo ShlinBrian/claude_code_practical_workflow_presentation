@@ -315,524 +315,470 @@
 				font-family: 'JetBrains Mono', monospace;
 				font-size: 0.38em; color: var(--faint); margin-top: 2em; letter-spacing: 0.05em;
 			}
+
+			/* ── code / terminal blocks ── */
+			.reveal pre.code {
+				width: 90%; margin: 0.4em auto; box-shadow: none;
+				font-size: 0.42em; line-height: 1.5;
+			}
+			.reveal pre.code code {
+				border-radius: 10px; border: 1px solid var(--border);
+				padding: 18px 22px; max-height: none; background: var(--surface);
+				font-family: 'JetBrains Mono', monospace;
+			}
+			.term {
+				background: var(--surface); border: 1px solid var(--border);
+				border-radius: 10px; padding: 18px 22px; text-align: left;
+				font-family: 'JetBrains Mono', monospace; font-size: 0.46em;
+				line-height: 1.6; width: 88%; margin: 0.4em auto;
+			}
+			.term .pr { color: var(--flow); }
+			.term .pr::before { content: '$ '; color: var(--faint); }
+			.term .ag { color: var(--muted); display: block; }
+			.term .ag::before { content: '⏺ '; color: var(--goal); }
+			.term .cm { color: var(--faint); }
+
+			/* ── TBD placeholder badge ── */
+			.tbd {
+				font-family: 'JetBrains Mono', monospace; font-size: 0.72em;
+				letter-spacing: 0.08em; text-transform: uppercase;
+				color: var(--warn); border: 1px dashed var(--warn);
+				border-radius: 5px; padding: 1px 7px; white-space: nowrap;
+			}
+
+			/* ── screenshot placeholder ── */
+			.shot {
+				background: repeating-linear-gradient(45deg, var(--surface), var(--surface) 12px, var(--surface-2) 12px, var(--surface-2) 24px);
+				border: 1px dashed var(--border-2); border-radius: 10px;
+				padding: 36px 24px; text-align: center; width: 82%;
+				margin: 0.4em auto; color: var(--faint);
+				font-family: 'JetBrains Mono', monospace;
+			}
+			.shot .cap { font-size: 0.5em; letter-spacing: 0.06em; }
+			.shot .cap b { color: var(--muted); }
 		</style>
 	</head>
 	<body>
 		<div class="reveal">
 			<div class="slides">
 
-				<!-- ════════════════════════════════════════════
-				     1. TITLE
-				     ════════════════════════════════════════════ -->
+				<!-- ════════ 1. TITLE ════════ -->
 				<section>
-					<div class="eyebrow" style="color:var(--flow);">Agentic Engineering · 內部分享 · 2026</div>
-					<h1 style="font-size:2.2em;line-height:1.05;margin-bottom:0;">Claude Code<br>in Production</h1>
+					<div class="eyebrow" style="color:var(--flow);">Agentic Engineering · Internal · 2026</div>
+					<h1 style="font-size:2.1em;line-height:1.05;margin-bottom:0;">Claude Code<br>in Production</h1>
 					<p style="font-size:0.7em;color:var(--goal);font-weight:500;margin-top:0.3em;">A Practical RD Workflow</p>
-					<p class="mid c-muted" style="max-width:560px;margin:1.2em auto 0;line-height:1.6;">
-						Agent 只會越來越強。<br>
-						這場分享講的是：<strong class="c-text">我們怎麼調整工作方式來跟上。</strong>
+					<p class="mid c-muted" style="max-width:600px;margin:1.2em auto 0;line-height:1.6;">
+						Stop writing one-line prompts and hoping.<br>
+						This talk shows <strong class="c-text">how to turn a requirement into a plan an agent can actually execute</strong> — with skills, <span class="cmd goal">/goal</span>, and <span class="cmd flow">/workflow</span>.
 					</p>
 				</section>
 
 
-				<!-- ════════════════════════════════════════════
-				     2. AGENDA
-				     ════════════════════════════════════════════ -->
+				<!-- ════════ 2. AGENDA ════════ -->
 				<section>
 					<h2 style="font-size:1.4em;">Agenda</h2>
 					<ol class="agenda-list">
-						<li>
-							<span class="num">01</span>
-							<div>
-								<div class="title">前提與終局</div>
-								<div class="desc">為什麼要為「成長曲線」優化，而不是今天的快照</div>
-							</div>
-						</li>
-						<li>
-							<span class="num">02</span>
-							<div>
-								<div class="title">方法論：機器側 × 人側</div>
-								<div class="desc">給對工具 + 把任務定義清楚，缺一不可</div>
-							</div>
-						</li>
-						<li>
-							<span class="num">03</span>
-							<div>
-								<div class="title">證據與實踐</div>
-								<div class="desc">MSSQL→PG migration 案例、成本帳、何時別自動化</div>
-							</div>
-						</li>
-						<li>
-							<span class="num">★</span>
-							<div>
-								<div class="title">Checklist</div>
-								<div class="desc">下 /goal 或 /workflow 前的五句自問</div>
-							</div>
-						</li>
+						<li><span class="num">01</span><div>
+							<div class="title">Superpowers Skills</div>
+							<div class="desc">A skill catalog for the dev lifecycle — and brainstorming, the requirement→spec engine</div></div></li>
+						<li><span class="num">02</span><div>
+							<div class="title">/goal &amp; /workflow</div>
+							<div class="desc">Loop-until-goal vs multi-agent fan-out — what they are, how to use them, when each fits</div></div></li>
+						<li><span class="num">03</span><div>
+							<div class="title">The Experiment</div>
+							<div class="desc">MSSQL→PostgreSQL migration: why it's hard, how I'll measure it, placeholder results</div></div></li>
+						<li><span class="num">★</span><div>
+							<div class="title">Pre-flight Checklist</div>
+							<div class="desc">Five questions to ask before you type /goal or /workflow</div></div></li>
 					</ol>
 				</section>
 
 
-				<!-- ════════════════════════════════════════════
-				     3. 終局 PIPELINE（先給聽眾一個畫面）
-				     ════════════════════════════════════════════ -->
+				<!-- ════════ ACT 0 — FRAMING (single slide) ════════ -->
 				<section>
-					<div class="takeaway">我們要收斂到的那個終局長這樣</div>
-					<h3 style="font-size:1.2em;">終局 Pipeline</h3>
-					<div class="pipe" style="margin-top:0.6em;">
-						<div class="node"><span class="k">PM / Manager</span><span class="s">提出 request</span></div>
-						<div class="arrow">→</div>
-						<div class="node agent"><span class="k">AI Agent</span><span class="s">/goal · /workflow</span></div>
-						<div class="arrow">→</div>
-						<div class="node"><span class="k">Pull Request</span><span class="s">完成 + 自帶證據</span></div>
-						<div class="arrow">→</div>
-						<div class="node human"><span class="k">Human</span><span class="s">review 證據，不是 diff</span></div>
-					</div>
-					<p class="mid c-muted" style="margin-top:1em;">
-						後面三幕都是在回答：<strong class="c-text">怎麼穩定地往這條 pipeline 收斂。</strong>
-					</p>
+					<div class="takeaway">The one idea behind everything that follows</div>
+					<h3 style="font-size:1.3em;">Don't ask <span class="c-warn">"can the agent do it?"</span></h3>
+					<blockquote style="margin-top:0.6em;">
+						Ask: <strong class="c-goal">"Have I defined the task well enough that it can?"</strong><br><br>
+						Polishing prompts plateaus. The leverage is in the <strong class="c-text">spec, the definition of done, and the workspace</strong> you hand the agent — that's what this talk teaches.
+					</blockquote>
 				</section>
 
 
-				<!-- ════════════════════════════════════════════════════════════
-				     ACT 01 — 前提與終局
-				     ════════════════════════════════════════════════════════════ -->
+				<!-- ════════ ACT 1 — THE WRONG WAY ════════ -->
 				<section>
-
-					<!-- 01 cover -->
 					<section class="section-cover">
-						<div class="act-num">ACT 01</div>
-						<h2>前提與終局</h2>
-						<p class="act-sub">承接 Isaac & Sherlock 的 Agentic Engineering 報告</p>
-						<p class="act-question">核心問題：agent 越來越強，我們怎麼跟上？</p>
+						<div class="act-num">ACT 01 · MOTIVATION</div>
+						<h2>The Wrong Way</h2>
+						<p class="act-question">What most people actually type — and why it fails</p>
 					</section>
 
-					<!-- 01-a 核心假設 -->
 					<section>
-						<div class="takeaway">這場分享只有一個假設</div>
-						<h3>Agent 是一條還在往上走的曲線</h3>
-						<blockquote>
-							Agent 會持續變強，甚至有能力自己做 harness。<br>
-							我們不把它當成今天的工具快照，而是一條<strong class="c-goal">成長曲線</strong>。
-						</blockquote>
-					</section>
-
-					<!-- 01-b 轉變 -->
-					<section>
-						<div class="takeaway">大多數人還在用錯的模式</div>
-						<h3>實習生 → 資深夥伴</h3>
-						<div class="two-col" style="margin-top:0.5em;">
-							<div class="col" style="border-top:3px solid var(--warn);">
-								<div class="lbl" style="color:var(--warn);">多數人還在這裡</div>
-								<p class="mid c-muted" style="margin:0;">拚命加 example、reasoning<br>把 prompt 寫得更精緻——</p>
-								<p class="mid c-warn" style="margin:0.5em 0 0;"><strong>但任務本身沒定義清楚</strong></p>
-							</div>
-							<div class="col" style="border-top:3px solid var(--ok);">
-								<div class="lbl" style="color:var(--ok);">該到的地方</div>
-								<p class="mid c-muted" style="margin:0;">給方向、講清楚要什麼<br>它自己判斷、甚至反過來挑戰你</p>
-								<p class="mid c-ok" style="margin:0.5em 0 0;"><strong>目標與環境定義清楚</strong></p>
-							</div>
+						<div class="takeaway">A real-looking one-line prompt</div>
+						<h3>"Just migrate the database"</h3>
+						<div class="term">
+							<span class="pr">claude</span><br>
+							<span class="cm"># the prompt most people would write:</span><br>
+							Migrate this Java service from MSSQL to PostgreSQL.<br>
+							Keep everything working.
 						</div>
+						<p class="mid c-muted" style="margin-top:0.8em;">Looks reasonable. It is a trap.</p>
 					</section>
 
-					<!-- 01-c 推論 -->
 					<section>
-						<div class="takeaway">由此推出的一條原則</div>
-						<h3>為成長曲線優化，<br>不是為今天的快照優化</h3>
-						<p class="mid c-muted" style="margin-top:0.8em;">
-							會隨 agent 變強而複利的 = <strong class="c-ok">通用投資</strong>（讓 code 好懂、驗收自動）<br>
-							綁死在某一代 agent 怪癖上的 = <strong class="c-warn">hack，不算</strong>
-						</p>
-					</section>
-
-				</section>
-
-
-				<!-- ════════════════════════════════════════════════════════════
-				     ACT 02 — 方法論
-				     ════════════════════════════════════════════════════════════ -->
-				<section>
-
-					<!-- 02 cover -->
-					<section class="section-cover">
-						<div class="act-num">ACT 02</div>
-						<h2>方法論</h2>
-						<p class="act-sub">逼近終局要兩側都到位</p>
-						<p class="act-question">機器側給對工具 × 人側把任務定義清楚</p>
-					</section>
-
-					<!-- 02-a 兩側總覽 -->
-					<section>
-						<div class="takeaway">整套方法論的全貌</div>
-						<h3>兩側都要到位</h3>
-						<div class="two-col" style="margin-top:0.4em;">
-							<div class="col" style="border-top:3px solid var(--flow);">
-								<div class="lbl" style="color:var(--flow);">機器側 · 給對工具</div>
-								<p class="mid"><strong><span class="cmd goal">/goal</span></strong> — loop until goal</p>
-								<p class="mid"><strong><span class="cmd flow">/workflow</span></strong> — multi-agent 扇出</p>
-								<p class="mid"><strong>hybrid</strong> — 主控 loop + workflow 扇出<br><span class="c-faint" style="font-size:0.85em;">（最實際的跑法）</span></p>
-							</div>
-							<div class="col" style="border-top:3px solid var(--goal);">
-								<div class="lbl" style="color:var(--goal);">人側 · 把任務定義清楚</div>
-								<p class="mid"><strong>完成定義（DoD）</strong><br><span class="c-muted">做完要能被自動檢查</span></p>
-								<p class="mid"><strong>邊界</strong><br><span class="c-muted">哪些不要碰</span></p>
-								<p class="mid"><strong>階段判斷</strong><br><span class="c-muted">想 / 比 / 決 / 做</span></p>
-							</div>
-						</div>
-					</section>
-
-					<!-- 02-b DoD — 最關鍵 -->
-					<section>
-						<div class="takeaway">整場最重要的一頁</div>
-						<h3>沒有完成定義，<br>loop until goal 沒有意義</h3>
-						<div class="card accent-goal" style="margin-top:0.5em;">
+						<div class="takeaway">Plausible output, no way to trust it</div>
+						<h3>What you get back</h3>
+						<div class="card accent-warn" style="margin-top:0.4em;">
 							<p class="mid" style="margin:0;">
-								能不能用 <span class="cmd goal">/goal</span> 或 <span class="cmd flow">/workflow</span>，<br>
-								第一個要問的不是工具，而是——<br><br>
-								<strong class="c-text" style="font-size:1.15em;">你能不能把驗收自動化？</strong>
+								It rewrites the SQL, swaps the driver, the build goes green — and it confidently says <strong class="c-text">"done."</strong>
 							</p>
 						</div>
-						<p class="xs c-muted" style="margin-top:0.6em;">沒有可驗收的 DoD，agent 只會繞圈或自我感覺良好地停下。</p>
-					</section>
-
-					<!-- 02-c 以終為始 -->
-					<section>
-						<div class="takeaway">預設直接丟，失敗了再回來問「為什麼」</div>
-						<h3>以終為始</h3>
-						<p class="mid">
-							預設就是直接把 <span class="cmd goal">/goal</span> 或 <span class="cmd flow">/workflow</span> 丟向問題。
-						</p>
-						<p class="mid fragment" style="margin-top:0.8em;">
-							結果不好時，問的不是「我該怎麼補刀」，而是——
-						</p>
-						<h3 class="fragment c-goal" style="margin-top:0.5em;font-size:1.3em;">
-							為什麼 agent 自己到不了？
-						</h3>
-					</section>
-
-					<!-- 02-d 四根因 -->
-					<section>
-						<div class="takeaway">四個常見根因，分屬兩側</div>
-						<h3>診斷：agent 到不了的四個原因</h3>
-						<ul class="diag">
-							<li class="fragment"><span class="who code">code</span>看不懂我們寫的程式</li>
-							<li class="fragment"><span class="who code">code</span>缺 domain knowledge</li>
-							<li class="fragment"><span class="who code">code</span>無法 mapping 需求到應該修改的邏輯</li>
-							<li class="fragment"><span class="who brief">brief</span>prompt 沒講到重點 / 沒有完成定義</li>
+						<p class="mid c-muted" style="margin-top:0.6em;">Three things are missing, and they're the whole game:</p>
+						<ul class="diag" style="margin-top:0.3em;">
+							<li><span class="who brief">gap</span>No <strong class="c-text">spec</strong> — "keep everything working" is undefined</li>
+							<li><span class="who brief">gap</span>No <strong class="c-text">definition of done</strong> — nothing checks the answers are still correct</li>
+							<li><span class="who brief">gap</span>No <strong class="c-text">isolation</strong> — it edited your working tree in place</li>
 						</ul>
 					</section>
-
-					<!-- 02-e 兩軌處方 -->
-					<section>
-						<div class="takeaway">處方也分兩軌——不能只加註解</div>
-						<h3>兩軌處方</h3>
-						<div class="two-col" style="margin-top:0.3em;">
-							<div class="col" style="border-top:3px solid var(--flow);">
-								<div class="lbl" style="color:var(--flow);">Code 側 · 會複利</div>
-								<div class="ladder">
-									<div class="rung">加註解</div>
-									<div class="rung"><span class="ar">↓</span>加 mapping index</div>
-									<div class="rung"><span class="ar">↓</span>重構段落</div>
-								</div>
-							</div>
-							<div class="col" style="border-top:3px solid var(--goal);">
-								<div class="lbl" style="color:var(--goal);">Brief 側 · 你不可外包</div>
-								<div class="ladder">
-									<div class="rung" style="color:var(--goal);">寫成可測的 goal（DoD）</div>
-									<div class="rung"><span class="ar">↓</span>補背景與邊界</div>
-									<div class="rung"><span class="ar">↓</span>整理成可交辦的 brief</div>
-								</div>
-							</div>
-						</div>
-					</section>
-
-					<!-- 02-f 閉環 -->
-					<section>
-						<div class="takeaway">兩軌的關係 = 整份報告的閉環</div>
-						<h3>Code 側會複利，Brief 側人來扛</h3>
-						<div class="card accent-flow" style="margin-bottom:0.3em;">
-							<p class="mid" style="margin:0;">
-								Code 側把 codebase 改造得更 <strong class="c-flow">agent-legible</strong>，會隨 agent 變強而複利。
-							</p>
-						</div>
-						<div class="card accent-goal">
-							<p class="mid" style="margin:0;">
-								Brief 側<strong class="c-goal">不會被 agent 自動補上</strong>，是人永遠要扛的部分。
-							</p>
-						</div>
-					</section>
-
-					<!-- 02-g 鏡子 -->
-					<section>
-						<div class="takeaway">為什麼 brief 側 agent 補不了</div>
-						<h3>AI 是一面鏡子</h3>
-						<div class="card accent-skill">
-							<p class="mid" style="margin:0;">
-								它會挑戰你的內容，但<strong class="c-text">不會質疑你的意圖</strong>。<br><br>
-								你餵它模糊，它就把沒想清楚的指令原封反射回來。<br>
-								頂多把申論題變成填空題，空格還是你來填。
-							</p>
-						</div>
-						<p class="mid c-goal" style="margin-top:0.6em;font-weight:600;">
-							它能幫你問，沒辦法替你想。
-						</p>
-					</section>
-
-					<!-- 02-h Superpowers -->
-					<section>
-						<div class="takeaway">把流程編碼成 skill，讓團隊都能用</div>
-						<h3>Superpowers：流程 → Skill</h3>
-						<div class="card accent-skill" style="margin-bottom:0.3em;">
-							<div class="card-label">Jesse Vincent · 2025/10</div>
-							<p class="mid" style="margin:0;">
-								問題不在 Claude 的能力，在<strong class="c-text">缺專業開發流程</strong>。<br>
-								把 brainstorm → plan → TDD → review 編碼成 skills。
-							</p>
-						</div>
-						<div class="two-col" style="margin-top:0.3em;">
-							<div class="col" style="border-top:3px solid var(--ok);padding:16px 18px;">
-								<div class="lbl" style="color:var(--ok);">簡單任務 → 跳過流程</div>
-								<p class="small c-muted" style="margin:0;">typo、小函式：<strong class="c-text">goal 直接做</strong></p>
-							</div>
-							<div class="col" style="border-top:3px solid var(--goal);padding:16px 18px;">
-								<div class="lbl" style="color:var(--goal);">中大型 → 流程才划算</div>
-								<p class="small c-muted" style="margin:0;">多檔、越改越歪：<strong class="c-text">流程紀律拉開差距</strong></p>
-							</div>
-						</div>
-						<p class="xs c-faint" style="margin-top:0.4em;">判斷軸 = 做錯重來貴不貴，不是人資不資深</p>
-					</section>
-
-					<!-- 02-i 兩道圍欄 -->
-					<section>
-						<div class="takeaway">skill 不是銀彈，兩道圍欄</div>
-						<h3>幫你問 ≠ 替你想</h3>
-						<div class="card accent-warn" style="margin-bottom:0.3em;">
-							<p class="mid" style="margin:0;">
-								<strong class="c-warn">1.</strong> 餵模糊進去，會產出<strong class="c-text">結構漂亮的錯任務</strong>——比明顯的爛 prompt 更難抓。
-							</p>
-						</div>
-						<div class="card accent-warn">
-							<p class="mid" style="margin:0;">
-								<strong class="c-warn">2.</strong> DoD 的<strong class="c-text">品質</strong>仍靠 domain knowledge。Skill 幫你把 DoD 寫下來，不能替你判斷 DoD 對不對。
-							</p>
-						</div>
-						<p class="mid c-muted fragment" style="margin-top:0.5em;">
-							正面：思考外包不了，但<strong class="c-text">流程可以編碼、教會整個團隊</strong>。
-						</p>
-					</section>
-
 				</section>
 
 
-				<!-- ════════════════════════════════════════════════════════════
-				     ACT 03 — 證據與實踐
-				     ════════════════════════════════════════════════════════════ -->
+				<!-- ════════ ACT 2 — SUPERPOWERS SKILLS ════════ -->
 				<section>
-
-					<!-- 03 cover -->
 					<section class="section-cover">
-						<div class="act-num">ACT 03</div>
-						<h2>證據與實踐</h2>
-						<p class="act-sub">一個真實案例、一份成本帳、知道何時別自動化</p>
-						<p class="act-question">前面講的方法論，跑起來長什麼樣？</p>
+						<div class="act-num">ACT 02 · SKILLS</div>
+						<h2>Superpowers Skills</h2>
+						<p class="act-sub">Reusable, encoded engineering process — not just prompts</p>
+						<p class="act-question">A skill tells the agent <em>how</em> to work, not just <em>what</em> to do</p>
 					</section>
 
-					<!-- 03-a 案例引入 -->
 					<section>
-						<div class="takeaway">壓力測試：一個夠大夠難的真實任務</div>
-						<h3>案例：MSSQL → PostgreSQL Migration</h3>
-						<p class="mid c-muted">
-							在系統底層換掉引擎，<br>
-							但<strong class="c-text">每一個對外行為都得一模一樣</strong>。
-						</p>
-					</section>
-
-					<!-- 03-b 為什麼難 -->
-					<section>
-						<div class="takeaway">難不在需求模糊，在三件事疊加</div>
-						<h3>為什麼這是硬骨頭？</h3>
-						<div class="card" style="text-align:left;">
-							<p class="mid" style="margin:0 0 0.5em;">
-								<strong class="c-flow">1.</strong> SQL 方言散落整個 stack — <span class="c-muted mono" style="font-size:0.8em;">SELECT TOP · [dbo]. · (NOLOCK) · ISNULL</span>
-							</p>
-							<p class="mid fragment" style="margin:0 0 0.5em;">
-								<strong class="c-flow">2.</strong> 結構性差異 — 49 proc / 4 view，SCT 只有 GUI 沒自動化
-							</p>
-							<p class="mid fragment" style="margin:0 0 0.5em;">
-								<strong class="c-flow">3.</strong> 型別 + 大小寫靜默出錯 — 一個沒對齊就<strong class="c-warn">不報錯但答案錯</strong>
-							</p>
+						<div class="takeaway">One catalog, mapped to the dev lifecycle</div>
+						<h3>The skill catalog</h3>
+						<div class="two-col" style="margin-top:0.3em;">
+							<div class="col" style="border-top:3px solid var(--goal);">
+								<div class="lbl" style="color:var(--goal);">Define &amp; plan</div>
+								<p class="small" style="margin:0;"><b class="c-text">brainstorming</b> — vague idea → spec<br>
+								<b class="c-text">writing-plans</b> — spec → bite-sized tasks<br>
+								<b class="c-text">using-git-worktrees</b> — isolate the work</p>
+							</div>
+							<div class="col" style="border-top:3px solid var(--flow);">
+								<div class="lbl" style="color:var(--flow);">Build &amp; verify</div>
+								<p class="small" style="margin:0;"><b class="c-text">test-driven-development</b> — red/green<br>
+								<b class="c-text">systematic-debugging</b> — when it breaks<br>
+								<b class="c-text">requesting / receiving-code-review</b><br>
+								<b class="c-text">verification-before-completion</b></p>
+							</div>
 						</div>
-						<p class="mid c-goal fragment" style="margin-top:0.5em;font-weight:600;">
-							最難的不是「跑不跑得起來」，而是「答案對不對」。
-						</p>
+						<p class="xs c-faint" style="margin-top:0.5em;">Today we go deep on <strong class="c-goal">brainstorming</strong>, then touch writing-plans &amp; systematic-debugging.</p>
 					</section>
 
-					<!-- 03-c 完成定義 -->
 					<section>
-						<div class="takeaway">讓方法論落地的關鍵：有一個 oracle</div>
-						<h3>這次的完成定義</h3>
+						<div class="takeaway">The star skill — it turns a request into a spec</div>
+						<h3>brainstorming: requirement → spec</h3>
+						<div class="ladder" style="max-width:78%;margin:0.4em auto;">
+							<div class="rung">Explore project context first</div>
+							<div class="rung"><span class="ar">↓</span>Ask clarifying questions — <b>one at a time</b></div>
+							<div class="rung"><span class="ar">↓</span>Propose 2–3 approaches with trade-offs</div>
+							<div class="rung"><span class="ar">↓</span>Present a design, get approval section by section</div>
+							<div class="rung" style="color:var(--goal);"><span class="ar">↓</span>Write &amp; commit a spec — <b>with a Definition of Done</b></div>
+						</div>
+						<p class="mid c-muted" style="margin-top:0.5em;">It refuses to write code until the design is approved. That gate is the point.</p>
+					</section>
+
+					<section>
+						<div class="takeaway">What it looks like on the migration task</div>
+						<h3>From "migrate the DB" to a spec</h3>
+						<div class="term">
+							<span class="ag">What does "keep everything working" mean — same API responses, or same DB state?</span>
+							<span class="pr">Same HTTP responses, byte-for-byte where data allows.</span>
+							<span class="ag">How will we verify that automatically?</span>
+							<span class="pr">A/B every endpoint against a golden MSSQL, row-by-row.</span>
+							<span class="ag">Anything off-limits? Irreversible side effects?</span>
+							<span class="pr">No schema drops until A/B passes. Work in a worktree.</span>
+							<span class="cm">→ committed: docs/specs/2026-..-mssql-pg-migration-design.md</span>
+						</div>
+						<p class="mid c-goal" style="margin-top:0.5em;font-weight:600;">The output is a committed spec with a testable DoD — exactly what /goal needs.</p>
+					</section>
+
+					<section>
+						<div class="takeaway">Two more skills you'll reuse constantly</div>
+						<h3>Plan, then debug systematically</h3>
+						<div class="two-col" style="margin-top:0.4em;">
+							<div class="col" style="border-top:3px solid var(--goal);">
+								<div class="lbl" style="color:var(--goal);">writing-plans</div>
+								<p class="small c-muted" style="margin:0;">Turns the spec into <b class="c-text">bite-sized, independently testable tasks</b> — each with files, test, and commit. The agent (or a fleet) executes task-by-task with review gates.</p>
+							</div>
+							<div class="col" style="border-top:3px solid var(--flow);">
+								<div class="lbl" style="color:var(--flow);">systematic-debugging</div>
+								<p class="small c-muted" style="margin:0;">When something breaks, forces <b class="c-text">reproduce → isolate → hypothesis → fix → verify</b> instead of guessing. Stops the agent flailing.</p>
+							</div>
+						</div>
+						<p class="xs c-faint" style="margin-top:0.5em;">Same idea every time: encode the <em>process</em>, so quality doesn't depend on how good today's prompt was.</p>
+					</section>
+				</section>
+
+
+				<!-- ════════ ACT 3 — /goal & /workflow ════════ -->
+				<section>
+					<section class="section-cover">
+						<div class="act-num">ACT 03 · TOOLS</div>
+						<h2>/goal &amp; /workflow</h2>
+						<p class="act-sub">Two ways to spend a lot of tokens well</p>
+						<p class="act-question">Loop until done, or fan out across many agents?</p>
+					</section>
+
+					<section>
+						<div class="takeaway">/goal — keep working until a goal is met</div>
+						<h3><span class="cmd goal" style="font-size:1.1em;">/goal</span> — loop until goal</h3>
+						<div class="term">
+							<span class="pr">claude</span><br>
+							<span class="cm"># hand it the spec + a checkable goal:</span><br>
+							/goal All N endpoints return HTTP 200 AND each<br>
+							&nbsp;&nbsp;A/B-matches golden MSSQL row-by-row. Spec:<br>
+							&nbsp;&nbsp;docs/specs/mssql-pg-migration-design.md<br>
+							<span class="ag">…runs build → test → A/B → fix → repeat until the oracle passes</span>
+						</div>
+						<p class="mid c-muted" style="margin-top:0.5em;">It only works if the goal is <strong class="c-text">machine-checkable</strong>. No oracle → it loops or stops on a vibe.</p>
+					</section>
+
+					<section>
+						<div class="takeaway">/workflow — orchestrate many agents deterministically</div>
+						<h3><span class="cmd flow" style="font-size:1.1em;">/workflow</span> — multi-agent fan-out</h3>
+						<pre class="code"><code class="language-javascript">// convert 49 stored procedures, each in parallel, then verify
+const procs = await agent('list all .sql procs', {schema: PROCS})
+const results = await pipeline(
+  procs.list,
+  p => agent(`convert ${p} MSSQL→PG`, {phase: 'convert', isolation: 'worktree'}),
+  c => agent(`A/B verify ${c.proc} vs golden`, {phase: 'verify', schema: VERDICT})
+)
+return results.filter(r => r.verdict.faithful)</code></pre>
+						<p class="mid c-muted" style="margin-top:0.4em;">Each proc flows through convert→verify independently. Wall-clock = slowest single chain, not the sum.</p>
+					</section>
+
+					<section>
+						<div class="takeaway">They're not rivals — the real answer is hybrid</div>
+						<h3>When each fits</h3>
+						<div class="two-col" style="margin-top:0.3em;">
+							<div class="col" style="border-top:3px solid var(--goal);">
+								<div class="lbl" style="color:var(--goal);">Reach for /goal</div>
+								<p class="small c-muted" style="margin:0;">One coherent objective · tight feedback loop · the work is mostly sequential (build/test/fix).</p>
+							</div>
+							<div class="col" style="border-top:3px solid var(--flow);">
+								<div class="lbl" style="color:var(--flow);">Reach for /workflow</div>
+								<p class="small c-muted" style="margin:0;">Many independent units (N files, N procs) · you want parallelism + isolation · structure should be deterministic.</p>
+							</div>
+						</div>
+						<div class="card accent-flow" style="margin-top:0.4em;">
+							<p class="mid" style="margin:0;"><strong class="c-flow">Hybrid (most realistic):</strong> a main-loop <span class="cmd goal">/goal</span> drives the build/deploy/A-B cycle and calls <span class="cmd flow">/workflow</span> to fan out the proc conversions and per-endpoint diagnosis.</p>
+						</div>
+					</section>
+				</section>
+
+
+				<!-- ════════ ACT 4 — THE EXPERIMENT ════════ -->
+				<section>
+					<section class="section-cover">
+						<div class="act-num">ACT 04 · EXPERIMENT</div>
+						<h2>The Experiment</h2>
+						<p class="act-sub">A hard, real task to stress-test the whole method</p>
+						<p class="act-question">Not run yet — here is the case, the design, and where results will go</p>
+					</section>
+
+					<section>
+						<div class="takeaway">A stress test: swap the engine, change nothing observable</div>
+						<h3>Case: MSSQL → PostgreSQL migration</h3>
+						<p class="mid c-muted">
+							A Java service. Replace the database engine underneath, but
+							<strong class="c-text">every externally observable behavior must stay identical.</strong>
+						</p>
+						<div class="card accent-goal" style="margin-top:0.5em;">
+							<p class="mid" style="margin:0;">I did a migration like this <strong class="c-text">by hand once</strong>, with weaker LLMs — it took about <strong class="c-goal">a month</strong> of development and testing. This time I want to measure how the method changes that.</p>
+						</div>
+					</section>
+
+					<section>
+						<div class="takeaway">Why this is hard — three problems stacked</div>
+						<h3>Why it's a hard problem</h3>
+						<div class="card" style="text-align:left;">
+							<p class="mid" style="margin:0 0 0.5em;"><strong class="c-flow">1.</strong> SQL dialect is sprinkled across the whole stack — <span class="c-muted mono" style="font-size:0.8em;">SELECT TOP · [dbo]. · (NOLOCK) · ISNULL</span> all differ in PG.</p>
+							<p class="mid fragment" style="margin:0 0 0.5em;"><strong class="c-flow">2.</strong> Structural gap — <strong class="c-text">49 stored procedures + 4 views</strong> to port; the vendor tool is GUI-only, no automation.</p>
+							<p class="mid fragment" style="margin:0;"><strong class="c-flow">3.</strong> Type &amp; case mismatches fail <strong class="c-warn">silently</strong> — no error thrown, just a wrong answer.</p>
+						</div>
+						<p class="mid c-goal fragment" style="margin-top:0.5em;font-weight:600;">The hard part isn't "does it run" — it's "is the answer still correct."</p>
+					</section>
+
+					<!-- 03-c oracle/DoD -->
+					<section>
+						<div class="takeaway">The key to making loop-until-goal meaningful: an oracle</div>
+						<h3>Definition of Done = an oracle</h3>
 						<div class="card accent-goal">
 							<div class="card-label">DoD = Oracle</div>
 							<p class="mid" style="margin:0;">
-								逐 endpoint、逐 row，跟 golden MSSQL 做 <strong class="c-goal">A/B 比對</strong>。<br><br>
-								<strong class="c-text">這就是讓 loop until goal 有意義的那個 oracle。</strong><br>
-								沒有它，agent 不知道自己有沒有做對。
+								Per-endpoint, per-row <strong class="c-goal">A/B comparison</strong> against a golden MSSQL instance.<br><br>
+								<strong class="c-text">This is the oracle that makes "loop until goal" mean something.</strong> Without it the agent can't know whether it's right.
 							</p>
 						</div>
 					</section>
 
-					<!-- 03-d 硬證據 -->
+					<!-- 03-d runs to compare -->
 					<section>
-						<div class="takeaway">結論：goal 與 workflow 都能完整跑完</div>
-						<h3>硬證據</h3>
-						<div class="stats">
-							<div class="stat"><div class="v ok">47/47</div><div class="l">endpoints<br>HTTP 200</div></div>
-							<div class="stat"><div class="v fl">44/47</div><div class="l">A/B body 相同<br>+3 資料狀態差 → 47/47 忠實</div></div>
-							<div class="stat"><div class="v ok">18/18</div><div class="l">表 row 對齊<br>376,653 rows</div></div>
-							<div class="stat"><div class="v fl">hybrid</div><div class="l">Opus 主控<br>+ workflow 52-agent</div></div>
+						<div class="takeaway">Four runs, same task, same deliverable → comparable</div>
+						<h3>The runs I'll compare</h3>
+						<div class="two-col" style="margin-top:0.3em;">
+							<div class="col" style="border-top:3px solid var(--goal);">
+								<div class="lbl" style="color:var(--goal);">Without skills</div>
+								<p class="mid" style="margin:0;"><b class="c-text">goal</b> — plain /goal loop<br><b class="c-text">workflow</b> — plain /workflow fan-out</p>
+							</div>
+							<div class="col" style="border-top:3px solid var(--skill);">
+								<div class="lbl" style="color:var(--skill);">With Superpowers skills</div>
+								<p class="mid" style="margin:0;"><b class="c-text">goal + skill</b><br><b class="c-text">workflow + skill</b></p>
+							</div>
 						</div>
+						<p class="xs c-faint" style="margin-top:0.5em;">Same spec, same oracle, same target deliverable for all four → differences are attributable to method.</p>
 					</section>
 
-					<!-- 03-e Hybrid 架構 -->
+					<!-- 03-e cost metric -->
 					<section>
-						<div class="takeaway">goal vs workflow 其實是假對立</div>
-						<h3>真正的架構 = Hybrid</h3>
+						<div class="takeaway">How I'll measure cost — weighted tokens</div>
+						<h3>Cost metric</h3>
 						<div class="card accent-flow">
-							<p class="mid" style="margin:0;">
-								<strong class="c-flow">Opus 主控</strong> — worktree、Docker、.bak 還原、build/deploy 迴圈<br><br>
-								<strong class="c-flow">/workflow 扇出</strong> — 52-agent 轉 procs、逐 endpoint 診斷
-							</p>
+							<p class="mid mono" style="margin:0;font-size:0.9em;">cost = input×1 + cache_read×0.1<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ cache_write×1.25 + output×5</p>
 						</div>
-					</section>
-
-					<!-- 03-f 副產品 bug -->
-					<section>
-						<div class="takeaway">自動驗收逼出人工 review 抓不到的 bug</div>
-						<h3>副產品</h3>
-						<div class="card accent-goal">
-							<p class="mid" style="margin:0;">
-								A/B 比對抓出 <code class="c-flow">incrementalReleaseRatio</code> 被硬寫 <code class="c-warn">NULL</code>。<br><br>
-								人工 review 很難發現——是<strong class="c-goal">有了自動驗收才被逼出來的</strong>。
-							</p>
-						</div>
-					</section>
-
-					<!-- 03-g 成本帳 -->
-					<section>
-						<div class="takeaway">四種跑法、同任務、交付物相同 → 可比</div>
-						<h3>成本帳</h3>
-						<div class="legend">
+						<div class="legend" style="margin-top:0.6em;">
 							<span><i style="background:var(--c-input)"></i>input ×1</span>
 							<span><i style="background:var(--c-read)"></i>cache_read ×0.1</span>
 							<span><i style="background:var(--c-write)"></i>cache_write ×1.25</span>
 							<span><i style="background:var(--c-output)"></i>output ×5</span>
 						</div>
-						<div class="cost-bars" id="bars">
-							<div class="bar-row cheap">
-								<div class="nm">workflow_skill<small>skill 有用到</small></div>
-								<div class="bar-track"><div class="seg s-input" data-w="0.67"></div><div class="seg s-read" data-w="18.6"></div><div class="seg s-write" data-w="17.6"></div><div class="seg s-output" data-w="13.2"></div></div>
-								<div class="tot">≈ 2.16M</div>
-							</div>
-							<div class="bar-row">
-								<div class="nm">goal</div>
-								<div class="bar-track"><div class="seg s-input" data-w="0.82"></div><div class="seg s-read" data-w="34.9"></div><div class="seg s-write" data-w="10.1"></div><div class="seg s-output" data-w="17.4"></div></div>
-								<div class="tot">≈ 2.73M</div>
-							</div>
-							<div class="bar-row">
-								<div class="nm">workflow</div>
-								<div class="bar-track"><div class="seg s-input" data-w="1.40"></div><div class="seg s-read" data-w="34.6"></div><div class="seg s-write" data-w="11.9"></div><div class="seg s-output" data-w="18.9"></div></div>
-								<div class="tot">≈ 2.88M</div>
-							</div>
-							<div class="bar-row dear">
-								<div class="nm">goal_skill<small>skill 掛了沒用到</small></div>
-								<div class="bar-track"><div class="seg s-input" data-w="0.53"></div><div class="seg s-read" data-w="56.3"></div><div class="seg s-write" data-w="13.9"></div><div class="seg s-output" data-w="29.2"></div></div>
-								<div class="tot">≈ 4.31M</div>
-							</div>
-						</div>
-						<p class="xs c-faint" style="margin-top:0.4em;">n=1，看方向、非定論。要決策先各跑 3 次。</p>
+						<p class="mid c-muted" style="margin-top:0.5em;">Plus wall-clock and number of human review rounds. Each run executed <strong class="c-text">3×</strong> before drawing conclusions.</p>
 					</section>
 
-					<!-- 03-h 成本明細 -->
+					<!-- 03-f success criteria -->
 					<section>
-						<div class="takeaway">完整數字</div>
-						<h3>成本明細</h3>
-						<table class="cost-table">
-							<thead><tr><th>實驗</th><th>input</th><th>cache_read</th><th>cache_write</th><th>output</th><th>加權成本</th><th>subagent</th></tr></thead>
-							<tbody>
-								<tr class="cheap"><td class="exp">workflow_skill</td><td>28,825</td><td>8,015,890</td><td>607,228</td><td>113,894</td><td class="cost">≈ 2,158,919</td><td class="c-faint">+319,948</td></tr>
-								<tr><td class="exp">goal</td><td>35,435</td><td>15,039,374</td><td>347,715</td><td>150,349</td><td class="cost">≈ 2,725,761</td><td class="c-faint">無</td></tr>
-								<tr><td class="exp">workflow</td><td>60,408</td><td>14,898,708</td><td>411,436</td><td>162,879</td><td class="cost">≈ 2,878,969</td><td class="c-faint">+242,091</td></tr>
-								<tr class="dear"><td class="exp">goal_skill</td><td>22,994</td><td>24,287,431</td><td>480,154</td><td>252,091</td><td class="cost">≈ 4,312,385</td><td class="c-faint">未被叫用</td></tr>
-							</tbody>
-						</table>
-					</section>
-
-					<!-- 03-i 成本觀察 -->
-					<section>
-						<div class="takeaway">兩個值得記住的觀察</div>
-						<h3>成本觀察</h3>
-						<div class="card accent-goal" style="margin-bottom:0.3em;">
-							<div class="card-label">觀察 1</div>
-							<p class="mid" style="margin:0;">
-								<strong class="c-text">掛上 skill ≠ 用到 skill。</strong><br>
-								<span class="c-muted">workflow_skill subagent 有用 → <strong class="c-ok">最便宜</strong>；goal_skill 掛了沒用 → <strong class="c-warn">最貴</strong>（cache_read 24.3M，純浪費）。</span>
-							</p>
-						</div>
-						<div class="card accent-flow">
-							<div class="card-label">觀察 2</div>
-							<p class="mid" style="margin:0;">
-								<strong class="c-text">錢主要花在 cache_read。</strong><br>
-								<span class="c-muted">長 autonomous loop 的固有成本。Hygiene 只能邊際壓低，但邊際也是錢。</span>
-							</p>
-						</div>
-					</section>
-
-					<!-- 03-j 何時不要 -->
-					<section>
-						<div class="takeaway">知道什麼時候不用，跟知道怎麼用一樣重要</div>
-						<h3>什麼時候<span class="c-warn">不要</span>直接自動化</h3>
-						<div class="card accent-warn">
+						<div class="takeaway">What counts as success</div>
+						<h3>Success criteria</h3>
+						<div class="card accent-goal">
 							<ul class="mid" style="margin:0;padding-left:1.2em;">
-								<li><strong class="c-text">沒有可自動驗收的 oracle</strong></li>
-								<li><strong class="c-text">需要不可逆的副作用</strong> <span class="c-muted">— 刪資料、打外部 API、動錢</span></li>
-								<li><strong class="c-text">domain knowledge 不在 repo 裡</strong></li>
+								<li>All endpoints return HTTP 200</li>
+								<li>Every endpoint <strong class="c-text">A/B-faithful</strong> to golden MSSQL (data-state differences explained, not hand-waved)</li>
+								<li>All migrated tables row-aligned</li>
+								<li>Deliverable: small, reviewable PRs that <strong class="c-text">carry their own A/B evidence</strong></li>
 							</ul>
 						</div>
 					</section>
 
-					<!-- 03-k Human review -->
+					<!-- results TBD placeholder -->
 					<section>
-						<div class="takeaway">瓶頸從「寫 code」搬到「review PR」</div>
-						<h3>Human review 是新瓶頸</h3>
-						<p class="mid c-muted">
-							PR 動了 DAO、config、49 個 procs→functions、39 處修正。
-						</p>
-						<div class="card accent-goal" style="margin-top:0.4em;">
-							<p class="mid" style="margin:0;">
-								對策：逼 agent <strong class="c-goal">拆小 PR</strong> + <strong class="c-goal">自帶 A/B 證據</strong>。<br>
-								讓人 review 的是證據，不是逐行 diff。
-							</p>
+						<div class="takeaway">Results go here after the run</div>
+						<h3>Results <span class="tbd">TBD</span></h3>
+						<div class="stats">
+							<div class="stat"><div class="v fl"><span class="tbd">TBD</span></div><div class="l">endpoints<br>HTTP 200</div></div>
+							<div class="stat"><div class="v fl"><span class="tbd">TBD</span></div><div class="l">A/B body<br>faithful</div></div>
+							<div class="stat"><div class="v fl"><span class="tbd">TBD</span></div><div class="l">tables<br>row-aligned</div></div>
+							<div class="stat"><div class="v fl"><span class="tbd">TBD</span></div><div class="l">winning<br>run</div></div>
+						</div>
+						<div class="shot" style="margin-top:0.6em;"><div class="cap"><b>📷 SCREENSHOT</b> — A/B comparison report (per-endpoint pass/fail)</div></div>
+					</section>
+
+					<!-- 03-g cost bars placeholder -->
+					<section>
+						<div class="takeaway">Cost comparison — to be filled after 3× runs each</div>
+						<h3>Cost by run <span class="tbd">TBD</span></h3>
+						<div class="legend">
+							<span><i style="background:var(--c-input)"></i>input</span>
+							<span><i style="background:var(--c-read)"></i>cache_read</span>
+							<span><i style="background:var(--c-write)"></i>cache_write</span>
+							<span><i style="background:var(--c-output)"></i>output</span>
+						</div>
+						<div class="cost-bars">
+							<div class="bar-row"><div class="nm">goal</div><div class="bar-track"></div><div class="tot"><span class="tbd">TBD</span></div></div>
+							<div class="bar-row"><div class="nm">workflow</div><div class="bar-track"></div><div class="tot"><span class="tbd">TBD</span></div></div>
+							<div class="bar-row"><div class="nm">goal + skill</div><div class="bar-track"></div><div class="tot"><span class="tbd">TBD</span></div></div>
+							<div class="bar-row"><div class="nm">workflow + skill</div><div class="bar-track"></div><div class="tot"><span class="tbd">TBD</span></div></div>
+						</div>
+						<p class="xs c-faint" style="margin-top:0.4em;">Hypothesis to test: "loaded a skill" ≠ "used the skill" — an unused skill can be the <em>most</em> expensive run (wasted cache_read).</p>
+					</section>
+
+					<!-- 03-h cost detail placeholder -->
+					<section>
+						<div class="takeaway">Full numbers land here</div>
+						<h3>Cost detail <span class="tbd">TBD</span></h3>
+						<table class="cost-table">
+							<thead><tr><th>run</th><th>input</th><th>cache_read</th><th>cache_write</th><th>output</th><th>weighted</th></tr></thead>
+							<tbody>
+								<tr><td class="exp">goal</td><td>—</td><td>—</td><td>—</td><td>—</td><td class="cost"><span class="tbd">TBD</span></td></tr>
+								<tr><td class="exp">workflow</td><td>—</td><td>—</td><td>—</td><td>—</td><td class="cost"><span class="tbd">TBD</span></td></tr>
+								<tr><td class="exp">goal + skill</td><td>—</td><td>—</td><td>—</td><td>—</td><td class="cost"><span class="tbd">TBD</span></td></tr>
+								<tr><td class="exp">workflow + skill</td><td>—</td><td>—</td><td>—</td><td>—</td><td class="cost"><span class="tbd">TBD</span></td></tr>
+							</tbody>
+						</table>
+					</section>
+
+					<!-- 03-i what I expect to learn -->
+					<section>
+						<div class="takeaway">What the run should tell us</div>
+						<h3>What I expect to learn <span class="tbd">TBD</span></h3>
+						<div class="card accent-goal" style="margin-bottom:0.3em;">
+							<div class="card-label">Hypothesis 1</div>
+							<p class="mid" style="margin:0;">Loading a skill ≠ using it. An unused skill may be the most expensive run.</p>
+						</div>
+						<div class="card accent-flow">
+							<div class="card-label">Hypothesis 2</div>
+							<p class="mid" style="margin:0;">Most cost is cache_read — the inherent price of long autonomous loops. Hygiene only trims it at the margin.</p>
 						</div>
 					</section>
 
-					<!-- 03-l 日常 hygiene -->
+					<!-- 03-i byproduct -->
 					<section>
-						<div class="takeaway">邊際槓桿：降低重複讀 context 的成本</div>
-						<h3>日常 Hygiene</h3>
+						<div class="takeaway">A byproduct to watch for</div>
+						<h3>Byproduct: bugs the oracle catches <span class="tbd">TBD</span></h3>
+						<div class="card accent-goal">
+							<p class="mid" style="margin:0;">Automated A/B comparison tends to surface bugs a human review would miss — e.g. a field silently written as <code class="c-warn">NULL</code>.<br><br><span class="c-muted">Concrete example to be filled after the run.</span></p>
+						</div>
+					</section>
+
+					<!-- 03-j when not to automate -->
+					<section>
+						<div class="takeaway">Knowing when NOT to automate matters as much</div>
+						<h3>When <span class="c-warn">not</span> to automate directly</h3>
+						<div class="card accent-warn">
+							<ul class="mid" style="margin:0;padding-left:1.2em;">
+								<li>No automatically-checkable oracle</li>
+								<li>Irreversible side effects — deleting data, calling external APIs, moving money</li>
+								<li>Domain knowledge that isn't in the repo</li>
+							</ul>
+						</div>
+					</section>
+
+					<!-- 03-k human review -->
+					<section>
+						<div class="takeaway">The bottleneck moves from writing code to reviewing PRs</div>
+						<h3>Human review is the new bottleneck</h3>
+						<p class="mid c-muted">A migration PR can touch the DAO layer, config, 49 procs→functions, and dozens of fixes.</p>
+						<div class="card accent-goal" style="margin-top:0.4em;">
+							<p class="mid" style="margin:0;">Counter-move: force the agent to <strong class="c-goal">split into small PRs</strong> that <strong class="c-goal">carry their own A/B evidence</strong>. Humans review the evidence, not every diff line.</p>
+						</div>
+					</section>
+
+					<!-- 03-l everyday hygiene -->
+					<section>
+						<div class="takeaway">Marginal leverage: cut the cost of re-reading context</div>
+						<h3>Everyday hygiene</h3>
 						<div class="hy-grid">
 							<div class="hy-card">
-								<h4>Context 管理</h4>
+								<h4>Context management</h4>
 								<ul>
-									<li><b><span class="cmd" style="font-size:1em;">/rewind</span></b> 回到岔路前</li>
-									<li><b><span class="cmd" style="font-size:1em;">/btw</span></b> 即時補充</li>
-									<li><span class="cmd" style="font-size:1em;">/clear</span> 前先寫 <b>handoff.md</b></li>
+									<li><b><span class="cmd" style="font-size:1em;">/rewind</span></b> back to before a wrong turn</li>
+									<li><b><span class="cmd" style="font-size:1em;">/btw</span></b> inject context mid-run</li>
+									<li>write <b>handoff.md</b> before <span class="cmd" style="font-size:1em;">/clear</span></li>
 								</ul>
 							</div>
 							<div class="hy-card">
-								<h4>記憶落地</h4>
+								<h4>Persisting memory</h4>
 								<ul>
-									<li><b>memory.md</b> → flush 進 <b>claude.md</b></li>
-									<li>下段 session 不必從頭交代</li>
+									<li><b>memory.md</b> → flush into <b>claude.md</b></li>
+									<li>next session starts without re-explaining</li>
 								</ul>
 							</div>
 						</div>
@@ -848,42 +794,17 @@
 
 					<section class="section-cover">
 						<div class="act-num">★</div>
-						<h2>Checklist</h2>
-						<p class="act-sub">下 <span class="cmd goal" style="font-size:1.3em;">/goal</span> 或 <span class="cmd flow" style="font-size:1.3em;">/workflow</span> 前的五句自問</p>
+						<h2>Pre-flight Checklist</h2>
+						<p class="act-sub">Five questions before you type <span class="cmd goal" style="font-size:1.3em;">/goal</span> or <span class="cmd flow" style="font-size:1.3em;">/workflow</span></p>
 					</section>
 
 					<section>
 						<ol class="checklist">
-							<li>
-								<div>
-									<div class="h">完成定義</div>
-									<div class="q">有沒有能<strong class="c-text">自動檢查</strong>的「做完」？沒有 oracle 就先別跑。</div>
-								</div>
-							</li>
-							<li class="fragment">
-								<div>
-									<div class="h">目標</div>
-									<div class="q">要的是<strong class="c-text">成品與決策</strong>，還是只寫了一個動作？</div>
-								</div>
-							</li>
-							<li class="fragment">
-								<div>
-									<div class="h">邊界</div>
-									<div class="q">哪些不要碰？不可逆副作用先圈起來。</div>
-								</div>
-							</li>
-							<li class="fragment">
-								<div>
-									<div class="h">可讀性</div>
-									<div class="q">agent 看得懂嗎？缺 mapping 就<strong class="c-text">先補</strong>（會複利）。</div>
-								</div>
-							</li>
-							<li class="fragment">
-								<div>
-									<div class="h">階段</div>
-									<div class="q">現在要它<strong class="c-text">想、比、決，還是做</strong>？</div>
-								</div>
-							</li>
+							<li><div><div class="h">Definition of done</div><div class="q">Is there a <strong class="c-text">machine-checkable</strong> "done"? No oracle → don't run yet.</div></div></li>
+							<li class="fragment"><div><div class="h">Goal</div><div class="q">Do you want a <strong class="c-text">deliverable and a decision</strong>, or did you just describe one action?</div></div></li>
+							<li class="fragment"><div><div class="h">Boundaries</div><div class="q">What's off-limits? Fence irreversible side effects first.</div></div></li>
+							<li class="fragment"><div><div class="h">Legibility</div><div class="q">Can the agent understand the code? Missing a map → <strong class="c-text">add it first</strong> (it compounds).</div></div></li>
+							<li class="fragment"><div><div class="h">Stage</div><div class="q">Do you want it to <strong class="c-text">think, compare, decide, or do</strong> right now?</div></div></li>
 						</ol>
 					</section>
 
@@ -894,21 +815,12 @@
 				     CLOSING
 				     ════════════════════════════════════════════════════════════ -->
 				<section class="closing">
-					<div class="eyebrow" style="color:var(--faint);">一句話總結</div>
-					<p class="big">
-						機器側會<span class="c-flow">越來越強</span>，<br>人側不會自動補上。
-					</p>
-					<p class="big fragment" style="margin-top:0.8em;">
-						不要問「agent 現在能不能做」，<br>
-						要問<strong class="c-goal">「我能不能把目標與環境<br>整理到讓 agent 自己能做」</strong>。
-					</p>
-					<p class="mid c-muted fragment" style="margin-top:1em;max-width:600px;margin-left:auto;margin-right:auto;">
-						把人從<strong class="c-text">執行者</strong>，挪到
-						<strong class="c-goal">把任務定義清楚的人</strong> 與
-						<strong class="c-flow">把 code 變好懂的人</strong>。<br>
-						這兩件事 agent 替不了，每一次投資都會隨它變強而複利。
-					</p>
-					<div class="sig fragment">Agentic Engineering · 機器側 × 人側 · 2026</div>
+					<div class="eyebrow" style="color:var(--faint);">In one line</div>
+					<p class="big">The machine side keeps getting <span class="c-flow">stronger</span>.<br>The human side won't fill itself in.</p>
+					<p class="big fragment" style="margin-top:0.8em;">Don't ask <span class="c-warn">"can the agent do it yet?"</span><br>Ask <strong class="c-goal">"can I define the goal and the workspace<br>well enough that it can?"</strong></p>
+					<p class="mid c-muted fragment" style="margin-top:1em;max-width:640px;margin-left:auto;margin-right:auto;">
+						Move yourself from <strong class="c-text">executor</strong> to the person who <strong class="c-goal">defines the task</strong> and <strong class="c-flow">makes the code legible</strong>. Those two the agent can't replace — and every bit of that investment compounds as it gets stronger.</p>
+					<div class="sig fragment">Agentic Engineering · 2026</div>
 				</section>
 
 			</div>
@@ -928,15 +840,6 @@
 				plugins: [RevealHighlight],
 			});
 
-			// Animate cost bars when slide becomes visible
-			Reveal.on('slidechanged', function(event) {
-				var bars = event.currentSlide.querySelector('#bars');
-				if (bars) {
-					bars.querySelectorAll('.seg').forEach(function(s) {
-						s.style.width = s.dataset.w + '%';
-					});
-				}
-			});
 		</script>
 	</body>
 </html>
