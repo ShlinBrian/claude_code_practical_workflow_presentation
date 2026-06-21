@@ -350,7 +350,31 @@
 				margin-top: 0.8em; font-weight: 500;
 			}
 
-			/* page takeaway bar at top */
+			/* ── chapter divider ── */
+				.divider .ch-num {
+					font-family: 'JetBrains Mono', monospace;
+					font-size: 0.5em; letter-spacing: 0.22em;
+					color: var(--flow); text-transform: uppercase;
+				}
+				.divider h2 { font-size: 1.7em; margin: 0.25em 0 0; line-height: 1.1; }
+				.divider .ch-sub { font-size: 0.62em; color: var(--muted); margin-top: 0.7em; line-height: 1.5; }
+				.divider .ch-rule {
+					width: 64px; height: 3px; background: var(--flow);
+					border-radius: 2px; margin: 0.8em auto 0; opacity: 0.7;
+				}
+
+				/* ── agenda ── */
+				.agenda { list-style: none; padding: 0; max-width: 720px; margin: 0.6em auto 0; text-align: left; }
+				.agenda li {
+					display: grid; grid-template-columns: 54px 1fr; gap: 14px; align-items: baseline;
+					padding: 15px 4px; border-bottom: 1px solid var(--border); font-size: 0.66em;
+				}
+				.agenda li:last-child { border-bottom: none; }
+				.agenda .n { font-family: 'JetBrains Mono', monospace; color: var(--flow); font-size: 0.9em; }
+				.agenda .t { font-weight: 600; }
+				.agenda .s { color: var(--muted); font-size: 0.82em; margin-top: 3px; }
+
+				/* page takeaway bar at top */
 			.takeaway {
 				font-family: 'JetBrains Mono', monospace;
 				font-size: 0.38em; letter-spacing: 0.08em;
@@ -420,32 +444,54 @@
 
 				<!-- ════════ 1. TITLE ════════ -->
 				<section>
-					<div class="eyebrow" style="color:var(--flow);">Agentic Engineering · Internal · 2026</div>
-					<h1 style="font-size:2.1em;line-height:1.05;margin-bottom:0;">Claude Code<br>in Production</h1>
-					<p style="font-size:0.7em;color:var(--goal);font-weight:500;margin-top:0.3em;">A Practical RD Workflow</p>
-					<p class="mid c-muted" style="max-width:780px;margin:1.2em auto 0;line-height:1.7;">
-						One reproducible workflow that turns a requirement into a result you can <strong class="c-text">trust</strong>:<br>
-						<span class="c-skill">brainstorm</span> → <span class="c-text">spec with a Definition of Done</span> → <span class="c-goal mono">/goal</span> or <span class="c-flow mono">/workflow</span> → <span class="c-ok">verify with an oracle</span>.
+					<h1 style="font-size:2.2em;line-height:1.05;margin-bottom:0.1em;">Claude Code<br>in Production</h1>
+					<p style="font-size:0.72em;color:var(--goal);font-weight:500;margin-top:0.4em;">A Practical RD Workflow</p>
+					<p class="mid c-muted" style="margin-top:2em;line-height:1.7;">
+						BrianSH Lin<br>
+						<span class="mono" style="font-size:0.82em;color:var(--faint);">RD-CL.com</span>
 					</p>
 				</section>
 
 
-				<!-- ════════ 2. HOOK — THE ONE REFRAME ════════ -->
+				<!-- ════════ 2. AGENDA ════════ -->
+				<section>
+					<h2 style="font-size:1.5em;">Agenda</h2>
+					<ol class="agenda">
+						<li><span class="n">01</span><div><div class="t">Everyday hygiene</div><div class="s">The cheapest wins — moves you can use in your next session</div></div></li>
+						<li><span class="n">02</span><div><div class="t">The naive way</div><div class="s">A one-line prompt on a real task — and the three gaps it leaves</div></div></li>
+						<li><span class="n">03</span><div><div class="t">The method</div><div class="s">Skills &amp; brainstorming, then <span class="mono">/goal</span> and <span class="mono">/workflow</span></div></div></li>
+						<li><span class="n">04</span><div><div class="t">The case</div><div class="s">A real MSSQL → PostgreSQL migration: why it's hard</div></div></li>
+						<li><span class="n">05</span><div><div class="t">The experiment</div><div class="s">Four runs compared — designed, results to come</div></div></li>
+						<li><span class="n">06</span><div><div class="t">Pre-flight checklist</div><div class="s">Five questions to take home</div></div></li>
+					</ol>
+				</section>
+
+
+				<!-- ════════ 3. FRAMING — the one idea ════════ -->
 				<section>
 					<div class="takeaway">The one idea behind everything that follows</div>
-					<h3 style="font-size:1.35em;margin-bottom:0.5em;">Stop asking the wrong question</h3>
+					<h3 style="font-size:1.3em;margin-bottom:0.5em;">Two questions, very different leverage</h3>
 					<div class="flow" style="margin-top:0.4em;">
 						<div class="step on-warn" style="max-width:340px;">
-							<span class="t c-warn">❌ &ldquo;Can the agent do it?&rdquo;</span>
-							<span class="d">Polishing prompts plateaus. You wait for a better model.</span>
+							<span class="t c-warn">&ldquo;Can the agent do it?&rdquo;</span>
+							<span class="d">Polishing prompts plateaus — and leaves you waiting for a better model.</span>
 						</div>
-						<div class="arr">→</div>
-						<div class="step on-goal" style="max-width:380px;">
-							<span class="t c-goal">✅ &ldquo;Have I defined the task <em>and the environment</em> well enough that it can?&rdquo;</span>
+						<div class="arr">vs</div>
+						<div class="step on-goal" style="max-width:390px;">
+							<span class="t c-goal">&ldquo;Have I defined the task <em>and the environment</em> well enough that it can?&rdquo;</span>
 							<span class="d">The leverage is the spec, the definition of done, and the workspace you hand it.</span>
 						</div>
 					</div>
-					<p class="mid c-muted" style="margin-top:0.8em;">Everything in this talk is one of those two levers.</p>
+					<p class="mid c-muted" style="margin-top:0.9em;">Everything in this talk is one of those two levers.</p>
+				</section>
+
+
+				<!-- ════════ DIVIDER 01 ════════ -->
+				<section class="divider">
+					<div class="ch-num">Chapter 01</div>
+					<h2>Everyday hygiene</h2>
+					<p class="ch-sub">The cheapest wins — moves you can use in your next session</p>
+					<div class="ch-rule"></div>
 				</section>
 
 
@@ -455,7 +501,7 @@
 					<!-- pain-point opener -->
 					<section>
 						<div class="takeaway">Start here — the cheapest wins you can use today</div>
-						<h3 style="margin-bottom:0.5em;">First, stop paying the same tax twice</h3>
+						<h3 style="margin-bottom:0.5em;">A tax most of us pay twice</h3>
 						<div class="ba">
 							<div class="before">
 								<div class="lbl">The pain</div>
@@ -507,6 +553,15 @@
 				</section>
 
 
+				<!-- ════════ DIVIDER 02 ════════ -->
+				<section class="divider">
+					<div class="ch-num">Chapter 02</div>
+					<h2>The naive way</h2>
+					<p class="ch-sub">A one-line prompt on a real task — and the three gaps it leaves</p>
+					<div class="ch-rule"></div>
+				</section>
+
+
 				<!-- ════════ THE NAIVE WAY (arm A) ════════ -->
 				<section>
 					<section>
@@ -536,6 +591,15 @@
 							<div class="step on-warn"><span class="t c-warn">No isolation</span><span class="d">it edited your working tree in place</span></div>
 						</div>
 					</section>
+				</section>
+
+
+				<!-- ════════ DIVIDER 03 ════════ -->
+				<section class="divider">
+					<div class="ch-num">Chapter 03</div>
+					<h2>The method</h2>
+					<p class="ch-sub">Skills &amp; brainstorming, then <span class="mono">/goal</span> and <span class="mono">/workflow</span></p>
+					<div class="ch-rule"></div>
 				</section>
 
 
@@ -648,6 +712,15 @@ return results.filter(r => r.verdict.faithful)</code></pre>
 				</section>
 
 
+				<!-- ════════ DIVIDER 04 ════════ -->
+				<section class="divider">
+					<div class="ch-num">Chapter 04</div>
+					<h2>The case</h2>
+					<p class="ch-sub">A real MSSQL → PostgreSQL migration — why it's hard</p>
+					<div class="ch-rule"></div>
+				</section>
+
+
 				<!-- ════════ THE CASE — why this migration is hard (REAL FACTS) ════════ -->
 				<section>
 
@@ -704,6 +777,15 @@ return results.filter(r => r.verdict.faithful)</code></pre>
 						<p class="mid c-goal" style="margin-top:0.5em;font-weight:600;text-align:center;">The hard part isn't "does it run" — it's "is the answer <em>still correct</em>."</p>
 					</section>
 
+				</section>
+
+
+				<!-- ════════ DIVIDER 05 ════════ -->
+				<section class="divider">
+					<div class="ch-num">Chapter 05</div>
+					<h2>The experiment</h2>
+					<p class="ch-sub">Four runs compared — designed, results to come</p>
+					<div class="ch-rule"></div>
 				</section>
 
 
@@ -787,11 +869,20 @@ return results.filter(r => r.verdict.faithful)</code></pre>
 				</section>
 
 
+				<!-- ════════ DIVIDER 06 ════════ -->
+				<section class="divider">
+					<div class="ch-num">Chapter 06</div>
+					<h2>Pre-flight checklist</h2>
+					<p class="ch-sub">Five questions to take home</p>
+					<div class="ch-rule"></div>
+				</section>
+
+
 				<!-- ════════════════════════════════════════════════════════════
 				     CHECKLIST
 				     ════════════════════════════════════════════════════════════ -->
 				<section>
-					<div class="takeaway">Take this home — five questions before you type <span class="c-goal mono">/goal</span> or <span class="c-flow mono">/workflow</span></div>
+					<div class="takeaway">Five questions before you type <span class="c-goal mono">/goal</span> or <span class="c-flow mono">/workflow</span></div>
 					<h3 style="margin-bottom:0.3em;">Pre-flight checklist</h3>
 					<ol class="checklist" style="max-width:88%;">
 						<li><div><div class="h">Definition of done</div><div class="q">Is there a <strong class="c-text">machine-checkable</strong> "done"? No oracle → don't run yet.</div></div></li>
@@ -818,8 +909,10 @@ return results.filter(r => r.verdict.faithful)</code></pre>
 						<div class="arr">→</div>
 						<div class="step on-ok" style="border-left-color:var(--ok);"><span class="t c-ok">verify with an oracle</span></div>
 					</div>
-					<p class="mid c-muted fragment" style="margin-top:1.2em;max-width:680px;margin-left:auto;margin-right:auto;">
-						Don't ask <span class="c-warn">"can the agent do it yet?"</span> Move from <strong class="c-text">executor</strong> to the person who <strong class="c-goal">defines the task</strong> and <strong class="c-flow">makes the code legible</strong> — those two the agent can't replace, and every bit compounds as it gets stronger.</p>
+					<p class="mid c-muted fragment" style="margin-top:1.3em;max-width:680px;margin-left:auto;margin-right:auto;line-height:1.8;">
+						The shift worth making: from <strong class="c-text">executor</strong><br>
+						to the person who <strong class="c-goal">defines the task</strong> and <strong class="c-flow">makes the code legible</strong>.<br>
+						Those two the agent can't replace — and every bit compounds as it gets stronger.</p>
 					<div class="sig fragment">Agentic Engineering · 2026</div>
 				</section>
 
