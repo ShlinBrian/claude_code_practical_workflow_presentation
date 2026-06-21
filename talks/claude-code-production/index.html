@@ -604,33 +604,25 @@
 				</section>
 
 
-				<!-- ════════ ACT 3 — /goal & /workflow ════════ -->
+				<!-- ════════ /goal & /workflow ════════ -->
 				<section>
-					<section class="section-cover">
-						<div class="act-num">ACT 03 · TOOLS</div>
-						<h2>/goal &amp; /workflow</h2>
-						<p class="act-sub">Two ways to spend a lot of tokens well</p>
-						<p class="act-question">Loop until done, or fan out across many agents?</p>
-					</section>
 
 					<section>
-						<div class="takeaway">/goal — keep working until a goal is met</div>
-						<h3><span class="cmd goal" style="font-size:1.1em;">/goal</span> — loop until goal</h3>
-						<div class="term">
-							<span class="pr">claude</span><br>
-							<span class="cm"># hand it the spec + a checkable goal:</span><br>
-							/goal All N endpoints return HTTP 200 AND each<br>
-							&nbsp;&nbsp;A/B-matches golden MSSQL row-by-row. Spec:<br>
-							&nbsp;&nbsp;docs/specs/mssql-pg-migration-design.md<br>
-							<span class="ag">…runs build → test → A/B → fix → repeat until the oracle passes</span>
+						<div class="takeaway">The method, part 2 — two ways to spend tokens well</div>
+						<h3 style="margin-bottom:0.3em;"><span class="c-goal mono">/goal</span> — loop until the goal is met</h3>
+						<div class="term" style="font-size:0.5em;">
+							<span class="cm"># hand it the spec + a machine-checkable goal:</span><br>
+							<span class="pr">/goal All endpoints return 200 AND each A/B-matches</span><br>
+							&nbsp;&nbsp;<span class="pr">golden MSSQL row-by-row. Spec: …migration-design.md</span><br>
+							<span class="ag">build → test → A/B → fix → repeat until the oracle passes</span>
 						</div>
-						<p class="mid c-muted" style="margin-top:0.5em;">It only works if the goal is <strong class="c-text">machine-checkable</strong>. No oracle → it loops or stops on a vibe.</p>
+						<p class="mid c-muted" style="margin-top:0.5em;">Only works if the goal is <strong class="c-text">machine-checkable</strong>. No oracle → it loops or stops on a vibe.</p>
 					</section>
 
 					<section>
 						<div class="takeaway">/workflow — orchestrate many agents deterministically</div>
-						<h3><span class="cmd flow" style="font-size:1.1em;">/workflow</span> — multi-agent fan-out</h3>
-						<pre class="code"><code class="language-javascript">// convert 49 stored procedures, each in parallel, then verify
+						<h3 style="margin-bottom:0.2em;"><span class="c-flow mono">/workflow</span> — multi-agent fan-out</h3>
+						<pre class="code"><code class="language-javascript">// convert 48 stored procedures in parallel, then verify each
 const procs = await agent('list all .sql procs', {schema: PROCS})
 const results = await pipeline(
   procs.list,
@@ -638,25 +630,20 @@ const results = await pipeline(
   c => agent(`A/B verify ${c.proc} vs golden`, {phase: 'verify', schema: VERDICT})
 )
 return results.filter(r => r.verdict.faithful)</code></pre>
-						<p class="mid c-muted" style="margin-top:0.4em;">Each proc flows through convert→verify independently. Wall-clock = slowest single chain, not the sum.</p>
+						<p class="mid c-muted" style="margin-top:0.3em;">Each proc flows convert→verify independently. Wall-clock = slowest chain, not the sum.</p>
 					</section>
 
 					<section>
-						<div class="takeaway">They're not rivals — the real answer is hybrid</div>
-						<h3>When each fits</h3>
-						<div class="two-col" style="margin-top:0.3em;">
-							<div class="col" style="border-top:3px solid var(--goal);">
-								<div class="lbl" style="color:var(--goal);">Reach for /goal</div>
-								<p class="small c-muted" style="margin:0;">One coherent objective · tight feedback loop · the work is mostly sequential (build/test/fix).</p>
-							</div>
-							<div class="col" style="border-top:3px solid var(--flow);">
-								<div class="lbl" style="color:var(--flow);">Reach for /workflow</div>
-								<p class="small c-muted" style="margin:0;">Many independent units (N files, N procs) · you want parallelism + isolation · structure should be deterministic.</p>
-							</div>
+						<div class="takeaway">Not rivals — pick by the shape of the work</div>
+						<h3 style="margin-bottom:0.3em;">When each fits</h3>
+						<div class="flow">
+							<div class="step on-goal"><span class="t c-goal mono">/goal</span><span class="d">one coherent objective · tight feedback loop · mostly sequential (build/test/fix)</span></div>
+							<div class="step on-flow"><span class="t c-flow mono">/workflow</span><span class="d">many independent units (N procs) · want parallelism + isolation · deterministic structure</span></div>
 						</div>
-						<div class="card accent-flow" style="margin-top:0.4em;">
-							<p class="mid" style="margin:0;"><strong class="c-flow">Hybrid (most realistic):</strong> a main-loop <span class="cmd goal">/goal</span> drives the build/deploy/A-B cycle and calls <span class="cmd flow">/workflow</span> to fan out the proc conversions and per-endpoint diagnosis.</p>
+						<div class="card accent-flow" style="margin-top:0.5em;max-width:88%;">
+							<p class="mid" style="margin:0;"><strong class="c-flow">Hybrid (most realistic):</strong> a main-loop <span class="c-goal mono">/goal</span> drives build/deploy/A-B and calls <span class="c-flow mono">/workflow</span> to fan out the 48 proc conversions.</p>
 						</div>
+						<p class="xs c-faint" style="margin-top:0.4em;">The experiment's C1-vs-C2 gives this decision real data.</p>
 					</section>
 				</section>
 
