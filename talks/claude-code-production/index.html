@@ -612,53 +612,63 @@ return results.filter(r => r.verdict.faithful)</code></pre>
 				<!-- ════════ ACT 4 continued — remaining experiment slides (Tasks 6–7) ════════ -->
 				<section>
 
-					<!-- 03-c 完成定義 -->
+					<!-- 03-c oracle/DoD -->
 					<section>
-						<div class="takeaway">讓方法論落地的關鍵：有一個 oracle</div>
-						<h3>這次的完成定義</h3>
+						<div class="takeaway">The key to making loop-until-goal meaningful: an oracle</div>
+						<h3>Definition of Done = an oracle</h3>
 						<div class="card accent-goal">
 							<div class="card-label">DoD = Oracle</div>
 							<p class="mid" style="margin:0;">
-								逐 endpoint、逐 row，跟 golden MSSQL 做 <strong class="c-goal">A/B 比對</strong>。<br><br>
-								<strong class="c-text">這就是讓 loop until goal 有意義的那個 oracle。</strong><br>
-								沒有它，agent 不知道自己有沒有做對。
+								Per-endpoint, per-row <strong class="c-goal">A/B comparison</strong> against a golden MSSQL instance.<br><br>
+								<strong class="c-text">This is the oracle that makes "loop until goal" mean something.</strong> Without it the agent can't know whether it's right.
 							</p>
 						</div>
 					</section>
 
-					<!-- 03-d 硬證據 -->
+					<!-- 03-d runs to compare -->
 					<section>
-						<div class="takeaway">結論：goal 與 workflow 都能完整跑完</div>
-						<h3>硬證據</h3>
-						<div class="stats">
-							<div class="stat"><div class="v ok">47/47</div><div class="l">endpoints<br>HTTP 200</div></div>
-							<div class="stat"><div class="v fl">44/47</div><div class="l">A/B body 相同<br>+3 資料狀態差 → 47/47 忠實</div></div>
-							<div class="stat"><div class="v ok">18/18</div><div class="l">表 row 對齊<br>376,653 rows</div></div>
-							<div class="stat"><div class="v fl">hybrid</div><div class="l">Opus 主控<br>+ workflow 52-agent</div></div>
+						<div class="takeaway">Four runs, same task, same deliverable → comparable</div>
+						<h3>The runs I'll compare</h3>
+						<div class="two-col" style="margin-top:0.3em;">
+							<div class="col" style="border-top:3px solid var(--goal);">
+								<div class="lbl" style="color:var(--goal);">Without skills</div>
+								<p class="mid" style="margin:0;"><b class="c-text">goal</b> — plain /goal loop<br><b class="c-text">workflow</b> — plain /workflow fan-out</p>
+							</div>
+							<div class="col" style="border-top:3px solid var(--skill);">
+								<div class="lbl" style="color:var(--skill);">With Superpowers skills</div>
+								<p class="mid" style="margin:0;"><b class="c-text">goal + skill</b><br><b class="c-text">workflow + skill</b></p>
+							</div>
 						</div>
+						<p class="xs c-faint" style="margin-top:0.5em;">Same spec, same oracle, same target deliverable for all four → differences are attributable to method.</p>
 					</section>
 
-					<!-- 03-e Hybrid 架構 -->
+					<!-- 03-e cost metric -->
 					<section>
-						<div class="takeaway">goal vs workflow 其實是假對立</div>
-						<h3>真正的架構 = Hybrid</h3>
+						<div class="takeaway">How I'll measure cost — weighted tokens</div>
+						<h3>Cost metric</h3>
 						<div class="card accent-flow">
-							<p class="mid" style="margin:0;">
-								<strong class="c-flow">Opus 主控</strong> — worktree、Docker、.bak 還原、build/deploy 迴圈<br><br>
-								<strong class="c-flow">/workflow 扇出</strong> — 52-agent 轉 procs、逐 endpoint 診斷
-							</p>
+							<p class="mid mono" style="margin:0;font-size:0.9em;">cost = input×1 + cache_read×0.1<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ cache_write×1.25 + output×5</p>
 						</div>
+						<div class="legend" style="margin-top:0.6em;">
+							<span><i style="background:var(--c-input)"></i>input ×1</span>
+							<span><i style="background:var(--c-read)"></i>cache_read ×0.1</span>
+							<span><i style="background:var(--c-write)"></i>cache_write ×1.25</span>
+							<span><i style="background:var(--c-output)"></i>output ×5</span>
+						</div>
+						<p class="mid c-muted" style="margin-top:0.5em;">Plus wall-clock and number of human review rounds. Each run executed <strong class="c-text">3×</strong> before drawing conclusions.</p>
 					</section>
 
-					<!-- 03-f 副產品 bug -->
+					<!-- 03-f success criteria -->
 					<section>
-						<div class="takeaway">自動驗收逼出人工 review 抓不到的 bug</div>
-						<h3>副產品</h3>
+						<div class="takeaway">What counts as success</div>
+						<h3>Success criteria</h3>
 						<div class="card accent-goal">
-							<p class="mid" style="margin:0;">
-								A/B 比對抓出 <code class="c-flow">incrementalReleaseRatio</code> 被硬寫 <code class="c-warn">NULL</code>。<br><br>
-								人工 review 很難發現——是<strong class="c-goal">有了自動驗收才被逼出來的</strong>。
-							</p>
+							<ul class="mid" style="margin:0;padding-left:1.2em;">
+								<li>All endpoints return HTTP 200</li>
+								<li>Every endpoint <strong class="c-text">A/B-faithful</strong> to golden MSSQL (data-state differences explained, not hand-waved)</li>
+								<li>All migrated tables row-aligned</li>
+								<li>Deliverable: small, reviewable PRs that <strong class="c-text">carry their own A/B evidence</strong></li>
+							</ul>
 						</div>
 					</section>
 
