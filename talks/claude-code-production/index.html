@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+	<head>
+		<meta charset="utf-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+		/>
+
+		<title>Claude Code in Production: A Practical RD Workflow</title>
+
+		<link rel="stylesheet" href="../../dist/reset.css" />
+		<link rel="stylesheet" href="../../dist/reveal.css" />
+		<link rel="stylesheet" href="../../dist/theme/black.css" />
+		<link rel="stylesheet" href="../../dist/plugin/highlight/monokai.css" />
+
+		<style>
+			:root {
+				--r-heading-font: system-ui, -apple-system, sans-serif;
+				--r-main-font: system-ui, -apple-system, sans-serif;
+			}
+			.reveal h1, .reveal h2, .reveal h3 {
+				text-transform: none;
+			}
+			.reveal .small { font-size: 0.6em; }
+			.reveal .mid { font-size: 0.75em; }
+			.reveal ul { text-align: left; }
+			.reveal ol { text-align: left; }
+			.reveal .highlight-orange { color: #f5a623; }
+			.reveal .highlight-green { color: #7ec850; }
+			.reveal .highlight-red { color: #e74c3c; }
+			.reveal .highlight-blue { color: #3498db; }
+			.reveal .dim { opacity: 0.5; }
+			.reveal .box {
+				background: rgba(255,255,255,0.08);
+				border-radius: 12px;
+				padding: 20px 30px;
+				margin: 10px 0;
+			}
+			.reveal .two-col {
+				display: flex;
+				gap: 40px;
+				text-align: left;
+			}
+			.reveal .two-col > div { flex: 1; }
+			.reveal blockquote {
+				background: rgba(255,255,255,0.05);
+				border-left: 4px solid #f5a623;
+				padding: 15px 25px;
+				font-style: italic;
+				width: 85%;
+			}
+			.reveal table {
+				font-size: 0.65em;
+				margin: 0 auto;
+			}
+			.reveal table th {
+				background: rgba(245,166,35,0.2);
+			}
+			.reveal table td, .reveal table th {
+				padding: 8px 14px;
+				border: 1px solid rgba(255,255,255,0.15);
+			}
+			.reveal .checklist li {
+				list-style: none;
+				padding-left: 0;
+			}
+			.reveal .checklist li::before {
+				content: "☐ ";
+				color: #f5a623;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+
+				<!-- ==================== TITLE ==================== -->
+				<section>
+					<h1 style="font-size: 1.8em;">Claude Code in Production</h1>
+					<h3 class="highlight-orange">A Practical RD Workflow</h3>
+					<br>
+					<p class="mid">為「越來越強的 agent」而設計</p>
+				</section>
+
+				<!-- ==================== 核心問題 ==================== -->
+				<section>
+					<h2>核心問題</h2>
+					<p class="fragment">Agent 只會越來越強</p>
+					<p class="fragment">→ <span class="highlight-orange">機器側</span>與<span class="highlight-blue">人側</span>都要到位</p>
+					<p class="fragment">→ 逼近終局</p>
+				</section>
+
+				<!-- 終局 pipeline -->
+				<section>
+					<h2>終局 Pipeline</h2>
+					<div class="box" style="font-size: 0.8em;">
+						<p>
+							PM request → AI agent
+							<span class="highlight-orange">(<code>/goal</code> · <code>/workflow</code>)</span>
+							→ PR<span class="dim">(完成 + 自帶證據)</span>
+							→ Human review<span class="dim">(看證據，不是 diff)</span>
+						</p>
+					</div>
+				</section>
+
+				<!-- ==================== 01 前提與終局 ==================== -->
+				<section>
+					<section>
+						<h2>01 前提與終局</h2>
+					</section>
+
+					<section>
+						<h3>承接 Isaac & Sherlock</h3>
+						<p>核心假設：agent 持續變強、甚至能自建 harness</p>
+					</section>
+
+					<section>
+						<h3>轉變</h3>
+						<div class="two-col">
+							<div class="box">
+								<p class="highlight-red" style="text-align:center;">實習生模式</p>
+								<p class="small">猛加 example / reasoning<br>但任務沒定義清楚</p>
+							</div>
+							<div class="box">
+								<p class="highlight-green" style="text-align:center;">資深夥伴模式</p>
+								<p class="small">把目標與環境定義清楚<br>讓 agent 自主完成</p>
+							</div>
+						</div>
+					</section>
+
+					<section>
+						<h3>推論</h3>
+						<p>為<span class="highlight-orange">「成長曲線」</span>優化</p>
+						<p>不是為今天的快照</p>
+					</section>
+
+					<section>
+						<h3>邊界</h3>
+						<ul class="mid">
+							<li>不是萬用擋箭牌</li>
+							<li>會複利的是：<span class="highlight-green">讓 code 好懂、驗收自動</span></li>
+							<li>不是綁某代 agent 的 hack</li>
+						</ul>
+					</section>
+				</section>
+
+				<!-- ==================== 02 方法論 ==================== -->
+				<section>
+					<section>
+						<h2>02 方法論</h2>
+						<p class="mid">兩側都要到位</p>
+					</section>
+
+					<!-- 機器側 -->
+					<section>
+						<h3><span class="highlight-orange">機器側</span>：給對工具</h3>
+						<ul class="mid">
+							<li><code>/goal</code> — loop until goal</li>
+							<li><code>/workflow</code> — multi-agent 扇出</li>
+							<li><strong>hybrid</strong>（主控 loop + workflow 扇出）= 最實際</li>
+						</ul>
+						<br>
+						<p class="small dim">日常習慣：<code>/clear</code> · <code>/rewind</code> · subagent · skills</p>
+					</section>
+
+					<!-- 人側 -->
+					<section>
+						<h3><span class="highlight-blue">人側</span>：把任務定義清楚</h3>
+						<blockquote>提示詞是地板，定義任務決定高度</blockquote>
+					</section>
+
+					<section>
+						<h3>人側三要素</h3>
+						<ol class="mid">
+							<li><span class="highlight-orange">完成定義（DoD）</span><br>
+								<span class="small">← <code>loop until goal</code> 的前提：沒有可驗收的 DoD = 沒有達標可言</span></li>
+							<li class="fragment"><span class="highlight-orange">邊界（Boundaries）</span><br>
+								<span class="small">哪些不要碰</span></li>
+							<li class="fragment"><span class="highlight-orange">階段判斷</span><br>
+								<span class="small">想 / 比 / 決 / 做</span></li>
+						</ol>
+					</section>
+
+					<!-- 以終為始 -->
+					<section>
+						<h3>以終為始</h3>
+						<p class="mid">預設直接丟 <code>/goal</code> 或 <code>/workflow</code></p>
+						<p class="mid fragment">結果不好 → 問<span class="highlight-orange">「為什麼 agent 自己到不了？」</span></p>
+					</section>
+
+					<section>
+						<h3>四根因</h3>
+						<ol class="mid">
+							<li>看不懂 code</li>
+							<li>缺 domain knowledge</li>
+							<li>無法 mapping 需求到邏輯</li>
+							<li>prompt 沒講到重點（缺 DoD）</li>
+						</ol>
+					</section>
+
+					<section>
+						<h3>兩軌處方</h3>
+						<div class="two-col mid">
+							<div class="box">
+								<p class="highlight-green" style="text-align:center;">Code 側（會複利）</p>
+								<ol class="small">
+									<li>加註解</li>
+									<li>加 mapping index</li>
+									<li>重構段落</li>
+								</ol>
+							</div>
+							<div class="box">
+								<p class="highlight-blue" style="text-align:center;">Brief 側（不可外包）</p>
+								<ol class="small">
+									<li>寫成可測的 goal</li>
+									<li>補背景與邊界</li>
+									<li>整理成 brief</li>
+								</ol>
+							</div>
+						</div>
+					</section>
+
+					<!-- 鏡子 -->
+					<section>
+						<h3>鏡子</h3>
+						<ul class="mid">
+							<li>AI 挑戰內容、不質疑意圖</li>
+							<li>餵模糊 → 反射模糊</li>
+							<li class="highlight-orange">能幫你問，不能替你想</li>
+						</ul>
+					</section>
+
+					<!-- Superpowers -->
+					<section>
+						<h3>Superpowers</h3>
+						<p class="mid">把流程編碼成 skill</p>
+						<blockquote class="small">Jesse Vincent 2025/10：問題不在能力，在缺專業開發流程；把 brainstorm → plan → TDD → review 編碼成 skills</blockquote>
+					</section>
+
+					<section>
+						<h3>判斷軸：任務大小 / 風險</h3>
+						<p class="small dim">做錯重來貴不貴，不是人資不資深</p>
+						<div class="two-col mid">
+							<div class="box">
+								<p style="text-align:center;">簡單</p>
+								<p class="small">typo / 小函式<br>→ <code>/goal</code> 直接做<br>流程囉嗦</p>
+							</div>
+							<div class="box">
+								<p style="text-align:center;">中大型</p>
+								<p class="small">多檔 / 越改越歪<br>→ 流程才划算</p>
+							</div>
+						</div>
+					</section>
+
+					<section>
+						<h3>兩道圍欄</h3>
+						<ol class="mid">
+							<li><span class="highlight-red">幫你問 ≠ 替你想</span><br>
+								<span class="small">結構漂亮的錯任務更難抓</span></li>
+							<li class="fragment"><span class="highlight-red">DoD 品質仍靠 domain knowledge</span></li>
+						</ol>
+						<p class="fragment mid highlight-green">正面：brief 側並非完全不複利 — 流程可編碼、教會團隊</p>
+					</section>
+				</section>
+
+				<!-- ==================== 03 證據與實踐 ==================== -->
+				<section>
+					<section>
+						<h2>03 證據與實踐</h2>
+					</section>
+
+					<!-- 案例 -->
+					<section>
+						<h3>案例：MSSQL → PostgreSQL</h3>
+						<p class="mid">換引擎但對外行為要一致</p>
+					</section>
+
+					<section>
+						<h3>為什麼難？</h3>
+						<ul class="mid">
+							<li>SQL 方言散落整個 stack<br>
+								<span class="small dim"><code>SELECT TOP</code> · <code>[dbo].</code> · <code>(NOLOCK)</code> · <code>GETUTCDATE()</code> · <code>ISNULL</code></span></li>
+							<li class="fragment">結構性差異：跨庫引用 + 49 proc / 4 view<br>
+								<span class="small dim">SCT 只有 GUI</span></li>
+							<li class="fragment">型別 + 大小寫靜默出錯</li>
+							<li class="fragment highlight-orange">最難：「答案對不對」不是「跑不跑得起來」</li>
+						</ul>
+					</section>
+
+					<section>
+						<h3>完成定義（Oracle）</h3>
+						<div class="box">
+							<p>逐 endpoint、逐 row<br>跟 golden MSSQL 做 <span class="highlight-orange">A/B</span></p>
+						</div>
+					</section>
+
+					<section>
+						<h3>硬證據</h3>
+						<table>
+							<tr>
+								<th>指標</th>
+								<th>結果</th>
+							</tr>
+							<tr>
+								<td>Endpoints HTTP 200</td>
+								<td class="highlight-green">47 / 47</td>
+							</tr>
+							<tr>
+								<td>Response body 相同</td>
+								<td>44 / 47 <span class="small dim">(+3 資料狀態差)</span></td>
+							</tr>
+							<tr>
+								<td>忠實度</td>
+								<td class="highlight-green">47 / 47</td>
+							</tr>
+							<tr>
+								<td>表 row 對齊</td>
+								<td class="highlight-green">18 / 18 <span class="small dim">(376,653 rows)</span></td>
+							</tr>
+						</table>
+					</section>
+
+					<section>
+						<h3>真正架構 = Hybrid</h3>
+						<div class="box mid">
+							<p><span class="highlight-orange">Opus 主控</span> loop<br>
+							+ <span class="highlight-blue">workflow 扇出</span> 52-agent 轉 proc</p>
+						</div>
+						<p class="small dim">goal 與 workflow 都能完整跑完</p>
+					</section>
+
+					<section>
+						<h3>副產品 Bug</h3>
+						<p class="mid"><code>incrementalReleaseRatio</code> 被硬寫 NULL</p>
+						<p class="mid">人工難發現 → <span class="highlight-orange">A/B 逼出來</span></p>
+					</section>
+
+					<!-- 成本帳 -->
+					<section>
+						<h3>成本帳</h3>
+						<p class="small dim">四種跑法，同任務、交付物相同 → 可比</p>
+						<p class="small"><code>cost = input×1 + cache_read×0.1 + cache_write×1.25 + output×5</code></p>
+						<table>
+							<tr>
+								<th>方法</th>
+								<th>Input-token 當量</th>
+							</tr>
+							<tr>
+								<td>workflow_skill</td>
+								<td class="highlight-green">≈ 2.16M（最便宜）</td>
+							</tr>
+							<tr>
+								<td>goal</td>
+								<td>≈ 2.73M</td>
+							</tr>
+							<tr>
+								<td>workflow</td>
+								<td>≈ 2.88M</td>
+							</tr>
+							<tr>
+								<td>goal_skill</td>
+								<td class="highlight-red">≈ 4.31M（最貴）</td>
+							</tr>
+						</table>
+						<p class="small dim">n=1，看方向、非定論</p>
+					</section>
+
+					<section>
+						<h3>成本觀察</h3>
+						<ol class="mid">
+							<li><span class="highlight-orange">掛上 skill ≠ 用到 skill</span><br>
+								<span class="small">workflow_skill subagent 有用 → 最便宜<br>
+								goal_skill 掛了沒叫用 → cache_read 24.3M 最高、純浪費</span></li>
+							<li class="fragment">錢主要花在 <code>cache_read</code><br>
+								<span class="small">部分是長 loop 固有成本；hygiene 只能邊際壓低</span></li>
+						</ol>
+					</section>
+
+					<!-- 何時不要 -->
+					<section>
+						<h3>何時<span class="highlight-red">「不要」</span>直接自動化？</h3>
+						<ul class="mid">
+							<li>沒有 oracle</li>
+							<li>不可逆副作用</li>
+							<li>domain knowledge 不在 repo</li>
+						</ul>
+					</section>
+
+					<!-- Human review -->
+					<section>
+						<h3>Human Review 是新瓶頸</h3>
+						<p class="mid">PR 動 DAO、config、49 proc→function、39 修正</p>
+						<div class="box mid">
+							<p>對策：<span class="highlight-orange">拆小 PR</span> · <span class="highlight-orange">自帶 A/B 證據</span></p>
+						</div>
+					</section>
+
+					<!-- 日常 hygiene -->
+					<section>
+						<h3>日常 Hygiene</h3>
+						<ul class="mid">
+							<li>Context 管理：<code>/rewind</code> · <code>/btw</code> · <code>/clear</code> 前寫 <code>handoff.md</code></li>
+							<li>記憶落地：<code>memory.md</code> flush 進 <code>claude.md</code></li>
+						</ul>
+					</section>
+				</section>
+
+				<!-- ==================== Checklist ==================== -->
+				<section>
+					<h2>Checklist</h2>
+					<p class="small dim">下 <code>/goal</code> 或 <code>/workflow</code> 前的五句自問</p>
+					<ul class="checklist mid">
+						<li>完成定義 — 有沒有自動可檢查的「做完」？</li>
+						<li class="fragment">目標 — 成品與決策，不是動作</li>
+						<li class="fragment">邊界 — 哪些不要碰？</li>
+						<li class="fragment">可讀性 — agent 看得懂嗎？缺 mapping 先補</li>
+						<li class="fragment">階段 — 我要它想、比、決，還是做？</li>
+					</ul>
+				</section>
+
+				<!-- ==================== 一句話總結 ==================== -->
+				<section>
+					<h2>一句話總結</h2>
+					<p class="fragment mid">機器側越來越強，人側不會自動補上</p>
+					<p class="fragment mid">不要問「agent 現在能不能做」<br>
+						要問<span class="highlight-orange">「我能不能把目標與環境整理到讓 agent 自己能做」</span></p>
+					<p class="fragment mid">把人從<span class="dim">執行者</span> →<br>
+						<span class="highlight-green">「把任務定義清楚的人」</span>+<span class="highlight-green">「把 code 變好懂的人」</span></p>
+				</section>
+
+			</div>
+		</div>
+
+		<script src="../../dist/reveal.js"></script>
+		<script src="../../dist/plugin/highlight.js"></script>
+		<script>
+			Reveal.initialize({
+				hash: true,
+				transition: 'slide',
+				plugins: [RevealHighlight],
+			});
+		</script>
+	</body>
+</html>
