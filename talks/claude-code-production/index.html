@@ -546,7 +546,7 @@
 						</div>
 						<div class="arr">vs</div>
 						<div class="step on-goal" style="max-width:390px;">
-							<span class="t c-goal">&ldquo;Have I defined the task <em>and the environment</em> well enough that it can?&rdquo;</span>
+							<span class="t c-goal">&ldquo;Have I defined the task<br><em>and the environment</em><br>well enough that it can?&rdquo;</span>
 							<span class="d">The leverage is the spec, the definition of done, and the workspace you hand it.</span>
 						</div>
 					</div>
@@ -642,16 +642,16 @@
 						</div>
 						<div class="handover-box">
 							<div class="hsteps">
-								<div class="hstep on-goal"><span class="t">1 · Write <span class="mono">handoff.md</span></span><span class="d">done · next · key decisions &amp; constraints</span></div>
+								<div class="hstep on-goal"><span class="t">1 · Write <span class="mono">handoff.md</span></span><span class="d">done · next ·<br>key decisions &amp; constraints</span></div>
 								<div class="harr">→</div>
-								<div class="hstep"><span class="t">2 · <span class="mono">/clear</span></span><span class="d">bloated context gone; cost resets</span></div>
+								<div class="hstep"><span class="t">2 · <span class="mono">/clear</span></span><span class="d">bloated context gone;<br>cost resets</span></div>
 								<div class="harr">→</div>
 								<div class="hstep on-flow"><span class="t">3 · Fresh agent reads it</span><span class="d">resumes — no re-explaining</span></div>
 							</div>
 							<div class="term hbox-term" style="font-size:0.44em;">
 								<span class="cm"># handoff.md</span><br>
 								## Done: DAO layer ported, 30/48 procs converted<br>
-								## Next: convert remaining 18 procs, run A/B oracle<br>
+								## Next: convert remaining 18 procs, run A/B verifier<br>
 								## Decisions: all-lowercase identifiers; work in worktree
 							</div>
 						</div>
@@ -688,7 +688,7 @@
 						<h3>What you get back</h3>
 						<div class="card accent-warn" style="margin-top:0.4em;max-width:80%;">
 							<p class="mid" style="margin:0;">
-								It rewrites the SQL, swaps the driver, the build goes green — and it confidently says <strong class="c-text">"done."</strong>
+								It rewrites the SQL, swaps the driver, the build goes green —<br>and it confidently says <strong class="c-text">"done."</strong>
 							</p>
 						</div>
 						<p class="mid c-muted" style="margin:0.6em 0 0.2em;">Three things are missing — and they're the whole game:</p>
@@ -726,7 +726,7 @@
 							<div class="tool t-goal">
 								<div class="nm">/goal</div>
 								<div class="role">Loop until the goal is met</div>
-								<div class="desc">Hand it a spec + a machine-checkable goal.<br>It builds, tests, fixes until the oracle passes.</div>
+								<div class="desc">Hand it a spec + a machine-checkable goal.<br>It builds, tests, fixes until the verifier passes.</div>
 							</div>
 							<div class="tool t-flow">
 								<div class="nm">/workflow</div>
@@ -811,7 +811,7 @@
 							</div>
 							<div class="col" style="border-top:3px solid var(--flow);">
 								<div class="lbl" style="color:var(--flow);">systematic-debugging</div>
-								<p class="mid" style="margin:0;line-height:1.6;">Reproduce → isolate → hypothesis → fix → verify.<br><strong class="c-text">A method instead of guessing.</strong></p>
+								<p class="mid" style="margin:0;line-height:1.6;">Reproduce → isolate →<br>hypothesis → fix → verify.<br><strong class="c-text">A method instead of guessing.</strong></p>
 							</div>
 						</div>
 						<p class="mid c-muted" style="margin-top:0.6em;line-height:1.7;">Different jobs, not a sequence.<br>
@@ -830,9 +830,9 @@
 							<span class="cm"># hand it the spec + a machine-checkable goal:</span><br>
 							<span class="pr">/goal All endpoints return 200 AND each A/B-matches</span><br>
 							&nbsp;&nbsp;<span class="pr">golden MSSQL row-by-row. Spec: …migration-design.md</span><br>
-							<span class="ag">build → test → A/B → fix → repeat until the oracle passes</span>
+							<span class="ag">build → test → A/B → fix → repeat until the verifier passes</span>
 						</div>
-						<p class="mid c-muted" style="margin-top:0.5em;">Only works if the goal is <strong class="c-text">machine-checkable</strong>. No oracle → it loops or stops on a vibe.</p>
+						<p class="mid c-muted" style="margin-top:0.5em;">Only works if the goal is <strong class="c-text">machine-checkable</strong>. No verifier → it loops or stops on a vibe.</p>
 					</section>
 
 					<section>
@@ -860,6 +860,21 @@ return results.filter(r => r.verdict.faithful)</code></pre>
 							<p class="mid" style="margin:0;line-height:1.7;"><strong class="c-flow">Hybrid (most realistic):</strong> a main-loop <span class="c-goal mono">/goal</span> drives build/deploy/A-B<br>and calls <span class="c-flow mono">/workflow</span> to fan out the 48 proc conversions.</p>
 						</div>
 						<p class="xs c-faint" style="margin-top:0.4em;">The experiment's C1-vs-C2 gives this decision real data.</p>
+					</section>
+
+					<section>
+						<div class="takeaway">Self-verifying tools — only as good as what they verify against</div>
+						<h3 style="margin-bottom:0.3em;">First build the verifier</h3>
+						<div class="flow" style="max-width:90%;">
+							<div class="step on-goal"><span class="t c-goal">The migration <em>came with</em> a verifier</span><span class="d">golden MSSQL — every endpoint already has a correct answer to A/B against. Free.</span></div>
+							<div class="step on-flow"><span class="t c-flow">Normal feature work does <em>not</em></span><span class="d">no golden answer exists yet — the verifier is your <strong class="c-text">test suite</strong>, and you have to build it.</span></div>
+						</div>
+						<blockquote style="margin-top:0.5em;">
+							<span class="c-goal mono">/goal</span> and <span class="c-flow mono">/workflow</span> are <strong class="c-text">self-verifying</strong> — they loop against a verifier.
+							So if the verifier doesn't exist yet, <strong class="c-text">building it is task zero</strong>, not task N.
+							Thin coverage → the loop is blind, and you can't trust anything it ships.
+						</blockquote>
+						<p class="xs c-faint" style="margin-top:0.4em;">Anthropic's line: <em>if you can't verify it, don't ship it.</em></p>
 					</section>
 				</section>
 
@@ -940,10 +955,10 @@ return results.filter(r => r.verdict.faithful)</code></pre>
 						</div>
 						<div class="card accent-goal" style="margin-top:0.5em;max-width:88%;">
 							<p class="mid" style="margin:0;line-height:1.7;">How do we know the data landed right?<br>
-							<strong class="c-goal">We don't check it directly — the API A/B oracle proves it.</strong><br>
+							<strong class="c-goal">We don't check it directly — the API A/B verifier proves it.</strong><br>
 							If every endpoint matches golden MSSQL, the data <em>and</em> the conversion are both correct, end-to-end.</p>
 						</div>
-						<p class="mid c-muted" style="margin-top:0.5em;">One oracle covers both phases — no separate row-by-row data audit.</p>
+						<p class="mid c-muted" style="margin-top:0.5em;">One verifier covers both phases — no separate row-by-row data audit.</p>
 					</section>
 
 				</section>
@@ -971,17 +986,17 @@ return results.filter(r => r.verdict.faithful)</code></pre>
 							<div class="step on-skill" style="padding:11px 18px;"><span class="t"><span class="badge" style="color:var(--skill);border-color:var(--skill);">B</span> &nbsp;Full Superpowers</span><span class="d">brainstorming → writing-plans → worktrees → subagent TDD → debugging → review → verification</span></div>
 							<div class="arr" style="font-size:0.9em;padding:5px 0;">↓ &nbsp;keep brainstorm, swap to a lean executor</div>
 							<div class="flow" style="margin:0;gap:14px;">
-								<div class="step on-goal" style="min-width:210px;padding:11px 18px;"><span class="t"><span class="badge">C1</span> &nbsp;Brainstorm + <span class="mono">/goal</span></span><span class="d">spec w/ DoD → raw /goal loop to oracle</span></div>
+								<div class="step on-goal" style="min-width:210px;padding:11px 18px;"><span class="t"><span class="badge">C1</span> &nbsp;Brainstorm + <span class="mono">/goal</span></span><span class="d">spec w/ DoD → raw /goal loop to verifier</span></div>
 								<div class="step on-flow" style="min-width:210px;padding:11px 18px;"><span class="t"><span class="badge" style="color:var(--flow);border-color:var(--flow-dim);">C2</span> &nbsp;Brainstorm + <span class="mono">/workflow</span></span><span class="d">same front half → /workflow fan-out</span></div>
 							</div>
 						</div>
 						<p class="xs c-faint" style="margin-top:0.4em;">A vs rest = method beats one-liner · B vs C = full vs lean · C1 vs C2 = /goal vs /workflow</p>
 					</section>
 
-					<!-- oracle -->
+					<!-- verifier -->
 					<section>
 						<div class="takeaway">What makes "done" objective</div>
-						<h3 style="margin-bottom:0.3em;">The oracle = Definition of Done</h3>
+						<h3 style="margin-bottom:0.3em;">The verifier = Definition of Done</h3>
 						<div class="flow" style="max-width:80%;">
 							<div class="step on-flow"><span class="t">PostgreSQL response</span></div>
 							<div class="arr">vs</div>
@@ -989,7 +1004,7 @@ return results.filter(r => r.verdict.faithful)</code></pre>
 							<div class="arr">=</div>
 							<div class="step on-ok" style="border-left-color:var(--ok);"><span class="t c-ok">per-endpoint, per-row A/B</span></div>
 						</div>
-						<p class="mid c-muted" style="margin-top:0.6em;">Without a machine-checkable oracle, "loop until goal" means nothing — shared by B / C1 / C2.</p>
+						<p class="mid c-muted" style="margin-top:0.6em;">Without a machine-checkable verifier, "loop until goal" means nothing — shared by B / C1 / C2.</p>
 					</section>
 
 					<!-- 4 metrics -->
@@ -997,7 +1012,7 @@ return results.filter(r => r.verdict.faithful)</code></pre>
 						<div class="takeaway">Four metrics across A / B / C1 / C2</div>
 						<h3 style="margin-bottom:0.3em;">How they're compared</h3>
 						<div class="inv">
-							<div class="cell"><div class="k c-ok" style="font-size:0.6em;">Correctness</div><div class="s">oracle pass rate (endpoints A/B-faithful)</div></div>
+							<div class="cell"><div class="k c-ok" style="font-size:0.6em;">Correctness</div><div class="s">verifier pass rate (endpoints A/B-faithful)</div></div>
 							<div class="cell"><div class="k c-goal" style="font-size:0.6em;">Cost</div><div class="s">one simple total (tokens or $)</div></div>
 							<div class="cell"><div class="k c-flow" style="font-size:0.6em;">Completion time</div><div class="s">wall-clock task → trustworthy result</div></div>
 							<div class="cell"><div class="k c-skill" style="font-size:0.6em;">Code quality</div><div class="s">scored by a separate review agent</div></div>
@@ -1026,7 +1041,7 @@ return results.filter(r => r.verdict.faithful)</code></pre>
 						<div class="takeaway">Knowing when NOT to automate matters as much</div>
 						<h3 style="margin-bottom:0.3em;">When <span class="c-warn">not</span> to automate directly</h3>
 						<div class="flow">
-							<div class="step on-warn"><span class="t c-warn">No oracle</span><span class="d">nothing machine-checkable to loop against</span></div>
+							<div class="step on-warn"><span class="t c-warn">No verifier</span><span class="d">nothing machine-checkable to loop against</span></div>
 							<div class="step on-warn"><span class="t c-warn">Irreversible side effects</span><span class="d">deleting data · external APIs · moving money</span></div>
 							<div class="step on-warn"><span class="t c-warn">Domain knowledge not in the repo</span><span class="d">the agent can't read what isn't written down</span></div>
 						</div>
@@ -1055,7 +1070,7 @@ return results.filter(r => r.verdict.faithful)</code></pre>
 					<div class="takeaway">Five questions before you type <span class="c-goal mono">/goal</span> or <span class="c-flow mono">/workflow</span></div>
 					<h3 style="margin-bottom:0.3em;">Pre-flight checklist</h3>
 					<ol class="checklist" style="max-width:88%;">
-						<li><div><div class="h">Definition of done</div><div class="q">Is there a <strong class="c-text">machine-checkable</strong> "done"? No oracle → don't run yet.</div></div></li>
+						<li><div><div class="h">Definition of done</div><div class="q">Is there a <strong class="c-text">machine-checkable</strong> "done"? No verifier → <strong class="c-text">build the tests first</strong>, then run.</div></div></li>
 						<li><div><div class="h">Goal</div><div class="q">Do you want a <strong class="c-text">deliverable and a decision</strong>, or did you just describe one action?</div></div></li>
 						<li><div><div class="h">Boundaries</div><div class="q">What's off-limits? Fence irreversible side effects first.</div></div></li>
 						<li><div><div class="h">Legibility</div><div class="q">Can the agent understand the code? Missing a map → <strong class="c-text">add it first</strong>.</div></div></li>
@@ -1077,12 +1092,14 @@ return results.filter(r => r.verdict.faithful)</code></pre>
 						<div class="arr">→</div>
 						<div class="step"><span class="t"><span class="mono">/goal</span> or <span class="mono">/workflow</span></span></div>
 						<div class="arr">→</div>
-						<div class="step on-ok" style="border-left-color:var(--ok);"><span class="t c-ok">verify with an oracle</span></div>
+						<div class="step on-ok" style="border-left-color:var(--ok);"><span class="t c-ok">run the verifier</span></div>
 					</div>
 					<p class="mid c-muted fragment" style="margin-top:1.3em;max-width:680px;margin-left:auto;margin-right:auto;line-height:1.8;">
 						The shift worth making: from <strong class="c-text">executor</strong><br>
-						to the person who <strong class="c-goal">defines the task</strong> and <strong class="c-flow">makes the code legible</strong>.<br>
-						Those two the agent can't replace — and every bit compounds as it gets stronger.</p>
+						to the person who <strong class="c-goal">defines the task</strong><br>
+						and <strong class="c-flow">makes the code legible</strong>.<br>
+						Those two the agent can't replace —<br>
+						and every bit compounds as it gets stronger.</p>
 					<div class="sig fragment">Agentic Engineering · 2026</div>
 				</section>
 

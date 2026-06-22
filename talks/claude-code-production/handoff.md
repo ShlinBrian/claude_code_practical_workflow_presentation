@@ -31,7 +31,7 @@ reveal.js 簡報，主題「Claude Code in Production: A Practical RD Workflow�
 | SuperPowers UI | 水平生命週期條 **Define → Plan → Build → Verify**，每段掛該階段 skills，brainstorming 為 ★ 入口 | ✅ done |
 | brainstorming 流程頁 | 內容不變，只是「更美」（已加編號、skill-purple accent、gate 用金色漸層） | ✅ done |
 | 「Plan → debug」頁 | 拿掉方向性箭頭，改成並列「Two process skills you'll reuse」（writing-plans / systematic-debugging 是不同工作，非先後） | ✅ done |
-| The Case 結構 | 拆成 **Phase A（結構+程式轉換）** / **Phase B（資料搬遷）**；資料正確性由 **API A/B oracle** 端到端證明，不做獨立 row-by-row 稽核 | ✅ done |
+| The Case 結構 | 拆成 **Phase A（結構+程式轉換）** / **Phase B（資料搬遷）**；資料正確性由 **API A/B verifier（裁判）** 端到端證明，不做獨立 row-by-row 稽核 | ✅ done |
 
 ---
 

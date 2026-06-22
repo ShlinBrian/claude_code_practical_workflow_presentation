@@ -100,7 +100,7 @@ Present these as two *different jobs*, not a sequence. **writing-plans** turns t
 
 #### /goal — loop until the goal is met
 
-Hand it the spec plus a machine-checkable goal; it runs build → test → A/B → fix until the oracle passes. Stress the constraint: it only works if the goal is machine-checkable. No oracle → it loops or stops on a vibe. This is why brainstorming matters — the spec it produces carries the oracle.
+Hand it the spec plus a machine-checkable goal; it runs build → test → A/B → fix until the verifier passes. Stress the constraint: it only works if the goal is machine-checkable. No verifier → it loops or stops on a vibe. This is why brainstorming matters — the spec it produces carries the verifier.
 
 #### /workflow — multi-agent fan-out
 
@@ -109,6 +109,10 @@ For work that decomposes into many independent units. The script skeleton conver
 #### When each fits — hybrid
 
 Reach for `/goal` on one coherent objective with a tight, mostly-sequential feedback loop. Reach for `/workflow` for many independent units where you want parallelism + isolation. The realistic answer is **hybrid**: a main-loop `/goal` drives build/deploy/A-B and calls `/workflow` to fan out the 48 proc conversions. Tell them the experiment's C1-vs-C2 gives this decision real data.
+
+#### First build the verifier — the precondition both tools share
+
+The closing beat of the method chapter, and a correction to an assumption the audience just formed. `/goal` and `/workflow` are *self-verifying* — they loop against a verifier — so they're only ever as good as that verifier. The trap: the migration *came with* a verifier for free (golden MSSQL — every endpoint already has a correct answer to A/B against). **Normal feature work doesn't.** There, the verifier is your **test suite**, and you have to build it. So if the verifier doesn't exist yet, **building it is task zero, not task N** — thin coverage means the loop runs blind and you can't trust what it ships. Tie back to Anthropic's line: *if you can't verify it, don't ship it.* (Deliberately no coverage-percentage number — the principle, not a threshold.)
 
 ---
 
@@ -135,11 +139,11 @@ A years-old commercial download backend moved off Microsoft SQL Server — data,
 3. **SCT made INOUT `refcursor` procedures, but pgjdbc `{call …}` needs functions** → rewrote every actually-called proc as `RETURNS SETOF` / `TABLE` functions, aligned JDBC bind types one by one, used **`citext`** for case-insensitive comparison, rebuilt cross-schema views.
 4. **Embedded SQL dialect + identifier case** — `TOP`, `ISNULL`, `GETDATE()`, `dbo.`, `[brackets]`, mixed-case columns → adopted an **all-lowercase** strategy (drop brackets so PostgreSQL folds to lowercase, then compares), converting case by case.
 
-Punchline: the hard part isn't "does it run" — it's "is the answer **still correct**." That motivates the oracle and the experiment.
+Punchline: the hard part isn't "does it run" — it's "is the answer **still correct**." That motivates the verifier and the experiment.
 
 #### Phase B — data migration
 
-Once the structure runs, move the data: export from MSSQL (SCT BatchExecutor, `0x1f`/`0x1e` delimiters that never appear in the data), load into PostgreSQL (~390k rows across 23 tables, all-lowercase identifiers, `citext`). Key point on verification: **we don't check the data directly — the API A/B oracle proves it.** If every endpoint returns the same response as golden MSSQL, the data *and* the conversion are both correct, end-to-end. One oracle covers both phases — no separate row-by-row data audit to maintain.
+Once the structure runs, move the data: export from MSSQL (SCT BatchExecutor, `0x1f`/`0x1e` delimiters that never appear in the data), load into PostgreSQL (~390k rows across 23 tables, all-lowercase identifiers, `citext`). Key point on verification: **we don't check the data directly — the API A/B verifier proves it.** If every endpoint returns the same response as golden MSSQL, the data *and* the conversion are both correct, end-to-end. One verifier covers both phases — no separate row-by-row data audit to maintain.
 
 ---
 
@@ -151,18 +155,18 @@ This is the proof that the workflow is worth adopting. Four runs on the **same**
 
 - **A — Naive:** one-line prompt, repo as-is → the trap (from the naive-way section).
 - **B — Full Superpowers:** the native skill chain as designed — brainstorming → writing-plans → worktrees → **subagent TDD** → systematic-debugging → code-review → verification.
-- **C1 — Brainstorm + /goal:** keep Superpowers brainstorming → spec with DoD, then a raw `/goal` loop against the oracle (skip the full discipline).
-- **C2 — Brainstorm + /workflow:** same front half, then a `/workflow` fan-out against the oracle.
+- **C1 — Brainstorm + /goal:** keep Superpowers brainstorming → spec with DoD, then a raw `/goal` loop against the verifier (skip the full discipline).
+- **C2 — Brainstorm + /workflow:** same front half, then a `/workflow` fan-out against the verifier.
 
 Three comparisons fall out: **A vs the rest** = the method beats a one-liner (headline); **B vs C** = is the *full* disciplined method worth it, or does brainstorming + a verified loop already get most of the way?; **C1 vs C2** = the `/goal`-vs-`/workflow` trade-off, backed by data. Honesty note: B differs from C1/C2 on a *bundle* of disciplines, so frame it as "full vs lean method," not isolating a single skill.
 
-#### The oracle = Definition of Done
+#### The verifier = Definition of Done
 
-Per-endpoint, per-row A/B comparison of the PostgreSQL response vs a golden MSSQL response. Without a machine-checkable oracle, "loop until goal" means nothing. Shared by B / C1 / C2.
+Per-endpoint, per-row A/B comparison of the PostgreSQL response vs a golden MSSQL response. Without a machine-checkable verifier, "loop until goal" means nothing. Shared by B / C1 / C2.
 
 #### Four metrics
 
-- **Correctness** — oracle pass rate (endpoints A/B-faithful).
+- **Correctness** — verifier pass rate (endpoints A/B-faithful).
 - **Cost** — one simple total (tokens or $).
 - **Completion time** — wall-clock from task to trustworthy result. Anchor: I did a migration like this **by hand once**, with weaker LLMs — about **a month**.
 - **Code quality** — scored at the end by a **separate review agent** (this also demonstrates the workflow's own review step in action).
@@ -173,7 +177,7 @@ The A/B/C1/C2 × 4-metric table and the A/B comparison-report screenshot are all
 
 #### When NOT to automate directly
 
-Three cases where you shouldn't reach for `/goal` or `/workflow`: no machine-checkable oracle; irreversible side effects (deleting data, external APIs, moving money); domain knowledge not in the repo. And: human review is the new bottleneck — force the agent to split into **small PRs that carry their own A/B evidence**, so reviewers check the evidence, not every diff line.
+Three cases where you shouldn't reach for `/goal` or `/workflow`: no machine-checkable verifier; irreversible side effects (deleting data, external APIs, moving money); domain knowledge not in the repo. And: human review is the new bottleneck — force the agent to split into **small PRs that carry their own A/B evidence**, so reviewers check the evidence, not every diff line.
 
 ---
 
@@ -181,7 +185,7 @@ Three cases where you shouldn't reach for `/goal` or `/workflow`: no machine-che
 
 The take-home card. Five questions before typing `/goal` or `/workflow`; if any answer is "I don't know," that's the thing to fix first.
 
-1. **Definition of done** — is there a machine-checkable "done"? No oracle → don't run yet.
+1. **Definition of done** — is there a machine-checkable "done"? No verifier → build the tests first, then run.
 2. **Goal** — a deliverable and a decision, or did you just describe one action?
 3. **Boundaries** — what's off-limits? Fence irreversible side effects first.
 4. **Legibility** — can the agent understand the code? Missing a map → add it first.
@@ -191,7 +195,7 @@ The take-home card. Five questions before typing `/goal` or `/workflow`; if any 
 
 ### Close
 
-End on the workflow spine as a single visual: **brainstorm → spec + DoD → /goal or /workflow → verify with an oracle** — one reproducible workflow, usable tomorrow. The shift worth making: from executor to the person who defines the task and makes the code legible. Those two the agent can't replace, and every bit compounds as it gets stronger. Keep the tone an invitation, not a lecture.
+End on the workflow spine as a single visual: **brainstorm → spec + DoD → /goal or /workflow → run the verifier** — one reproducible workflow, usable tomorrow. The shift worth making: from executor to the person who defines the task and makes the code legible. Those two the agent can't replace, and every bit compounds as it gets stronger. Keep the tone an invitation, not a lecture.
 
 ---
 
