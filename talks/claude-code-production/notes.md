@@ -20,7 +20,7 @@ Six chapters: Everyday hygiene · The naive way · The method · The case · The
 
 ### Framing — two questions, very different leverage
 
-The single most important idea, framed neutrally (not as a scolding). Two questions side by side: "Can the agent do it?" — which plateaus and leaves you waiting for a better model — versus "Have I defined the task **and the environment** well enough that it can?" The leverage is the spec, the definition of done, and the workspace you hand it. Everything in the talk is one of those two levers. Let the two-node visual carry it.
+The single most important idea, framed neutrally (not as a scolding). Open with the bridge line — "behind all six chapters, one idea runs through everything" — so it doesn't feel like a jump from the agenda. Two questions side by side: "Can the agent do it?" — which plateaus and leaves you waiting for a better model — versus "Have I defined the task **and the environment** well enough that it can?" The leverage is the spec, the definition of done, and the workspace you hand it. Everything in the talk is one of those two levers. Let the two-node visual carry it.
 
 ---
 
@@ -32,23 +32,27 @@ Each chapter is preceded by a divider slide (Chapter NN + title + one-line subti
 
 ### Everyday hygiene — do-it-today wins (moved to the front)
 
-This leads the talk on purpose: it's the cheapest, highest-immediacy set of takeaways, and it earns trust by giving the audience something they can use in their next session.
+This leads the talk on purpose: it's the cheapest, highest-immediacy set of takeaways, and it earns trust by giving the audience something they can use in their next session. Frame it (via the divider line) as the *smallest first step* of the thesis — "the shift starts small: stop wasting the context you've already built" — so the energy doesn't drop after the framing slide. The moves are organized by *when* you reach for them: during the run, at the end, and when context fills.
 
-#### Pain-point opener
+#### Pain-point opener — "You shouldn't have to repeat yourself"
 
-Start with the pain everyone has felt: the run is halfway, context fills up, or the agent "forgets" a decision — and you re-explain the whole task. The fix is a handful of hygiene moves that make state cheap to restore, so you *steer* instead of re-narrating. Don't open on a feature list — open on the pain.
+Start with the pain everyone has felt: the run is halfway, context fills up, or the agent "forgets" a decision — and you re-explain the whole task. The fix is a few hygiene moves that keep state cheap to restore, so you *steer* instead of re-narrating. Don't open on a feature list — open on the pain.
 
-#### Three moves (each with a usage example)
+#### During the run — three moves that protect context
 
 - **`/rewind`** — back out a wrong turn; pick the checkpoint before the bad edit, no re-explaining.
-- **`/btw`** — inject a fact mid-run without derailing the task (e.g. "the staging DB is read-only").
-- **memory.md → CLAUDE.md** — flush durable facts so the next session starts informed.
+- **`/btw`** — ask a quick question you *don't* want in history. The answer appears in a dismissable overlay and never enters the conversation, so you check a detail **without growing context** (e.g. "what does this pgjdbc bind-type error mean?"). It's a read-only side-channel lookup, not a way to inject facts.
+- **subagent** — offload a context-polluting task (e.g. "scan all 48 procs, return only the ones that fail"); the subagent burns the tokens reading detail and only the distilled result comes back, so the main context stays clean.
 
 Show the actual invocations, not just the names. The point is that each is usable tomorrow.
 
-#### Context full → handover to a fresh agent
+#### End of the run — persist what's durable
 
-When context fills, don't re-explain — hand off. Write `handoff.md` (what's done · what's next · key decisions & constraints), `/clear` or start a fresh agent, and the new agent resumes cold by reading the handoff. Show the shape of `handoff.md` — the example uses the migration ("30/48 procs converted, convert the remaining 18, all-lowercase identifiers, work in a worktree"), which also plants the case we return to later.
+`memory.md → CLAUDE.md`: promote the durable facts the agent accumulated into committed `CLAUDE.md`, so every future session starts informed (all-lowercase identifier rule, staging DB is read-only, work in a worktree). Decide once, never re-explain.
+
+#### Context full → /clear + handoff.md, not /compact
+
+When context fills, **control the handoff yourself**. Contrast the two options: `/compact` lets the model auto-summarize — *you* don't control what survives, and the detail you needed can quietly get dropped. Instead, write `handoff.md` (what's done · what's next · key decisions & constraints), `/clear` for a clean restart, and a fresh agent resumes cold by reading the handoff. Show the shape of `handoff.md` — the example uses the migration ("30/48 procs converted, convert the remaining 18, all-lowercase identifiers, work in a worktree"), which also plants the case we return to later.
 
 ---
 
@@ -70,11 +74,13 @@ These three gaps are exactly what the method closes.
 
 ---
 
-### The method, part 1 — skills
+### The method — three tools
 
-#### Skills map to the dev lifecycle
+Open the chapter with the **three-tools overview**: SuperPowers (encode the process), `/goal` (loop until the goal is met), `/workflow` (fan out many agents). Frame them as peers in one pipeline — SuperPowers produces the spec, and `/goal` / `/workflow` are two ways to execute against it. Then expand each.
 
-A skill encodes a *process* — it tells the agent *how* to work, not just *what*. Define & plan: brainstorming, writing-plans, using-git-worktrees. Build & verify: subagent TDD, systematic-debugging, code-review, verification. Quality stops depending on whether today's prompt happened to be good.
+#### SuperPowers — skills mapped to the dev lifecycle
+
+A skill encodes a *process* — it tells the agent *how* to work, not just *what*. Walk the horizontal lifecycle bar: **Define** (brainstorming — the featured entry point, idea → spec + DoD) → **Plan** (writing-plans, using-git-worktrees) → **Build** (subagent TDD, systematic-debugging) → **Verify** (code-review, verification). Quality stops depending on whether today's prompt happened to be good.
 
 #### brainstorming (the star skill)
 
@@ -84,9 +90,9 @@ Walk the vertical flow: explore context → ask clarifying questions one at a ti
 
 Same migration task, run through brainstorming. It asks what "keep everything working" means and how we'll verify it automatically; the answer — A/B every endpoint vs a golden MSSQL, row-by-row — becomes a committed spec with a testable DoD. That spec is exactly what `/goal` and `/workflow` consume.
 
-#### Plan → debug systematically
+#### Two process skills you'll reuse
 
-**writing-plans** turns the spec into bite-sized, independently testable tasks (files · test · commit). **systematic-debugging** forces reproduce → isolate → hypothesis → fix → verify instead of guessing. Same idea both times: encode the process.
+Present these as two *different jobs*, not a sequence. **writing-plans** turns the spec into bite-sized, independently testable tasks (files · test · commit). **systematic-debugging** forces reproduce → isolate → hypothesis → fix → verify instead of guessing. Same idea both times: encode the process so quality stops depending on the prompt.
 
 ---
 
@@ -112,9 +118,9 @@ This is the credibility anchor: real, completed work. Stated as fact — only th
 
 #### Not a "swap the JDBC driver" job
 
-A years-old commercial download backend moved off Microsoft SQL Server — data, schema, stored procedures, and dialect SQL embedded in Java/JSP — onto PostgreSQL, with the bar that **every API returns the correct response on PostgreSQL.** Difficulty stacks on two axes: scale and semantic gap.
+A years-old commercial download backend moved off Microsoft SQL Server — data, schema, stored procedures, and dialect SQL embedded in Java/JSP — onto PostgreSQL, with the bar that **every API returns the correct response on PostgreSQL.** The work splits into two phases: **A — structure + code** (convert schema, procs, and the dialect SQL in Java/JSP) and **B — data migration** (move every row, then prove it's still correct).
 
-#### Axis 1 — scale (inventory)
+#### The scale (inventory)
 
 - Downloader (main DB): 18 tables, 376,701 rows
 - Cyberlink: 3 tables, 8,258 rows
@@ -122,7 +128,7 @@ A years-old commercial download backend moved off Microsoft SQL Server — data,
 - PMS: 1 table, 4,958 rows
 - **48 stored procedures/functions + 4 views** (PVM/SID) in Downloader.
 
-#### Axis 2 — semantic gap (4 problems → 4 fixes)
+#### Phase A — structure + code (4 problems → 4 fixes)
 
 1. **AWS SCT is GUI-only**, but had to run fully automated in headless WSL → used SCT's **BatchExecutor CLI + bundled Corretto 17**; control codes `0x1f`/`0x1e` (never in the data) as field/row delimiters.
 2. **Cross-DB queries** — MSSQL does 3-part-name cross-DB joins, PostgreSQL can't → analysis showed the app only uses `main` / `main_write` / `downloader` connections (all the Downloader DB), so it was tractable.
@@ -130,6 +136,10 @@ A years-old commercial download backend moved off Microsoft SQL Server — data,
 4. **Embedded SQL dialect + identifier case** — `TOP`, `ISNULL`, `GETDATE()`, `dbo.`, `[brackets]`, mixed-case columns → adopted an **all-lowercase** strategy (drop brackets so PostgreSQL folds to lowercase, then compares), converting case by case.
 
 Punchline: the hard part isn't "does it run" — it's "is the answer **still correct**." That motivates the oracle and the experiment.
+
+#### Phase B — data migration
+
+Once the structure runs, move the data: export from MSSQL (SCT BatchExecutor, `0x1f`/`0x1e` delimiters that never appear in the data), load into PostgreSQL (~390k rows across 23 tables, all-lowercase identifiers, `citext`). Key point on verification: **we don't check the data directly — the API A/B oracle proves it.** If every endpoint returns the same response as golden MSSQL, the data *and* the conversion are both correct, end-to-end. One oracle covers both phases — no separate row-by-row data audit to maintain.
 
 ---
 
