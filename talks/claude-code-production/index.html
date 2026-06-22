@@ -44,7 +44,7 @@
 				--r-main-font: 'Noto Sans TC', 'Inter', system-ui, sans-serif;
 				--r-heading-text-transform: none;
 				--r-heading-letter-spacing: -0.02em;
-				--r-main-font-size: 28px;
+				--r-main-font-size: 32px;
 			}
 
 			.reveal { font-weight: 400; }
@@ -54,9 +54,9 @@
 			.reveal li { margin-bottom: 0.4em; }
 
 			/* ── sizes ── */
-			.small { font-size: 0.55em; line-height: 1.5; }
-			.mid   { font-size: 0.72em; line-height: 1.6; }
-			.xs    { font-size: 0.48em; line-height: 1.5; }
+			.small { font-size: 0.62em; line-height: 1.5; }
+			.mid   { font-size: 0.78em; line-height: 1.6; }
+			.xs    { font-size: 0.5em; line-height: 1.5; }
 			.mono  { font-family: 'JetBrains Mono', monospace; }
 
 			/* ── colors ── */
@@ -139,6 +139,62 @@
 			.pipe .node.human { border-color: var(--goal-dim); }
 			.pipe .node.human .k { color: var(--goal); }
 			.pipe .arrow { display: flex; align-items: center; color: var(--faint); padding: 0 14px; font-size: 1.2em; }
+
+				/* ── flow diagram (node → arrow → node) ── */
+				.flow { display: flex; align-items: stretch; justify-content: center;
+				        gap: 0; flex-wrap: wrap; margin: 0.5em auto; max-width: 95%; }
+				.flow.vert { flex-direction: column; align-items: center; }
+				.flow .step {
+					background: var(--surface); border: 1px solid var(--border);
+					border-left: 4px solid var(--border-2); border-radius: 10px;
+					padding: 16px 20px; text-align: left; min-width: 150px;
+					display: flex; flex-direction: column; gap: 4px; }
+				.flow .step .t { font-weight: 600; font-size: 0.7em; }
+				.flow .step .d { color: var(--muted); font-size: 0.52em; line-height: 1.4; }
+				.flow .step.on-goal  { border-left-color: var(--goal); }
+				.flow .step.on-flow  { border-left-color: var(--flow); }
+				.flow .step.on-warn  { border-left-color: var(--warn); }
+				.flow .step.on-skill { border-left-color: var(--skill); }
+				.flow .arr { display: flex; align-items: center; justify-content: center;
+					color: var(--faint); font-size: 1.3em; padding: 0 14px; }
+				.flow.vert .arr { padding: 8px 0; }
+
+				/* ── step/stage badge ── */
+				.badge { font-family: 'JetBrains Mono', monospace; font-weight: 700;
+					font-size: 0.6em; color: var(--goal); border: 1px solid var(--goal-dim);
+					border-radius: 6px; padding: 2px 9px; }
+
+				/* ── before → after 2-up ── */
+				.ba { display: grid; grid-template-columns: 1fr auto 1fr; gap: 16px;
+					align-items: center; max-width: 92%; margin: 0.5em auto; text-align: left; }
+				.ba .before, .ba .after { background: var(--surface); border: 1px solid var(--border);
+					border-radius: 10px; padding: 18px 20px; font-size: 0.62em; line-height: 1.5; }
+				.ba .before { border-left: 4px solid var(--warn); }
+				.ba .after  { border-left: 4px solid var(--ok); }
+				.ba .vs { color: var(--faint); font-size: 1.4em; text-align: center; }
+				.ba .lbl { font-family: 'JetBrains Mono', monospace; font-size: 0.62em;
+					letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.6em; }
+				.ba .before .lbl { color: var(--warn); } .ba .after .lbl { color: var(--ok); }
+
+				/* ── inventory panel (scale facts) ── */
+				.inv { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+					max-width: 95%; margin: 0.5em auto; }
+				.inv .cell { background: var(--surface); border: 1px solid var(--border);
+					border-radius: 10px; padding: 18px 14px; text-align: center; }
+				.inv .cell .n { font-family: 'Space Grotesk', sans-serif; font-weight: 700;
+					font-size: 1.5em; color: var(--flow); line-height: 1; }
+				.inv .cell .k { font-size: 0.5em; color: var(--text); margin-top: 8px; font-weight: 600; }
+				.inv .cell .s { font-size: 0.42em; color: var(--faint); margin-top: 3px; }
+
+				/* ── problem → fix rows ── */
+				.pf { display: flex; flex-direction: column; gap: 14px; max-width: 94%; margin: 0.4em auto; }
+				.pf .row { display: grid; grid-template-columns: 1fr auto 1fr; gap: 14px; align-items: stretch; }
+				.pf .p, .pf .f { background: var(--surface); border: 1px solid var(--border);
+					border-radius: 9px; padding: 14px 18px; text-align: left; font-size: 0.54em; line-height: 1.55; }
+				.pf .p { border-left: 4px solid var(--warn); }
+				.pf .f { border-left: 4px solid var(--ok); }
+				.pf .ar { display: flex; align-items: center; color: var(--faint); font-size: 1.1em; }
+				.pf .p b, .pf .f b { color: var(--text); font-weight: 600; }
 
 			/* ── stat grid ── */
 			.stats {
@@ -294,7 +350,31 @@
 				margin-top: 0.8em; font-weight: 500;
 			}
 
-			/* page takeaway bar at top */
+			/* ── chapter divider ── */
+				.divider .ch-num {
+					font-family: 'JetBrains Mono', monospace;
+					font-size: 0.5em; letter-spacing: 0.22em;
+					color: var(--flow); text-transform: uppercase;
+				}
+				.divider h2 { font-size: 1.7em; margin: 0.25em 0 0; line-height: 1.1; }
+				.divider .ch-sub { font-size: 0.62em; color: var(--muted); margin-top: 0.7em; line-height: 1.5; }
+				.divider .ch-rule {
+					width: 64px; height: 3px; background: var(--flow);
+					border-radius: 2px; margin: 0.8em auto 0; opacity: 0.7;
+				}
+
+				/* ── agenda ── */
+				.agenda { list-style: none; padding: 0; max-width: 720px; margin: 0.6em auto 0; text-align: left; }
+				.agenda li {
+					display: grid; grid-template-columns: 54px 1fr; gap: 14px; align-items: baseline;
+					padding: 15px 4px; border-bottom: 1px solid var(--border); font-size: 0.66em;
+				}
+				.agenda li:last-child { border-bottom: none; }
+				.agenda .n { font-family: 'JetBrains Mono', monospace; color: var(--flow); font-size: 0.9em; }
+				.agenda .t { font-weight: 600; }
+				.agenda .s { color: var(--muted); font-size: 0.82em; margin-top: 3px; }
+
+				/* page takeaway bar at top */
 			.takeaway {
 				font-family: 'JetBrains Mono', monospace;
 				font-size: 0.38em; letter-spacing: 0.08em;
@@ -364,57 +444,128 @@
 
 				<!-- ════════ 1. TITLE ════════ -->
 				<section>
-					<div class="eyebrow" style="color:var(--flow);">Agentic Engineering · Internal · 2026</div>
-					<h1 style="font-size:2.1em;line-height:1.05;margin-bottom:0;">Claude Code<br>in Production</h1>
-					<p style="font-size:0.7em;color:var(--goal);font-weight:500;margin-top:0.3em;">A Practical RD Workflow</p>
-					<p class="mid c-muted" style="max-width:600px;margin:1.2em auto 0;line-height:1.6;">
-						Stop writing one-line prompts and hoping.<br>
-						This talk shows <strong class="c-text">how to turn a requirement into a plan an agent can actually execute</strong> — with skills, <span class="cmd goal">/goal</span>, and <span class="cmd flow">/workflow</span>.
+					<h1 style="font-size:2.2em;line-height:1.05;margin-bottom:0.1em;">Claude Code<br>in Production</h1>
+					<p style="font-size:0.72em;color:var(--goal);font-weight:500;margin-top:0.4em;">A Practical RD Workflow</p>
+					<p class="mid c-muted" style="margin-top:2em;line-height:1.7;">
+						BrianSH Lin<br>
+						<span class="mono" style="font-size:0.82em;color:var(--faint);">RD-CL.com</span>
 					</p>
 				</section>
 
 
 				<!-- ════════ 2. AGENDA ════════ -->
 				<section>
-					<h2 style="font-size:1.4em;">Agenda</h2>
-					<ol class="agenda-list">
-						<li><span class="num">01</span><div>
-							<div class="title">Superpowers Skills</div>
-							<div class="desc">A skill catalog for the dev lifecycle — and brainstorming, the requirement→spec engine</div></div></li>
-						<li><span class="num">02</span><div>
-							<div class="title">/goal &amp; /workflow</div>
-							<div class="desc">Loop-until-goal vs multi-agent fan-out — what they are, how to use them, when each fits</div></div></li>
-						<li><span class="num">03</span><div>
-							<div class="title">The Experiment</div>
-							<div class="desc">MSSQL→PostgreSQL migration: why it's hard, how I'll measure it, placeholder results</div></div></li>
-						<li><span class="num">★</span><div>
-							<div class="title">Pre-flight Checklist</div>
-							<div class="desc">Five questions to ask before you type /goal or /workflow</div></div></li>
+					<h2 style="font-size:1.5em;">Agenda</h2>
+					<ol class="agenda">
+						<li><span class="n">01</span><div><div class="t">Everyday hygiene</div><div class="s">The cheapest wins — moves you can use in your next session</div></div></li>
+						<li><span class="n">02</span><div><div class="t">The naive way</div><div class="s">A one-line prompt on a real task — and the three gaps it leaves</div></div></li>
+						<li><span class="n">03</span><div><div class="t">The method</div><div class="s">Skills &amp; brainstorming, then <span class="mono">/goal</span> and <span class="mono">/workflow</span></div></div></li>
+						<li><span class="n">04</span><div><div class="t">The case</div><div class="s">A real MSSQL → PostgreSQL migration: why it's hard</div></div></li>
+						<li><span class="n">05</span><div><div class="t">The experiment</div><div class="s">Four runs compared — designed, results to come</div></div></li>
+						<li><span class="n">06</span><div><div class="t">Pre-flight checklist</div><div class="s">Five questions to take home</div></div></li>
 					</ol>
 				</section>
 
 
-				<!-- ════════ ACT 0 — FRAMING (single slide) ════════ -->
+				<!-- ════════ 3. FRAMING — the one idea ════════ -->
 				<section>
 					<div class="takeaway">The one idea behind everything that follows</div>
-					<h3 style="font-size:1.3em;">Don't ask <span class="c-warn">"can the agent do it?"</span></h3>
-					<blockquote style="margin-top:0.6em;">
-						Ask: <strong class="c-goal">"Have I defined the task well enough that it can?"</strong><br><br>
-						Polishing prompts plateaus. The leverage is in the <strong class="c-text">spec, the definition of done, and the workspace</strong> you hand the agent — that's what this talk teaches.
-					</blockquote>
+					<h3 style="font-size:1.3em;margin-bottom:0.5em;">Two questions, very different leverage</h3>
+					<div class="flow" style="margin-top:0.4em;">
+						<div class="step on-warn" style="max-width:340px;">
+							<span class="t c-warn">&ldquo;Can the agent do it?&rdquo;</span>
+							<span class="d">Polishing prompts plateaus — and leaves you waiting for a better model.</span>
+						</div>
+						<div class="arr">vs</div>
+						<div class="step on-goal" style="max-width:390px;">
+							<span class="t c-goal">&ldquo;Have I defined the task <em>and the environment</em> well enough that it can?&rdquo;</span>
+							<span class="d">The leverage is the spec, the definition of done, and the workspace you hand it.</span>
+						</div>
+					</div>
+					<p class="mid c-muted" style="margin-top:0.9em;">Everything in this talk is one of those two levers.</p>
 				</section>
 
 
-				<!-- ════════ ACT 1 — THE WRONG WAY ════════ -->
+				<!-- ════════ DIVIDER 01 ════════ -->
+				<section class="divider">
+					<div class="ch-num">Chapter 01</div>
+					<h2>Everyday hygiene</h2>
+					<p class="ch-sub">The cheapest wins — moves you can use in your next session</p>
+					<div class="ch-rule"></div>
+				</section>
+
+
+				<!-- ════════ EVERYDAY HYGIENE — do-it-today wins ════════ -->
 				<section>
-					<section class="section-cover">
-						<div class="act-num">ACT 01 · MOTIVATION</div>
-						<h2>The Wrong Way</h2>
-						<p class="act-question">What most people actually type — and why it fails</p>
+
+					<!-- pain-point opener -->
+					<section>
+						<div class="takeaway">Start here — the cheapest wins you can use today</div>
+						<h3 style="margin-bottom:0.5em;">A tax most of us pay twice</h3>
+						<div class="ba">
+							<div class="before">
+								<div class="lbl">The pain</div>
+								The run is halfway, context fills up — or the agent &ldquo;forgets&rdquo; a decision. You <strong class="c-text">re-explain the whole task</strong>, every time.
+							</div>
+							<div class="vs">→</div>
+							<div class="after">
+								<div class="lbl">The fix</div>
+								A handful of <strong class="c-text">hygiene moves</strong> make state cheap to restore — so you steer, not re-narrate.
+							</div>
+						</div>
+						<p class="mid c-muted" style="margin-top:0.7em;">Three moves + one handover play. Each with how you actually use it.</p>
 					</section>
 
+					<!-- per-feature examples -->
 					<section>
-						<div class="takeaway">A real-looking one-line prompt</div>
+						<div class="takeaway">Three moves you can use in your next session</div>
+						<h3 style="margin-bottom:0.4em;">Keep the run on track</h3>
+						<div class="term" style="font-size:0.5em;">
+							<span class="cm"># wrong turn? rewind to before it — no re-explaining</span><br>
+							<span class="pr">/rewind</span> <span class="cm">→ pick the checkpoint before the bad edit</span><br><br>
+							<span class="cm"># mid-run, drop in a fact without derailing the task</span><br>
+							<span class="pr">/btw</span> the staging DB is read-only, never write to it<br><br>
+							<span class="cm"># end of session: flush durable facts so next time needs no setup</span><br>
+							<span class="ag">memory.md  →  CLAUDE.md   (next session starts informed)</span>
+						</div>
+						<p class="mid c-muted" style="margin-top:0.5em;"><span class="c-goal mono">/rewind</span> undo · <span class="c-goal mono">/btw</span> inject · <span class="c-goal mono">memory→CLAUDE.md</span> persist.</p>
+					</section>
+
+					<!-- context-full handover -->
+					<section>
+						<div class="takeaway">When context fills up: hand off, don't re-explain</div>
+						<h3 style="margin-bottom:0.4em;">Context full → handover to a fresh agent</h3>
+						<div class="flow vert" style="max-width:560px;">
+							<div class="step on-goal"><span class="t">1 · Write <span class="mono">handoff.md</span></span><span class="d">what's done · what's next · key decisions &amp; constraints</span></div>
+							<div class="arr">↓</div>
+							<div class="step"><span class="t">2 · <span class="mono">/clear</span> or start a fresh agent</span><span class="d">the bloated context is gone; cost resets</span></div>
+							<div class="arr">↓</div>
+							<div class="step on-flow"><span class="t">3 · New agent reads <span class="mono">handoff.md</span></span><span class="d">resumes cold — no re-explaining the whole task</span></div>
+						</div>
+						<div class="term" style="font-size:0.46em;max-width:560px;margin-top:0.5em;">
+							<span class="cm"># handoff.md</span><br>
+							## Done: DAO layer ported, 30/48 procs converted<br>
+							## Next: convert remaining 18 procs, run A/B oracle<br>
+							## Decisions: all-lowercase identifiers; work in worktree
+						</div>
+					</section>
+
+				</section>
+
+
+				<!-- ════════ DIVIDER 02 ════════ -->
+				<section class="divider">
+					<div class="ch-num">Chapter 02</div>
+					<h2>The naive way</h2>
+					<p class="ch-sub">A one-line prompt on a real task — and the three gaps it leaves</p>
+					<div class="ch-rule"></div>
+				</section>
+
+
+				<!-- ════════ THE NAIVE WAY (arm A) ════════ -->
+				<section>
+					<section>
+						<div class="takeaway">A real-looking one-line prompt · <span class="badge">A</span> naive run</div>
 						<h3>"Just migrate the database"</h3>
 						<div class="term">
 							<span class="pr">claude</span><br>
@@ -428,124 +579,114 @@
 					<section>
 						<div class="takeaway">Plausible output, no way to trust it</div>
 						<h3>What you get back</h3>
-						<div class="card accent-warn" style="margin-top:0.4em;">
+						<div class="card accent-warn" style="margin-top:0.4em;max-width:80%;">
 							<p class="mid" style="margin:0;">
 								It rewrites the SQL, swaps the driver, the build goes green — and it confidently says <strong class="c-text">"done."</strong>
 							</p>
 						</div>
-						<p class="mid c-muted" style="margin-top:0.6em;">Three things are missing, and they're the whole game:</p>
-						<ul class="diag" style="margin-top:0.3em;">
-							<li><span class="who brief">gap</span>No <strong class="c-text">spec</strong> — "keep everything working" is undefined</li>
-							<li><span class="who brief">gap</span>No <strong class="c-text">definition of done</strong> — nothing checks the answers are still correct</li>
-							<li><span class="who brief">gap</span>No <strong class="c-text">isolation</strong> — it edited your working tree in place</li>
-						</ul>
+						<p class="mid c-muted" style="margin:0.6em 0 0.2em;">Three things are missing — and they're the whole game:</p>
+						<div class="flow">
+							<div class="step on-warn"><span class="t c-warn">No spec</span><span class="d">&ldquo;keep everything working&rdquo; is undefined</span></div>
+							<div class="step on-warn"><span class="t c-warn">No definition of done</span><span class="d">nothing checks the answers are still correct</span></div>
+							<div class="step on-warn"><span class="t c-warn">No isolation</span><span class="d">it edited your working tree in place</span></div>
+						</div>
 					</section>
 				</section>
 
 
-				<!-- ════════ ACT 2 — SUPERPOWERS SKILLS ════════ -->
+				<!-- ════════ DIVIDER 03 ════════ -->
+				<section class="divider">
+					<div class="ch-num">Chapter 03</div>
+					<h2>The method</h2>
+					<p class="ch-sub">Skills &amp; brainstorming, then <span class="mono">/goal</span> and <span class="mono">/workflow</span></p>
+					<div class="ch-rule"></div>
+				</section>
+
+
+				<!-- ════════ SUPERPOWERS SKILLS ════════ -->
 				<section>
-					<section class="section-cover">
-						<div class="act-num">ACT 02 · SKILLS</div>
-						<h2>Superpowers Skills</h2>
-						<p class="act-sub">Reusable, encoded engineering process — not just prompts</p>
-						<p class="act-question">A skill tells the agent <em>how</em> to work, not just <em>what</em> to do</p>
-					</section>
 
 					<section>
-						<div class="takeaway">One catalog, mapped to the dev lifecycle</div>
-						<h3>The skill catalog</h3>
+						<div class="takeaway">The method, part 1 — skills encode the process</div>
+						<h3 style="margin-bottom:0.3em;">Skills map to the dev lifecycle</h3>
 						<div class="two-col" style="margin-top:0.3em;">
 							<div class="col" style="border-top:3px solid var(--goal);">
-								<div class="lbl" style="color:var(--goal);">Define &amp; plan</div>
-								<p class="small" style="margin:0;"><b class="c-text">brainstorming</b> — vague idea → spec<br>
-								<b class="c-text">writing-plans</b> — spec → bite-sized tasks<br>
-								<b class="c-text">using-git-worktrees</b> — isolate the work</p>
+								<div class="lbl" style="color:var(--goal);font-size:0.5em;">Define &amp; plan</div>
+								<p class="mid" style="margin:0;line-height:1.7;"><b class="c-goal">brainstorming</b> · idea→spec<br>
+								<b class="c-text">writing-plans</b> · spec→tasks<br>
+								<b class="c-text">using-git-worktrees</b> · isolate</p>
 							</div>
 							<div class="col" style="border-top:3px solid var(--flow);">
-								<div class="lbl" style="color:var(--flow);">Build &amp; verify</div>
-								<p class="small" style="margin:0;"><b class="c-text">test-driven-development</b> — red/green<br>
-								<b class="c-text">systematic-debugging</b> — when it breaks<br>
-								<b class="c-text">requesting / receiving-code-review</b><br>
-								<b class="c-text">verification-before-completion</b></p>
+								<div class="lbl" style="color:var(--flow);font-size:0.5em;">Build &amp; verify</div>
+								<p class="mid" style="margin:0;line-height:1.7;"><b class="c-text">subagent TDD</b> · red/green<br>
+								<b class="c-text">systematic-debugging</b><br>
+								<b class="c-text">code-review</b> · <b class="c-text">verification</b></p>
 							</div>
 						</div>
-						<p class="xs c-faint" style="margin-top:0.5em;">Today we go deep on <strong class="c-goal">brainstorming</strong>, then touch writing-plans &amp; systematic-debugging.</p>
+						<p class="mid c-muted" style="margin-top:0.5em;">A skill tells the agent <em>how</em> to work — not just <em>what</em> to do.</p>
 					</section>
 
 					<section>
-						<div class="takeaway">The star skill — it turns a request into a spec</div>
-						<h3>brainstorming: requirement → spec</h3>
-						<div class="ladder" style="max-width:78%;margin:0.4em auto;">
-							<div class="rung">Explore project context first</div>
-							<div class="rung"><span class="ar">↓</span>Ask clarifying questions — <b>one at a time</b></div>
-							<div class="rung"><span class="ar">↓</span>Propose 2–3 approaches with trade-offs</div>
-							<div class="rung"><span class="ar">↓</span>Present a design, get approval section by section</div>
-							<div class="rung" style="color:var(--goal);"><span class="ar">↓</span>Write &amp; commit a spec — <b>with a Definition of Done</b></div>
+						<div class="takeaway">The star skill — request → spec</div>
+						<h3 style="margin-bottom:0.15em;">brainstorming</h3>
+						<div class="flow vert" style="max-width:600px;gap:0;">
+							<div class="step" style="padding:9px 18px;"><span class="t">Explore project context</span></div>
+							<div class="arr" style="padding:3px 0;">↓</div>
+							<div class="step" style="padding:9px 18px;"><span class="t">Ask clarifying questions — one at a time</span></div>
+							<div class="arr" style="padding:3px 0;">↓</div>
+							<div class="step" style="padding:9px 18px;"><span class="t">Propose 2–3 approaches with trade-offs</span></div>
+							<div class="arr" style="padding:3px 0;">↓</div>
+							<div class="step" style="padding:9px 18px;"><span class="t">Present design, approve section by section</span></div>
+							<div class="arr" style="padding:3px 0;">↓</div>
+							<div class="step on-goal" style="padding:9px 18px;"><span class="t c-goal">Commit a spec — with a Definition of Done</span></div>
 						</div>
-						<p class="mid c-muted" style="margin-top:0.5em;">It refuses to write code until the design is approved. That gate is the point.</p>
+						<p class="mid c-muted" style="margin-top:0.4em;">Refuses to write code until the design is approved. <strong class="c-text">That gate is the point.</strong></p>
 					</section>
 
 					<section>
 						<div class="takeaway">What it looks like on the migration task</div>
-						<h3>From "migrate the DB" to a spec</h3>
-						<div class="term">
-							<span class="ag">What does "keep everything working" mean — same API responses, or same DB state?</span>
+						<h3 style="margin-bottom:0.3em;">"Migrate the DB" → a spec</h3>
+						<div class="term" style="font-size:0.5em;">
+							<span class="ag">"keep everything working" = same API responses, or same DB state?</span>
 							<span class="pr">Same HTTP responses, byte-for-byte where data allows.</span>
-							<span class="ag">How will we verify that automatically?</span>
-							<span class="pr">A/B every endpoint against a golden MSSQL, row-by-row.</span>
-							<span class="ag">Anything off-limits? Irreversible side effects?</span>
-							<span class="pr">No schema drops until A/B passes. Work in a worktree.</span>
-							<span class="cm">→ committed: docs/specs/2026-..-mssql-pg-migration-design.md</span>
+							<span class="ag">How do we verify that automatically?</span>
+							<span class="pr">A/B every endpoint vs a golden MSSQL, row-by-row.</span>
+							<span class="cm">→ committed: docs/specs/mssql-pg-migration-design.md (with DoD)</span>
 						</div>
-						<p class="mid c-goal" style="margin-top:0.5em;font-weight:600;">The output is a committed spec with a testable DoD — exactly what /goal needs.</p>
+						<p class="mid c-goal" style="margin-top:0.5em;font-weight:600;">A committed spec with a testable DoD — exactly what <span class="mono">/goal</span> &amp; <span class="mono">/workflow</span> consume.</p>
 					</section>
 
 					<section>
 						<div class="takeaway">Two more skills you'll reuse constantly</div>
-						<h3>Plan, then debug systematically</h3>
-						<div class="two-col" style="margin-top:0.4em;">
-							<div class="col" style="border-top:3px solid var(--goal);">
-								<div class="lbl" style="color:var(--goal);">writing-plans</div>
-								<p class="small c-muted" style="margin:0;">Turns the spec into <b class="c-text">bite-sized, independently testable tasks</b> — each with files, test, and commit. The agent (or a fleet) executes task-by-task with review gates.</p>
-							</div>
-							<div class="col" style="border-top:3px solid var(--flow);">
-								<div class="lbl" style="color:var(--flow);">systematic-debugging</div>
-								<p class="small c-muted" style="margin:0;">When something breaks, forces <b class="c-text">reproduce → isolate → hypothesis → fix → verify</b> instead of guessing. Stops the agent flailing.</p>
-							</div>
+						<h3 style="margin-bottom:0.3em;">Plan → then debug systematically</h3>
+						<div class="flow">
+							<div class="step on-goal"><span class="t c-goal">writing-plans</span><span class="d">spec → bite-sized, independently testable tasks (files · test · commit)</span></div>
+							<div class="step on-flow"><span class="t c-flow">systematic-debugging</span><span class="d">reproduce → isolate → hypothesis → fix → verify, instead of guessing</span></div>
 						</div>
-						<p class="xs c-faint" style="margin-top:0.5em;">Same idea every time: encode the <em>process</em>, so quality doesn't depend on how good today's prompt was.</p>
+						<p class="mid c-muted" style="margin-top:0.6em;">Encode the <em>process</em> — quality stops depending on how good today's prompt was.</p>
 					</section>
 				</section>
 
 
-				<!-- ════════ ACT 3 — /goal & /workflow ════════ -->
+				<!-- ════════ /goal & /workflow ════════ -->
 				<section>
-					<section class="section-cover">
-						<div class="act-num">ACT 03 · TOOLS</div>
-						<h2>/goal &amp; /workflow</h2>
-						<p class="act-sub">Two ways to spend a lot of tokens well</p>
-						<p class="act-question">Loop until done, or fan out across many agents?</p>
-					</section>
 
 					<section>
-						<div class="takeaway">/goal — keep working until a goal is met</div>
-						<h3><span class="cmd goal" style="font-size:1.1em;">/goal</span> — loop until goal</h3>
-						<div class="term">
-							<span class="pr">claude</span><br>
-							<span class="cm"># hand it the spec + a checkable goal:</span><br>
-							/goal All N endpoints return HTTP 200 AND each<br>
-							&nbsp;&nbsp;A/B-matches golden MSSQL row-by-row. Spec:<br>
-							&nbsp;&nbsp;docs/specs/mssql-pg-migration-design.md<br>
-							<span class="ag">…runs build → test → A/B → fix → repeat until the oracle passes</span>
+						<div class="takeaway">The method, part 2 — two ways to spend tokens well</div>
+						<h3 style="margin-bottom:0.3em;"><span class="c-goal mono">/goal</span> — loop until the goal is met</h3>
+						<div class="term" style="font-size:0.5em;">
+							<span class="cm"># hand it the spec + a machine-checkable goal:</span><br>
+							<span class="pr">/goal All endpoints return 200 AND each A/B-matches</span><br>
+							&nbsp;&nbsp;<span class="pr">golden MSSQL row-by-row. Spec: …migration-design.md</span><br>
+							<span class="ag">build → test → A/B → fix → repeat until the oracle passes</span>
 						</div>
-						<p class="mid c-muted" style="margin-top:0.5em;">It only works if the goal is <strong class="c-text">machine-checkable</strong>. No oracle → it loops or stops on a vibe.</p>
+						<p class="mid c-muted" style="margin-top:0.5em;">Only works if the goal is <strong class="c-text">machine-checkable</strong>. No oracle → it loops or stops on a vibe.</p>
 					</section>
 
 					<section>
 						<div class="takeaway">/workflow — orchestrate many agents deterministically</div>
-						<h3><span class="cmd flow" style="font-size:1.1em;">/workflow</span> — multi-agent fan-out</h3>
-						<pre class="code"><code class="language-javascript">// convert 49 stored procedures, each in parallel, then verify
+						<h3 style="margin-bottom:0.2em;"><span class="c-flow mono">/workflow</span> — multi-agent fan-out</h3>
+						<pre class="code"><code class="language-javascript">// convert 48 stored procedures in parallel, then verify each
 const procs = await agent('list all .sql procs', {schema: PROCS})
 const results = await pipeline(
   procs.list,
@@ -553,237 +694,187 @@ const results = await pipeline(
   c => agent(`A/B verify ${c.proc} vs golden`, {phase: 'verify', schema: VERDICT})
 )
 return results.filter(r => r.verdict.faithful)</code></pre>
-						<p class="mid c-muted" style="margin-top:0.4em;">Each proc flows through convert→verify independently. Wall-clock = slowest single chain, not the sum.</p>
+						<p class="mid c-muted" style="margin-top:0.3em;">Each proc flows convert→verify independently. Wall-clock = slowest chain, not the sum.</p>
 					</section>
 
 					<section>
-						<div class="takeaway">They're not rivals — the real answer is hybrid</div>
-						<h3>When each fits</h3>
-						<div class="two-col" style="margin-top:0.3em;">
-							<div class="col" style="border-top:3px solid var(--goal);">
-								<div class="lbl" style="color:var(--goal);">Reach for /goal</div>
-								<p class="small c-muted" style="margin:0;">One coherent objective · tight feedback loop · the work is mostly sequential (build/test/fix).</p>
-							</div>
-							<div class="col" style="border-top:3px solid var(--flow);">
-								<div class="lbl" style="color:var(--flow);">Reach for /workflow</div>
-								<p class="small c-muted" style="margin:0;">Many independent units (N files, N procs) · you want parallelism + isolation · structure should be deterministic.</p>
-							</div>
+						<div class="takeaway">Not rivals — pick by the shape of the work</div>
+						<h3 style="margin-bottom:0.3em;">When each fits</h3>
+						<div class="flow">
+							<div class="step on-goal"><span class="t c-goal mono">/goal</span><span class="d">one coherent objective · tight feedback loop · mostly sequential (build/test/fix)</span></div>
+							<div class="step on-flow"><span class="t c-flow mono">/workflow</span><span class="d">many independent units (N procs) · want parallelism + isolation · deterministic structure</span></div>
 						</div>
-						<div class="card accent-flow" style="margin-top:0.4em;">
-							<p class="mid" style="margin:0;"><strong class="c-flow">Hybrid (most realistic):</strong> a main-loop <span class="cmd goal">/goal</span> drives the build/deploy/A-B cycle and calls <span class="cmd flow">/workflow</span> to fan out the proc conversions and per-endpoint diagnosis.</p>
+						<div class="card accent-flow" style="margin-top:0.5em;max-width:88%;">
+							<p class="mid" style="margin:0;"><strong class="c-flow">Hybrid (most realistic):</strong> a main-loop <span class="c-goal mono">/goal</span> drives build/deploy/A-B and calls <span class="c-flow mono">/workflow</span> to fan out the 48 proc conversions.</p>
 						</div>
+						<p class="xs c-faint" style="margin-top:0.4em;">The experiment's C1-vs-C2 gives this decision real data.</p>
 					</section>
 				</section>
 
 
-				<!-- ════════ ACT 4 — THE EXPERIMENT ════════ -->
+				<!-- ════════ DIVIDER 04 ════════ -->
+				<section class="divider">
+					<div class="ch-num">Chapter 04</div>
+					<h2>The case</h2>
+					<p class="ch-sub">A real MSSQL → PostgreSQL migration — why it's hard</p>
+					<div class="ch-rule"></div>
+				</section>
+
+
+				<!-- ════════ THE CASE — why this migration is hard (REAL FACTS) ════════ -->
 				<section>
-					<section class="section-cover">
-						<div class="act-num">ACT 04 · EXPERIMENT</div>
-						<h2>The Experiment</h2>
-						<p class="act-sub">A hard, real task to stress-test the whole method</p>
-						<p class="act-question">Not run yet — here is the case, the design, and where results will go</p>
-					</section>
 
 					<section>
-						<div class="takeaway">A stress test: swap the engine, change nothing observable</div>
-						<h3>Case: MSSQL → PostgreSQL migration</h3>
-						<p class="mid c-muted">
-							A Java service. Replace the database engine underneath, but
-							<strong class="c-text">every externally observable behavior must stay identical.</strong>
-						</p>
-						<div class="card accent-goal" style="margin-top:0.5em;">
-							<p class="mid" style="margin:0;">I did a migration like this <strong class="c-text">by hand once</strong>, with weaker LLMs — it took about <strong class="c-goal">a month</strong> of development and testing. This time I want to measure how the method changes that.</p>
+						<div class="takeaway">A real, completed migration — the credibility anchor</div>
+						<h3 style="margin-bottom:0.3em;">Not a "swap the JDBC driver" job</h3>
+						<div class="card accent-goal" style="max-width:84%;">
+							<p class="mid" style="margin:0;">A years-old commercial download backend moved off <strong class="c-text">Microsoft SQL Server</strong> — data, schema, stored procedures, and dialect SQL embedded in Java/JSP — onto <strong class="c-text">PostgreSQL</strong>.<br><br>The bar: <strong class="c-goal">every API returns the correct response on PostgreSQL.</strong></p>
+						</div>
+						<p class="mid c-muted" style="margin-top:0.5em;">Difficulty stacks on two axes — <strong class="c-text">scale</strong> and <strong class="c-text">semantic gap</strong>.</p>
+					</section>
+
+					<!-- scale inventory -->
+					<section>
+						<div class="takeaway">Axis 1 — scale</div>
+						<h3 style="margin-bottom:0.3em;">What had to move</h3>
+						<div class="inv">
+							<div class="cell"><div class="n">376,701</div><div class="k">Downloader</div><div class="s">main DB · 18 tables</div></div>
+							<div class="cell"><div class="n">8,258</div><div class="k">Cyberlink</div><div class="s">3 tables</div></div>
+							<div class="cell"><div class="n">121</div><div class="k">PC</div><div class="s">1 table</div></div>
+							<div class="cell"><div class="n">4,958</div><div class="k">PMS</div><div class="s">1 table</div></div>
+						</div>
+						<div class="card accent-flow" style="margin-top:0.5em;max-width:70%;">
+							<p class="mid" style="margin:0;text-align:center;"><strong class="c-flow">48</strong> stored procedures / functions &nbsp;+&nbsp; <strong class="c-flow">4</strong> views <span class="c-faint">(PVM/SID)</span> in Downloader</p>
 						</div>
 					</section>
 
+					<!-- semantic gap problems → fixes -->
 					<section>
-						<div class="takeaway">Why this is hard — three problems stacked</div>
-						<h3>Why it's a hard problem</h3>
-						<div class="card" style="text-align:left;">
-							<p class="mid" style="margin:0 0 0.5em;"><strong class="c-flow">1.</strong> SQL dialect is sprinkled across the whole stack — <span class="c-muted mono" style="font-size:0.8em;">SELECT TOP · [dbo]. · (NOLOCK) · ISNULL</span> all differ in PG.</p>
-							<p class="mid fragment" style="margin:0 0 0.5em;"><strong class="c-flow">2.</strong> Structural gap — <strong class="c-text">49 stored procedures + 4 views</strong> to port; the vendor tool is GUI-only, no automation.</p>
-							<p class="mid fragment" style="margin:0;"><strong class="c-flow">3.</strong> Type &amp; case mismatches fail <strong class="c-warn">silently</strong> — no error thrown, just a wrong answer.</p>
-						</div>
-						<p class="mid c-goal fragment" style="margin-top:0.5em;font-weight:600;">The hard part isn't "does it run" — it's "is the answer still correct."</p>
-					</section>
-
-					<!-- 03-c oracle/DoD -->
-					<section>
-						<div class="takeaway">The key to making loop-until-goal meaningful: an oracle</div>
-						<h3>Definition of Done = an oracle</h3>
-						<div class="card accent-goal">
-							<div class="card-label">DoD = Oracle</div>
-							<p class="mid" style="margin:0;">
-								Per-endpoint, per-row <strong class="c-goal">A/B comparison</strong> against a golden MSSQL instance.<br><br>
-								<strong class="c-text">This is the oracle that makes "loop until goal" mean something.</strong> Without it the agent can't know whether it's right.
-							</p>
-						</div>
-					</section>
-
-					<!-- 03-d runs to compare -->
-					<section>
-						<div class="takeaway">Four runs, same task, same deliverable → comparable</div>
-						<h3>The runs I'll compare</h3>
-						<div class="two-col" style="margin-top:0.3em;">
-							<div class="col" style="border-top:3px solid var(--goal);">
-								<div class="lbl" style="color:var(--goal);">Without skills</div>
-								<p class="mid" style="margin:0;"><b class="c-text">goal</b> — plain /goal loop<br><b class="c-text">workflow</b> — plain /workflow fan-out</p>
+						<div class="takeaway">Axis 2 — the semantic gap, and how each was beaten</div>
+						<h3 style="margin-bottom:0.2em;">4 problems → 4 fixes</h3>
+						<div class="pf">
+							<div class="row">
+								<div class="p"><b>SCT is GUI-only</b>, but had to run fully automated in headless WSL</div>
+								<div class="ar">→</div>
+								<div class="f">SCT <b>BatchExecutor CLI</b> + bundled Corretto 17; control codes <span class="mono">0x1f/0x1e</span> as delimiters</div>
 							</div>
-							<div class="col" style="border-top:3px solid var(--skill);">
-								<div class="lbl" style="color:var(--skill);">With Superpowers skills</div>
-								<p class="mid" style="margin:0;"><b class="c-text">goal + skill</b><br><b class="c-text">workflow + skill</b></p>
+							<div class="row">
+								<div class="p"><b>Cross-DB joins</b> — MSSQL 3-part names; PostgreSQL can't</div>
+								<div class="ar">→</div>
+								<div class="f">app only uses <span class="mono">main / main_write / downloader</span> (all Downloader) — <b>tractable</b></div>
+							</div>
+							<div class="row">
+								<div class="p">SCT made <b>INOUT refcursor</b> procs — but pgjdbc <span class="mono">{call…}</span> needs functions</div>
+								<div class="ar">→</div>
+								<div class="f">rewrite to <span class="mono">RETURNS SETOF</span> functions; <span class="mono">citext</span> for case; rebuild views</div>
+							</div>
+							<div class="row">
+								<div class="p"><b>Dialect + case</b> — <span class="mono">TOP ISNULL GETDATE() dbo. [brackets]</span></div>
+								<div class="ar">→</div>
+								<div class="f"><b>all-lowercase</b> strategy — drop brackets so PostgreSQL folds &amp; compares</div>
 							</div>
 						</div>
-						<p class="xs c-faint" style="margin-top:0.5em;">Same spec, same oracle, same target deliverable for all four → differences are attributable to method.</p>
+						<p class="mid c-goal" style="margin-top:0.5em;font-weight:600;text-align:center;">The hard part isn't "does it run" — it's "is the answer <em>still correct</em>."</p>
 					</section>
 
-					<!-- 03-e cost metric -->
+				</section>
+
+
+				<!-- ════════ DIVIDER 05 ════════ -->
+				<section class="divider">
+					<div class="ch-num">Chapter 05</div>
+					<h2>The experiment</h2>
+					<p class="ch-sub">Four runs compared — designed, results to come</p>
+					<div class="ch-rule"></div>
+				</section>
+
+
+				<!-- ════════ THE EXPERIMENT — A / B / C1 / C2 ════════ -->
+				<section>
+
+					<!-- 4 arms -->
 					<section>
-						<div class="takeaway">How I'll measure cost — weighted tokens</div>
-						<h3>Cost metric</h3>
-						<div class="card accent-flow">
-							<p class="mid mono" style="margin:0;font-size:0.9em;">cost = input×1 + cache_read×0.1<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ cache_write×1.25 + output×5</p>
+						<div class="takeaway">The proof — 4 runs, same task, designed-but-not-yet-run</div>
+						<h3 style="margin-bottom:0.2em;">How much method should drive it?</h3>
+						<div class="flow vert" style="max-width:820px;gap:0;">
+							<div class="step on-warn" style="padding:11px 18px;"><span class="t"><span class="badge" style="color:var(--warn);border-color:var(--warn);">A</span> &nbsp;Naive</span><span class="d">one-line prompt, repo as-is → the trap</span></div>
+							<div class="arr" style="font-size:0.9em;padding:5px 0;">↓ &nbsp;add the full method</div>
+							<div class="step on-skill" style="padding:11px 18px;"><span class="t"><span class="badge" style="color:var(--skill);border-color:var(--skill);">B</span> &nbsp;Full Superpowers</span><span class="d">brainstorming → writing-plans → worktrees → subagent TDD → debugging → review → verification</span></div>
+							<div class="arr" style="font-size:0.9em;padding:5px 0;">↓ &nbsp;keep brainstorm, swap to a lean executor</div>
+							<div class="flow" style="margin:0;gap:14px;">
+								<div class="step on-goal" style="min-width:210px;padding:11px 18px;"><span class="t"><span class="badge">C1</span> &nbsp;Brainstorm + <span class="mono">/goal</span></span><span class="d">spec w/ DoD → raw /goal loop to oracle</span></div>
+								<div class="step on-flow" style="min-width:210px;padding:11px 18px;"><span class="t"><span class="badge" style="color:var(--flow);border-color:var(--flow-dim);">C2</span> &nbsp;Brainstorm + <span class="mono">/workflow</span></span><span class="d">same front half → /workflow fan-out</span></div>
+							</div>
 						</div>
-						<div class="legend" style="margin-top:0.6em;">
-							<span><i style="background:var(--c-input)"></i>input ×1</span>
-							<span><i style="background:var(--c-read)"></i>cache_read ×0.1</span>
-							<span><i style="background:var(--c-write)"></i>cache_write ×1.25</span>
-							<span><i style="background:var(--c-output)"></i>output ×5</span>
-						</div>
-						<p class="mid c-muted" style="margin-top:0.5em;">Plus wall-clock and number of human review rounds. Each run executed <strong class="c-text">3×</strong> before drawing conclusions.</p>
+						<p class="xs c-faint" style="margin-top:0.4em;">A vs rest = method beats one-liner · B vs C = full vs lean · C1 vs C2 = /goal vs /workflow</p>
 					</section>
 
-					<!-- 03-f success criteria -->
+					<!-- oracle -->
 					<section>
-						<div class="takeaway">What counts as success</div>
-						<h3>Success criteria</h3>
-						<div class="card accent-goal">
-							<ul class="mid" style="margin:0;padding-left:1.2em;">
-								<li>All endpoints return HTTP 200</li>
-								<li>Every endpoint <strong class="c-text">A/B-faithful</strong> to golden MSSQL (data-state differences explained, not hand-waved)</li>
-								<li>All migrated tables row-aligned</li>
-								<li>Deliverable: small, reviewable PRs that <strong class="c-text">carry their own A/B evidence</strong></li>
-							</ul>
+						<div class="takeaway">What makes "done" objective</div>
+						<h3 style="margin-bottom:0.3em;">The oracle = Definition of Done</h3>
+						<div class="flow" style="max-width:80%;">
+							<div class="step on-flow"><span class="t">PostgreSQL response</span></div>
+							<div class="arr">vs</div>
+							<div class="step on-goal"><span class="t">golden MSSQL response</span></div>
+							<div class="arr">=</div>
+							<div class="step on-ok" style="border-left-color:var(--ok);"><span class="t c-ok">per-endpoint, per-row A/B</span></div>
 						</div>
+						<p class="mid c-muted" style="margin-top:0.6em;">Without a machine-checkable oracle, "loop until goal" means nothing — shared by B / C1 / C2.</p>
 					</section>
 
-					<!-- results TBD placeholder -->
+					<!-- 4 metrics -->
 					<section>
-						<div class="takeaway">Results go here after the run</div>
-						<h3>Results <span class="tbd">TBD</span></h3>
-						<div class="stats">
-							<div class="stat"><div class="v fl"><span class="tbd">TBD</span></div><div class="l">endpoints<br>HTTP 200</div></div>
-							<div class="stat"><div class="v fl"><span class="tbd">TBD</span></div><div class="l">A/B body<br>faithful</div></div>
-							<div class="stat"><div class="v fl"><span class="tbd">TBD</span></div><div class="l">tables<br>row-aligned</div></div>
-							<div class="stat"><div class="v fl"><span class="tbd">TBD</span></div><div class="l">winning<br>run</div></div>
+						<div class="takeaway">Four metrics across A / B / C1 / C2</div>
+						<h3 style="margin-bottom:0.3em;">How they're compared</h3>
+						<div class="inv">
+							<div class="cell"><div class="k c-ok" style="font-size:0.6em;">Correctness</div><div class="s">oracle pass rate (endpoints A/B-faithful)</div></div>
+							<div class="cell"><div class="k c-goal" style="font-size:0.6em;">Cost</div><div class="s">one simple total (tokens or $)</div></div>
+							<div class="cell"><div class="k c-flow" style="font-size:0.6em;">Completion time</div><div class="s">wall-clock task → trustworthy result</div></div>
+							<div class="cell"><div class="k c-skill" style="font-size:0.6em;">Code quality</div><div class="s">scored by a separate review agent</div></div>
 						</div>
-						<div class="shot" style="margin-top:0.6em;"><div class="cap"><b>📷 SCREENSHOT</b> — A/B comparison report (per-endpoint pass/fail)</div></div>
+						<p class="mid c-muted" style="margin-top:0.6em;">Anchor: I did this kind of migration <strong class="c-text">by hand once</strong>, with weaker LLMs — about <strong class="c-goal">a month</strong>.</p>
 					</section>
 
-					<!-- 03-g cost bars placeholder -->
+					<!-- TBD results -->
 					<section>
-						<div class="takeaway">Cost comparison — to be filled after 3× runs each</div>
-						<h3>Cost by run <span class="tbd">TBD</span></h3>
-						<div class="legend">
-							<span><i style="background:var(--c-input)"></i>input</span>
-							<span><i style="background:var(--c-read)"></i>cache_read</span>
-							<span><i style="background:var(--c-write)"></i>cache_write</span>
-							<span><i style="background:var(--c-output)"></i>output</span>
-						</div>
-						<div class="cost-bars">
-							<div class="bar-row"><div class="nm">goal</div><div class="bar-track"></div><div class="tot"><span class="tbd">TBD</span></div></div>
-							<div class="bar-row"><div class="nm">workflow</div><div class="bar-track"></div><div class="tot"><span class="tbd">TBD</span></div></div>
-							<div class="bar-row"><div class="nm">goal + skill</div><div class="bar-track"></div><div class="tot"><span class="tbd">TBD</span></div></div>
-							<div class="bar-row"><div class="nm">workflow + skill</div><div class="bar-track"></div><div class="tot"><span class="tbd">TBD</span></div></div>
-						</div>
-						<p class="xs c-faint" style="margin-top:0.4em;">Hypothesis to test: "loaded a skill" ≠ "used the skill" — an unused skill can be the <em>most</em> expensive run (wasted cache_read).</p>
-					</section>
-
-					<!-- 03-h cost detail placeholder -->
-					<section>
-						<div class="takeaway">Full numbers land here</div>
-						<h3>Cost detail <span class="tbd">TBD</span></h3>
-						<table class="cost-table">
-							<thead><tr><th>run</th><th>input</th><th>cache_read</th><th>cache_write</th><th>output</th><th>weighted</th></tr></thead>
+						<div class="takeaway">Results land here after the run</div>
+						<h3 style="margin-bottom:0.3em;">Results <span class="tbd">TBD</span></h3>
+						<table class="cost-table" style="font-size:0.5em;">
+							<thead><tr><th>run</th><th>correctness</th><th>cost</th><th>time</th><th>code quality</th></tr></thead>
 							<tbody>
-								<tr><td class="exp">goal</td><td>—</td><td>—</td><td>—</td><td>—</td><td class="cost"><span class="tbd">TBD</span></td></tr>
-								<tr><td class="exp">workflow</td><td>—</td><td>—</td><td>—</td><td>—</td><td class="cost"><span class="tbd">TBD</span></td></tr>
-								<tr><td class="exp">goal + skill</td><td>—</td><td>—</td><td>—</td><td>—</td><td class="cost"><span class="tbd">TBD</span></td></tr>
-								<tr><td class="exp">workflow + skill</td><td>—</td><td>—</td><td>—</td><td>—</td><td class="cost"><span class="tbd">TBD</span></td></tr>
+								<tr><td class="exp">A · naive</td><td><span class="tbd">TBD</span></td><td><span class="tbd">TBD</span></td><td><span class="tbd">TBD</span></td><td><span class="tbd">TBD</span></td></tr>
+								<tr><td class="exp">B · full superpowers</td><td><span class="tbd">TBD</span></td><td><span class="tbd">TBD</span></td><td><span class="tbd">TBD</span></td><td><span class="tbd">TBD</span></td></tr>
+								<tr><td class="exp">C1 · brainstorm + /goal</td><td><span class="tbd">TBD</span></td><td><span class="tbd">TBD</span></td><td><span class="tbd">TBD</span></td><td><span class="tbd">TBD</span></td></tr>
+								<tr><td class="exp">C2 · brainstorm + /workflow</td><td><span class="tbd">TBD</span></td><td><span class="tbd">TBD</span></td><td><span class="tbd">TBD</span></td><td><span class="tbd">TBD</span></td></tr>
 							</tbody>
 						</table>
+						<div class="shot" style="margin-top:0.5em;"><div class="cap"><b>📷 SCREENSHOT</b> — A/B comparison report (per-endpoint pass/fail)</div></div>
 					</section>
 
-					<!-- 03-i what I expect to learn -->
-					<section>
-						<div class="takeaway">What the run should tell us</div>
-						<h3>What I expect to learn <span class="tbd">TBD</span></h3>
-						<div class="card accent-goal" style="margin-bottom:0.3em;">
-							<div class="card-label">Hypothesis 1</div>
-							<p class="mid" style="margin:0;">Loading a skill ≠ using it. An unused skill may be the most expensive run.</p>
-						</div>
-						<div class="card accent-flow">
-							<div class="card-label">Hypothesis 2</div>
-							<p class="mid" style="margin:0;">Most cost is cache_read — the inherent price of long autonomous loops. Hygiene only trims it at the margin.</p>
-						</div>
-					</section>
-
-					<!-- 03-i byproduct -->
-					<section>
-						<div class="takeaway">A byproduct to watch for</div>
-						<h3>Byproduct: bugs the oracle catches <span class="tbd">TBD</span></h3>
-						<div class="card accent-goal">
-							<p class="mid" style="margin:0;">Automated A/B comparison tends to surface bugs a human review would miss — e.g. a field silently written as <code class="c-warn">NULL</code>.<br><br><span class="c-muted">Concrete example to be filled after the run.</span></p>
-						</div>
-					</section>
-
-					<!-- 03-j when not to automate -->
+					<!-- when NOT to automate -->
 					<section>
 						<div class="takeaway">Knowing when NOT to automate matters as much</div>
-						<h3>When <span class="c-warn">not</span> to automate directly</h3>
-						<div class="card accent-warn">
-							<ul class="mid" style="margin:0;padding-left:1.2em;">
-								<li>No automatically-checkable oracle</li>
-								<li>Irreversible side effects — deleting data, calling external APIs, moving money</li>
-								<li>Domain knowledge that isn't in the repo</li>
-							</ul>
+						<h3 style="margin-bottom:0.3em;">When <span class="c-warn">not</span> to automate directly</h3>
+						<div class="flow">
+							<div class="step on-warn"><span class="t c-warn">No oracle</span><span class="d">nothing machine-checkable to loop against</span></div>
+							<div class="step on-warn"><span class="t c-warn">Irreversible side effects</span><span class="d">deleting data · external APIs · moving money</span></div>
+							<div class="step on-warn"><span class="t c-warn">Domain knowledge not in the repo</span><span class="d">the agent can't read what isn't written down</span></div>
+						</div>
+						<div class="card accent-goal" style="margin-top:0.6em;max-width:88%;">
+							<p class="mid" style="margin:0;">Human review is the new bottleneck → force <strong class="c-goal">small PRs that carry their own A/B evidence</strong>. Review the evidence, not every diff line.</p>
 						</div>
 					</section>
 
-					<!-- 03-k human review -->
-					<section>
-						<div class="takeaway">The bottleneck moves from writing code to reviewing PRs</div>
-						<h3>Human review is the new bottleneck</h3>
-						<p class="mid c-muted">A migration PR can touch the DAO layer, config, 49 procs→functions, and dozens of fixes.</p>
-						<div class="card accent-goal" style="margin-top:0.4em;">
-							<p class="mid" style="margin:0;">Counter-move: force the agent to <strong class="c-goal">split into small PRs</strong> that <strong class="c-goal">carry their own A/B evidence</strong>. Humans review the evidence, not every diff line.</p>
-						</div>
-					</section>
+				</section>
 
-					<!-- 03-l everyday hygiene -->
-					<section>
-						<div class="takeaway">Marginal leverage: cut the cost of re-reading context</div>
-						<h3>Everyday hygiene</h3>
-						<div class="hy-grid">
-							<div class="hy-card">
-								<h4>Context management</h4>
-								<ul>
-									<li><b><span class="cmd" style="font-size:1em;">/rewind</span></b> back to before a wrong turn</li>
-									<li><b><span class="cmd" style="font-size:1em;">/btw</span></b> inject context mid-run</li>
-									<li>write <b>handoff.md</b> before <span class="cmd" style="font-size:1em;">/clear</span></li>
-								</ul>
-							</div>
-							<div class="hy-card">
-								<h4>Persisting memory</h4>
-								<ul>
-									<li><b>memory.md</b> → flush into <b>claude.md</b></li>
-									<li>next session starts without re-explaining</li>
-								</ul>
-							</div>
-						</div>
-					</section>
 
+				<!-- ════════ DIVIDER 06 ════════ -->
+				<section class="divider">
+					<div class="ch-num">Chapter 06</div>
+					<h2>Pre-flight checklist</h2>
+					<p class="ch-sub">Five questions to take home</p>
+					<div class="ch-rule"></div>
 				</section>
 
 
@@ -791,23 +882,15 @@ return results.filter(r => r.verdict.faithful)</code></pre>
 				     CHECKLIST
 				     ════════════════════════════════════════════════════════════ -->
 				<section>
-
-					<section class="section-cover">
-						<div class="act-num">★</div>
-						<h2>Pre-flight Checklist</h2>
-						<p class="act-sub">Five questions before you type <span class="cmd goal" style="font-size:1.3em;">/goal</span> or <span class="cmd flow" style="font-size:1.3em;">/workflow</span></p>
-					</section>
-
-					<section>
-						<ol class="checklist">
-							<li><div><div class="h">Definition of done</div><div class="q">Is there a <strong class="c-text">machine-checkable</strong> "done"? No oracle → don't run yet.</div></div></li>
-							<li class="fragment"><div><div class="h">Goal</div><div class="q">Do you want a <strong class="c-text">deliverable and a decision</strong>, or did you just describe one action?</div></div></li>
-							<li class="fragment"><div><div class="h">Boundaries</div><div class="q">What's off-limits? Fence irreversible side effects first.</div></div></li>
-							<li class="fragment"><div><div class="h">Legibility</div><div class="q">Can the agent understand the code? Missing a map → <strong class="c-text">add it first</strong> (it compounds).</div></div></li>
-							<li class="fragment"><div><div class="h">Stage</div><div class="q">Do you want it to <strong class="c-text">think, compare, decide, or do</strong> right now?</div></div></li>
-						</ol>
-					</section>
-
+					<div class="takeaway">Five questions before you type <span class="c-goal mono">/goal</span> or <span class="c-flow mono">/workflow</span></div>
+					<h3 style="margin-bottom:0.3em;">Pre-flight checklist</h3>
+					<ol class="checklist" style="max-width:88%;">
+						<li><div><div class="h">Definition of done</div><div class="q">Is there a <strong class="c-text">machine-checkable</strong> "done"? No oracle → don't run yet.</div></div></li>
+						<li><div><div class="h">Goal</div><div class="q">Do you want a <strong class="c-text">deliverable and a decision</strong>, or did you just describe one action?</div></div></li>
+						<li><div><div class="h">Boundaries</div><div class="q">What's off-limits? Fence irreversible side effects first.</div></div></li>
+						<li><div><div class="h">Legibility</div><div class="q">Can the agent understand the code? Missing a map → <strong class="c-text">add it first</strong>.</div></div></li>
+						<li><div><div class="h">Stage</div><div class="q">Do you want it to <strong class="c-text">think, compare, decide, or do</strong> right now?</div></div></li>
+					</ol>
 				</section>
 
 
@@ -815,11 +898,21 @@ return results.filter(r => r.verdict.faithful)</code></pre>
 				     CLOSING
 				     ════════════════════════════════════════════════════════════ -->
 				<section class="closing">
-					<div class="eyebrow" style="color:var(--faint);">In one line</div>
-					<p class="big">The machine side keeps getting <span class="c-flow">stronger</span>.<br>The human side won't fill itself in.</p>
-					<p class="big fragment" style="margin-top:0.8em;">Don't ask <span class="c-warn">"can the agent do it yet?"</span><br>Ask <strong class="c-goal">"can I define the goal and the workspace<br>well enough that it can?"</strong></p>
-					<p class="mid c-muted fragment" style="margin-top:1em;max-width:640px;margin-left:auto;margin-right:auto;">
-						Move yourself from <strong class="c-text">executor</strong> to the person who <strong class="c-goal">defines the task</strong> and <strong class="c-flow">makes the code legible</strong>. Those two the agent can't replace — and every bit of that investment compounds as it gets stronger.</p>
+					<div class="eyebrow" style="color:var(--faint);">The one thing to take home</div>
+					<p class="big" style="margin-bottom:0.6em;">One reproducible workflow — use it tomorrow:</p>
+					<div class="flow" style="max-width:90%;font-size:0.9em;">
+						<div class="step on-skill"><span class="t">brainstorm</span></div>
+						<div class="arr">→</div>
+						<div class="step on-goal"><span class="t">spec + DoD</span></div>
+						<div class="arr">→</div>
+						<div class="step"><span class="t"><span class="mono">/goal</span> or <span class="mono">/workflow</span></span></div>
+						<div class="arr">→</div>
+						<div class="step on-ok" style="border-left-color:var(--ok);"><span class="t c-ok">verify with an oracle</span></div>
+					</div>
+					<p class="mid c-muted fragment" style="margin-top:1.3em;max-width:680px;margin-left:auto;margin-right:auto;line-height:1.8;">
+						The shift worth making: from <strong class="c-text">executor</strong><br>
+						to the person who <strong class="c-goal">defines the task</strong> and <strong class="c-flow">makes the code legible</strong>.<br>
+						Those two the agent can't replace — and every bit compounds as it gets stronger.</p>
 					<div class="sig fragment">Agentic Engineering · 2026</div>
 				</section>
 

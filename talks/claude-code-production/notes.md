@@ -2,289 +2,186 @@
 
 ## Speaker Notes
 
+> Structure: Title → Agenda → Framing → [Chapter dividers before each chapter] → Everyday hygiene → The naive way (arm A) → The method (skills, then /goal & /workflow) → The real case (why it's hard) → The experiment (A/B/C1/C2) → Checklist → Close.
+
 ---
 
-### Opening / Title
+### Title
 
-The deck title frames everything: "A Practical RD Workflow." This is not a capabilities tour or a hype talk. It is about how to hand work to an agent in a way that reliably produces correct output. The tagline says it directly — stop writing one-line prompts and hoping. The leverage isn't in the prompt wording; it's in the spec, the definition of done, and the workspace you hand the agent. That's the spine of the whole talk.
+Cover slide: title, "A Practical RD Workflow", presenter (BrianSH Lin, RD-CL.com). Keep it minimal — just set the room. The takeaway gets stated on the framing slide, not crammed onto the cover.
 
 ---
 
 ### Agenda
 
-Walk the audience through the four sections and the closing checklist. Superpowers Skills is the foundation — the catalog and the brainstorming skill that converts a vague request into a spec. Then /goal and /workflow are the execution tools that consume a well-formed spec. The Experiment is the concrete stress-test: a real MSSQL-to-PostgreSQL migration that exercises everything. The Pre-flight Checklist is the takeaway card — five questions they can use Monday morning.
-
-Note the framing of item 03: "Not run yet — here is the case, the design, and where results will go." Be honest with the audience that the experiment design is done but the run is pending. The design itself is the interesting part for today.
+Six chapters: Everyday hygiene · The naive way · The method · The case · The experiment · Pre-flight checklist. Walk it in one breath so the audience has the map. Each chapter opens with its own divider slide, so they always know where they are.
 
 ---
 
-### ACT 0 — Framing
+### Framing — two questions, very different leverage
 
-This is the single most important slide. Read it aloud or nearly aloud.
-
-The question to stop asking is "can the agent do it?" Polishing prompts plateaus. The real question is whether the task is defined well enough that the agent can succeed. What unlocks an agent is not a cleverer prompt — it is a clear spec, a testable definition of done, and an isolated workspace.
-
-Everything in the talk flows from this: brainstorming gives you the spec, writing-plans makes the tasks legible, /goal and /workflow are the execution tools, and the experiment is the place where the whole method is stress-tested under real conditions.
+The single most important idea, framed neutrally (not as a scolding). Two questions side by side: "Can the agent do it?" — which plateaus and leaves you waiting for a better model — versus "Have I defined the task **and the environment** well enough that it can?" The leverage is the spec, the definition of done, and the workspace you hand it. Everything in the talk is one of those two levers. Let the two-node visual carry it.
 
 ---
 
-### ACT 1 — The Wrong Way
+### Chapter dividers
 
-#### Cover slide
+Each chapter is preceded by a divider slide (Chapter NN + title + one-line subtitle). Use them to breathe and signal the transition — a sentence of "now we shift from X to Y" is enough.
 
-This act exists to name the failure mode before solving it. Most people's first instinct with an agent is to hand it a vague one-liner and expect something production-ready back. That instinct is wrong in a specific, diagnosable way.
+---
+
+### Everyday hygiene — do-it-today wins (moved to the front)
+
+This leads the talk on purpose: it's the cheapest, highest-immediacy set of takeaways, and it earns trust by giving the audience something they can use in their next session.
+
+#### Pain-point opener
+
+Start with the pain everyone has felt: the run is halfway, context fills up, or the agent "forgets" a decision — and you re-explain the whole task. The fix is a handful of hygiene moves that make state cheap to restore, so you *steer* instead of re-narrating. Don't open on a feature list — open on the pain.
+
+#### Three moves (each with a usage example)
+
+- **`/rewind`** — back out a wrong turn; pick the checkpoint before the bad edit, no re-explaining.
+- **`/btw`** — inject a fact mid-run without derailing the task (e.g. "the staging DB is read-only").
+- **memory.md → CLAUDE.md** — flush durable facts so the next session starts informed.
+
+Show the actual invocations, not just the names. The point is that each is usable tomorrow.
+
+#### Context full → handover to a fresh agent
+
+When context fills, don't re-explain — hand off. Write `handoff.md` (what's done · what's next · key decisions & constraints), `/clear` or start a fresh agent, and the new agent resumes cold by reading the handoff. Show the shape of `handoff.md` — the example uses the migration ("30/48 procs converted, convert the remaining 18, all-lowercase identifiers, work in a worktree"), which also plants the case we return to later.
+
+---
+
+### The naive way — arm A of the experiment
 
 #### "Just migrate the database"
 
-Show the literal prompt: "Migrate this Java service from MSSQL to PostgreSQL. Keep everything working." Point out that this looks completely reasonable. It describes the task. It has a goal. And it is a trap.
+Show the literal one-liner: "Migrate this Java service from MSSQL to PostgreSQL. Keep everything working." It looks reasonable — it describes the task and has a goal — and it's a trap. Tag it as **arm A** of the experiment we'll design later.
 
-The trap is that everything it says is undefined. "Migrate" could mean dozens of things. "Keep everything working" is not checkable.
+#### What you get back — the three gaps
 
-#### What you get back
+The agent rewrites SQL, swaps the driver, the build goes green, it says "done." Three gaps explain why you can't trust it, shown as a diagram, not a list:
 
-The agent rewrites SQL, swaps the driver, the build goes green, and it says "done" — confidently. From its point of view, it succeeded.
+1. **No spec** — "keep everything working" is undefined.
+2. **No definition of done** — nothing checks the answers are still correct.
+3. **No isolation** — it edited your working tree in place.
 
-The three gaps explain why this is wrong:
-
-1. **No spec.** "Keep everything working" is undefined. The agent has to guess what counts as correct, and it will guess wrong in ways that aren't immediately obvious.
-
-2. **No definition of done.** Nothing checks whether the answers are still correct. The agent has no oracle. It can only stop when it runs out of things to try, not when correctness is verified.
-
-3. **No isolation.** It edited the working tree in place. If the migration is wrong, reversing it requires a git reset, not a clean branch delete.
-
-These three gaps — no spec, no DoD, no isolation — are exactly what the rest of the talk teaches you to close.
+These three gaps are exactly what the method closes.
 
 ---
 
-### ACT 2 — Superpowers Skills
+### The method, part 1 — skills
 
-#### Cover slide
+#### Skills map to the dev lifecycle
 
-A skill is not a prompt. A skill encodes a process — it tells the agent how to work, not just what to do. The distinction matters because quality shouldn't depend on whether today's prompt happened to include the right instructions. Skills make the good process the default.
+A skill encodes a *process* — it tells the agent *how* to work, not just *what*. Define & plan: brainstorming, writing-plans, using-git-worktrees. Build & verify: subagent TDD, systematic-debugging, code-review, verification. Quality stops depending on whether today's prompt happened to be good.
 
-#### The skill catalog
+#### brainstorming (the star skill)
 
-The catalog maps onto the dev lifecycle. Define and plan: brainstorming (vague idea to spec), writing-plans (spec to bite-sized tasks), using-git-worktrees (isolate the work). Build and verify: test-driven-development (red/green loop), systematic-debugging (when it breaks), requesting/receiving-code-review, verification-before-completion.
+Walk the vertical flow: explore context → ask clarifying questions one at a time → propose 2–3 approaches → present design, approve section by section → **commit a spec with a Definition of Done.** The gate is the point: it refuses to write code until the design is approved.
 
-Today the talk goes deep on brainstorming, which is the engine that produces the spec. writing-plans and systematic-debugging get a focused slide each.
+#### "Migrate the DB" → a spec
 
-#### brainstorming: requirement → spec
+Same migration task, run through brainstorming. It asks what "keep everything working" means and how we'll verify it automatically; the answer — A/B every endpoint vs a golden MSSQL, row-by-row — becomes a committed spec with a testable DoD. That spec is exactly what `/goal` and `/workflow` consume.
 
-This is the star skill. Its 5-step flow is the reason it produces reliable specs:
+#### Plan → debug systematically
 
-1. **Explore project context first** — it reads the codebase before asking anything.
-2. **Ask clarifying questions, one at a time** — one at a time is deliberate: it forces you to actually answer before it moves on.
-3. **Propose 2–3 approaches with trade-offs** — you see options, not just the first thing it thought of.
-4. **Present a design, get approval section by section** — no rushing to implementation.
-5. **Write and commit a spec with a Definition of Done** — the output is a committed artifact, not a chat summary.
-
-The critical gate: it refuses to write code until the design is approved. That refusal is the whole point.
-
-#### From "migrate the DB" to a spec
-
-This is the same migration task from ACT 1, but now run through brainstorming. The agent asks three questions: what does "keep everything working" actually mean (same API responses, or same DB state?), how will we verify it automatically, and what is off-limits.
-
-The answers produce a committed spec: `docs/specs/2026-..-mssql-pg-migration-design.md`. That spec has a testable DoD — "per-endpoint, per-row A/B comparison against a golden MSSQL instance" — which is exactly what /goal needs to loop against.
-
-This is the transformation from ACT 1: the same task, but now it has a spec, a definition of done, and an isolation boundary.
-
-#### Plan, then debug systematically
-
-**writing-plans** takes the spec and breaks it into independently testable tasks — each with files to touch, a test to run, and a commit. The agent (or a fleet of agents) executes task-by-task with review gates between. The key property is that each task is small enough to review and re-run without touching the others.
-
-**systematic-debugging** forces the discipline of reproduce → isolate → hypothesis → fix → verify when something breaks. It prevents the agent from flailing — guessing at fixes and retrying until something sticks without understanding why it was broken.
-
-The principle behind both: encode the process so quality doesn't depend on how good today's prompt was.
+**writing-plans** turns the spec into bite-sized, independently testable tasks (files · test · commit). **systematic-debugging** forces reproduce → isolate → hypothesis → fix → verify instead of guessing. Same idea both times: encode the process.
 
 ---
 
-### ACT 3 — /goal & /workflow
+### The method, part 2 — /goal & /workflow
 
-#### Cover slide
+#### /goal — loop until the goal is met
 
-/goal and /workflow are two different ways to spend a large token budget. The question is not which one is better — the honest answer is hybrid — but when each fits.
-
-#### /goal — loop until goal
-
-/goal takes a spec and a machine-checkable goal and runs build/test/fix cycles until the oracle passes. The example shows it being handed the spec and the goal: "All N endpoints return HTTP 200 AND each A/B-matches golden MSSQL row-by-row."
-
-The constraint is right there in the slide: **it only works if the goal is machine-checkable.** Without an oracle, the agent loops until it gives up or halts on a vibe. This is why the brainstorming step matters — the spec it produces includes the oracle.
+Hand it the spec plus a machine-checkable goal; it runs build → test → A/B → fix until the oracle passes. Stress the constraint: it only works if the goal is machine-checkable. No oracle → it loops or stops on a vibe. This is why brainstorming matters — the spec it produces carries the oracle.
 
 #### /workflow — multi-agent fan-out
 
-/workflow is for work that can be decomposed into many independent units and run in parallel. The example converts 49 stored procedures: list them all, convert each one in its own worktree, A/B-verify each result, collect the faithful ones.
+For work that decomposes into many independent units. The script skeleton converts **48 stored procedures** in parallel, each in its own worktree, then A/B-verifies each. Wall-clock = the slowest single chain, not the sum; isolation means a failure in one proc doesn't pollute the others.
 
-The key performance property: wall-clock time equals the slowest single chain, not the sum of all chains. 49 conversions in parallel finish in the time it takes to do one.
+#### When each fits — hybrid
 
-The key structural property: isolation. Each conversion happens in its own worktree. A failure in proc 12 doesn't pollute proc 13.
-
-#### When each fits — and the hybrid answer
-
-Reach for /goal when the work is one coherent objective with a tight feedback loop, mostly sequential (build/test/fix). Reach for /workflow when you have many independent units, want parallelism and isolation, and the structure should be deterministic.
-
-The realistic answer is hybrid: a main-loop /goal drives the overall build/deploy/A-B cycle and calls /workflow to fan out the proc conversions and per-endpoint diagnosis. These are not competing tools — they address different scales of the same problem.
+Reach for `/goal` on one coherent objective with a tight, mostly-sequential feedback loop. Reach for `/workflow` for many independent units where you want parallelism + isolation. The realistic answer is **hybrid**: a main-loop `/goal` drives build/deploy/A-B and calls `/workflow` to fan out the 48 proc conversions. Tell them the experiment's C1-vs-C2 gives this decision real data.
 
 ---
 
-### ACT 4 — The Experiment
+### The case — why this migration is genuinely hard (real facts)
 
-#### Cover slide
+This is the credibility anchor: real, completed work. Stated as fact — only the *method-comparison results* later are TBD.
 
-The experiment is real. This is a hard task that exercises every part of the method under production-like conditions. The experiment design is complete; the run has not happened yet. Results will be filled in after the run.
+#### Not a "swap the JDBC driver" job
 
-#### Case: MSSQL → PostgreSQL migration
+A years-old commercial download backend moved off Microsoft SQL Server — data, schema, stored procedures, and dialect SQL embedded in Java/JSP — onto PostgreSQL, with the bar that **every API returns the correct response on PostgreSQL.** Difficulty stacks on two axes: scale and semantic gap.
 
-A Java service. Replace the database engine underneath, but every externally observable behavior must stay identical. This is a genuine stress test: it's not about adding features or changing behavior — it's about a complete substrate swap with a correctness requirement that has to be verified, not assumed.
+#### Axis 1 — scale (inventory)
 
-The anchor for scope: I did a migration like this by hand once, with weaker LLMs. It took about a month of development and testing. The experiment is a chance to measure how the method — skills + /goal + /workflow — changes that.
+- Downloader (main DB): 18 tables, 376,701 rows
+- Cyberlink: 3 tables, 8,258 rows
+- PC: 1 table, 121 rows
+- PMS: 1 table, 4,958 rows
+- **48 stored procedures/functions + 4 views** (PVM/SID) in Downloader.
 
-#### Why it's a hard problem
+#### Axis 2 — semantic gap (4 problems → 4 fixes)
 
-Three problems stacked on top of each other:
+1. **AWS SCT is GUI-only**, but had to run fully automated in headless WSL → used SCT's **BatchExecutor CLI + bundled Corretto 17**; control codes `0x1f`/`0x1e` (never in the data) as field/row delimiters.
+2. **Cross-DB queries** — MSSQL does 3-part-name cross-DB joins, PostgreSQL can't → analysis showed the app only uses `main` / `main_write` / `downloader` connections (all the Downloader DB), so it was tractable.
+3. **SCT made INOUT `refcursor` procedures, but pgjdbc `{call …}` needs functions** → rewrote every actually-called proc as `RETURNS SETOF` / `TABLE` functions, aligned JDBC bind types one by one, used **`citext`** for case-insensitive comparison, rebuilt cross-schema views.
+4. **Embedded SQL dialect + identifier case** — `TOP`, `ISNULL`, `GETDATE()`, `dbo.`, `[brackets]`, mixed-case columns → adopted an **all-lowercase** strategy (drop brackets so PostgreSQL folds to lowercase, then compares), converting case by case.
 
-1. **SQL dialect is sprinkled across the whole stack.** `SELECT TOP`, `[dbo].`, `(NOLOCK)`, `ISNULL` — every one of these has a different form in PostgreSQL and they appear throughout the Java service, not just in one isolated layer.
-
-2. **Structural gap: 49 stored procedures + 4 views to port.** The vendor migration tool (SCT) is GUI-only with no automation. Every proc has to be touched by hand or by agent.
-
-3. **Type and case mismatches fail silently.** No exception is thrown. No error is logged. The endpoint returns HTTP 200, the JSON looks right, and the value is wrong. This is the hardest class of failure to catch without an automatic oracle.
-
-The punchline: the hard part isn't "does it run" — it's "is the answer still correct."
+Punchline: the hard part isn't "does it run" — it's "is the answer **still correct**." That motivates the oracle and the experiment.
 
 ---
 
-### ACT 4 continued — Experiment Design and Results
+### The experiment — A / B / C1 / C2 (designed, not yet run)
 
-#### Definition of Done = an oracle
+This is the proof that the workflow is worth adopting. Four runs on the **same** task, each changing how much of the method drives execution. Results are TBD; the *design* is the point today.
 
-The oracle is: per-endpoint, per-row A/B comparison against a golden MSSQL instance. Every endpoint in the PostgreSQL-backed service is called with the same request as the MSSQL-backed golden instance, and the responses are compared row-by-row.
+#### The four arms
 
-This is what makes "loop until goal" meaningful. Without this oracle, the agent cannot know whether it is right. A green build is not enough. A passing smoke test is not enough. Row-level comparison is.
+- **A — Naive:** one-line prompt, repo as-is → the trap (from the naive-way section).
+- **B — Full Superpowers:** the native skill chain as designed — brainstorming → writing-plans → worktrees → **subagent TDD** → systematic-debugging → code-review → verification.
+- **C1 — Brainstorm + /goal:** keep Superpowers brainstorming → spec with DoD, then a raw `/goal` loop against the oracle (skip the full discipline).
+- **C2 — Brainstorm + /workflow:** same front half, then a `/workflow` fan-out against the oracle.
 
-#### The runs to compare
+Three comparisons fall out: **A vs the rest** = the method beats a one-liner (headline); **B vs C** = is the *full* disciplined method worth it, or does brainstorming + a verified loop already get most of the way?; **C1 vs C2** = the `/goal`-vs-`/workflow` trade-off, backed by data. Honesty note: B differs from C1/C2 on a *bundle* of disciplines, so frame it as "full vs lean method," not isolating a single skill.
 
-Four runs, same task, same spec, same oracle, same target deliverable. This makes differences attributable to method, not to task variation.
+#### The oracle = Definition of Done
 
-- **goal** — plain /goal loop, no Superpowers skills loaded
-- **workflow** — plain /workflow fan-out, no Superpowers skills loaded
-- **goal + skill** — /goal loop with Superpowers skills
-- **workflow + skill** — /workflow fan-out with Superpowers skills
+Per-endpoint, per-row A/B comparison of the PostgreSQL response vs a golden MSSQL response. Without a machine-checkable oracle, "loop until goal" means nothing. Shared by B / C1 / C2.
 
-The control is that everything except the method is held constant.
+#### Four metrics
 
-#### Cost metric
-
-The cost formula:
-
-`cost = input×1 + cache_read×0.1 + cache_write×1.25 + output×5`
-
-This weights token types by their relative price using Claude pricing ratios as the reference. Cache reads are cheap (0.1×) because the cache hit saves re-encoding the full context. Cache writes are slightly more than input (1.25×) because writing to cache has a setup cost. Output tokens are the most expensive (5×) because they require full autoregressive generation.
-
-Alongside the weighted cost, two more metrics: wall-clock time and number of human review rounds. Each run will be executed 3× before drawing conclusions, to account for run-to-run variance.
-
-#### Success criteria
-
-The bar for a successful migration:
-
-- All endpoints return HTTP 200
-- Every endpoint A/B-faithful to golden MSSQL (data-state differences explained, not hand-waved)
-- All migrated tables row-aligned
-- Deliverable: small, reviewable PRs that carry their own A/B evidence
-
-Note the last criterion: the PRs must carry the A/B evidence. A reviewer should be able to understand why the migration is correct by reading the PR, without re-running the full comparison themselves.
+- **Correctness** — oracle pass rate (endpoints A/B-faithful).
+- **Cost** — one simple total (tokens or $).
+- **Completion time** — wall-clock from task to trustworthy result. Anchor: I did a migration like this **by hand once**, with weaker LLMs — about **a month**.
+- **Code quality** — scored at the end by a **separate review agent** (this also demonstrates the workflow's own review step in action).
 
 #### Results — TBD — fill after run
 
-Stats (endpoints passing, A/B faithful, tables row-aligned, winning run): TBD — fill after run.
+The A/B/C1/C2 × 4-metric table and the A/B comparison-report screenshot are all **TBD — fill after run.** Be explicit that the experiment is designed but not yet executed.
 
-The A/B comparison report screenshot: TBD — fill after run.
+#### When NOT to automate directly
 
-#### Cost by run — TBD — fill after run
-
-Cost bars for each of the four runs (goal, workflow, goal + skill, workflow + skill): TBD — fill after run.
-
-Hypothesis to keep in mind while reading the results: "loaded a skill" is not the same as "used the skill." An unused skill can be the most expensive run because the skill text is loaded into the prompt on every turn (cache_read cost) without producing any benefit. Look at the cache_read column specifically.
-
-#### Cost detail — TBD — fill after run
-
-Full token breakdown per run (input, cache_read, cache_write, output, weighted total): TBD — fill after run.
-
-#### What I expect to learn — TBD — fill after run
-
-Two hypotheses to verify:
-
-**Hypothesis 1:** Loading a skill does not guarantee the agent uses it. If the skill is not actively invoked (e.g., the agent proceeds without invoking `/brainstorming` before writing code), it adds cache_read cost with no quality benefit — and can be the most expensive run.
-
-**Hypothesis 2:** Most of the cost is cache_read — the inherent price of long autonomous loops. At every turn the agent must re-read its full context window. Hygiene practices like `/rewind` and `handoff.md` can trim this at the margin, but the bulk of the cost is structural.
-
-Actual confirmation or refutation of these hypotheses: TBD — fill after run.
-
-#### Byproduct: bugs the oracle catches — TBD — fill after run
-
-Automated A/B comparison tends to surface bugs that a human code review would miss — a field silently written as `NULL`, a numeric truncation, a timezone offset quietly changing the value. This is a category of defect that only becomes visible when you have a ground-truth comparison.
-
-Concrete example from the run: TBD — fill after run.
-
-#### When not to automate directly
-
-Three cases where the method doesn't apply and you shouldn't reach for /goal or /workflow:
-
-1. **No automatically-checkable oracle.** If you can't define machine-checkable done, the loop can't terminate on correctness — it can only terminate on giving up.
-2. **Irreversible side effects.** Deleting data, calling external APIs with real consequences, moving money — these need human checkpoints, not autonomous loops.
-3. **Domain knowledge not in the repo.** If the agent can't read what it needs to know from the codebase and its context, it will fill in the gaps with guesses.
-
-#### Human review is the new bottleneck
-
-When the agent is doing the execution work, the bottleneck shifts from writing code to reviewing PRs. A migration PR can touch the DAO layer, config files, 49 procs converted to functions, and dozens of individual fixes. That's a lot of diff to review.
-
-The counter-move: force the agent to split into small PRs where each PR carries its own A/B evidence. Human reviewers evaluate the evidence — "this endpoint returned the same response before and after, here is the comparison" — rather than reading every diff line.
-
-This is also why the success criteria require evidence-bearing PRs, not just a passing test suite.
-
-#### Everyday hygiene
-
-These are marginal improvements that reduce the cost of re-reading context across a long autonomous run:
-
-**Context management:**
-- `/rewind` — roll back to just before a wrong turn, rather than continuing from a broken state
-- `/btw` — inject new context mid-run without starting over
-- Write `handoff.md` before `/clear` — capture what the agent knows so the next session doesn't re-explain it
-
-**Persisting memory:**
-- Flush `memory.md` into `claude.md` — the project's persistent context file — so the next session starts already knowing the project conventions
-
-The underlying principle: every token spent re-reading context that hasn't changed is waste. Hygiene practices are about cutting that waste at the margin. The bulk of the cost is structural (long loops require large context windows), but hygiene compounds over a multi-session project.
+Three cases where you shouldn't reach for `/goal` or `/workflow`: no machine-checkable oracle; irreversible side effects (deleting data, external APIs, moving money); domain knowledge not in the repo. And: human review is the new bottleneck — force the agent to split into **small PRs that carry their own A/B evidence**, so reviewers check the evidence, not every diff line.
 
 ---
 
-### Checklist — Pre-flight Questions
+### Checklist — five pre-flight questions
 
-#### Cover slide
+The take-home card. Five questions before typing `/goal` or `/workflow`; if any answer is "I don't know," that's the thing to fix first.
 
-Five questions to ask before typing /goal or /workflow. These are not a ceremony — they are a quick diagnostic for whether the task is ready to hand off. If any answer is "I don't know," that's the thing to fix before running.
-
-#### The five questions
-
-1. **Definition of done** — Is there a machine-checkable "done"? If there is no oracle, the loop can't know when to stop. Don't run yet.
-
-2. **Goal** — Do you want a deliverable and a decision, or did you just describe one action? "Migrate the DB" is an action. "All endpoints A/B-pass the oracle and the PRs carry evidence" is a goal.
-
-3. **Boundaries** — What's off-limits? Fence irreversible side effects first. The agent will push on everything in reach unless you explicitly limit it.
-
-4. **Legibility** — Can the agent understand the code? If there's no index, no architecture doc, no comments on the non-obvious parts, the agent is guessing at the structure. Adding that legibility is a one-time investment that compounds as the agent gets stronger.
-
-5. **Stage** — Do you want it to think, compare, decide, or do right now? These require different prompts. An agent asked to "do" when you meant "compare options" will commit prematurely. Name the stage.
+1. **Definition of done** — is there a machine-checkable "done"? No oracle → don't run yet.
+2. **Goal** — a deliverable and a decision, or did you just describe one action?
+3. **Boundaries** — what's off-limits? Fence irreversible side effects first.
+4. **Legibility** — can the agent understand the code? Missing a map → add it first.
+5. **Stage** — do you want it to think, compare, decide, or do right now?
 
 ---
 
-### Closing
+### Close
 
-#### One-line summary
-
-The machine side keeps getting stronger. The human side won't fill itself in.
-
-The closing makes explicit what was implicit throughout: the question "can the agent do it yet?" is the wrong question. The right question is "can I define the goal and the workspace well enough that it can?"
-
-The shift it asks for: from executor to the person who defines the task and makes the code legible. These two things the agent cannot replace. And every investment in them compounds as the agent gets stronger — a better spec helps every future run, a more legible codebase helps every future agent session.
+End on the workflow spine as a single visual: **brainstorm → spec + DoD → /goal or /workflow → verify with an oracle** — one reproducible workflow, usable tomorrow. The shift worth making: from executor to the person who defines the task and makes the code legible. Those two the agent can't replace, and every bit compounds as it gets stronger. Keep the tone an invitation, not a lecture.
 
 ---
 
