@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MSSQL→PostgreSQL Migration — Four-Arm Experiment Report</title>
+<style>
+  :root{
+    --bg:#0f1115; --panel:#171a21; --panel2:#1d212b; --ink:#e6e9ef; --mut:#9aa4b2;
+    --line:#2b313c; --accent:#7aa2ff; --green:#56d364; --amber:#e3b341; --red:#f85149;
+    --code:#0b0d11; --codeink:#d7dde7;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.55;font-size:15px}
+  .wrap{max-width:1180px;margin:0 auto;padding:32px 22px 96px}
+  h1{font-size:27px;line-height:1.2;margin:0 0 6px}
+  h2{font-size:21px;margin:42px 0 12px;padding-bottom:7px;border-bottom:2px solid var(--line)}
+  h3{font-size:17px;margin:26px 0 8px}
+  h4{font-size:14px;margin:16px 0 6px;color:var(--mut);text-transform:uppercase;letter-spacing:.05em}
+  p{margin:8px 0}
+  a{color:var(--accent)}
+  .sub{color:var(--mut);font-size:13.5px}
+  code,pre,.mono{font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace}
+  code{background:#22262f;padding:1px 5px;border-radius:4px;font-size:12.5px;color:var(--codeink)}
+  pre{background:var(--code);border:1px solid var(--line);border-radius:8px;padding:12px 14px;
+    overflow-x:auto;margin:8px 0;font-size:12.3px;line-height:1.5}
+  pre code{background:none;padding:0;color:var(--codeink);font-size:12.3px}
+  .path{color:var(--amber);font-size:11.5px;display:block;margin:0 0 4px;font-family:inherit}
+  table{border-collapse:collapse;width:100%;margin:10px 0;font-size:13.3px}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+  th{background:var(--panel2);color:var(--ink);font-weight:600}
+  tbody tr:nth-child(even){background:#13161d}
+  .nf{color:var(--red);font-weight:600}
+  .ok{color:var(--green);font-weight:600}
+  .warn{color:var(--amber);font-weight:600}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin:14px 0}
+  .verdict{background:var(--panel2);border-left:4px solid var(--accent);padding:10px 14px;border-radius:6px;margin:10px 0}
+  .scorebar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+  .score{background:var(--code);border:1px solid var(--line);border-radius:7px;padding:6px 10px;font-size:12.5px;min-width:118px}
+  .score .v{font-weight:700;font-size:16px}
+  .s5{color:var(--green)} .s4{color:#9ad36a} .s3{color:var(--amber)} .s2{color:#e0883a} .s1{color:var(--red)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:880px){.grid2{grid-template-columns:1fr}}
+  .arm{display:inline-block;font-weight:700;border-radius:5px;padding:1px 8px;font-size:12.5px;color:#0b0d11}
+  .armA{background:#c9a0ff}.armB{background:var(--green)}.armC1{background:#7aa2ff}.armC2{background:#5fd0c5}
+  .tag{display:inline-block;font-size:11px;padding:1px 7px;border-radius:20px;border:1px solid var(--line);color:var(--mut);margin-left:6px}
+  .big{font-size:16px}
+  .callout{background:#241c10;border:1px solid #5a4416;border-radius:8px;padding:12px 15px;margin:14px 0}
+  .callout.bad{background:#2a1517;border-color:#5a1f22}
+  .callout.good{background:#13241a;border-color:#1f5a30}
+  ul{margin:6px 0 10px;padding-left:22px}
+  li{margin:3px 0}
+  .legend{font-size:12px;color:var(--mut)}
+  .colcode{vertical-align:top}
+  hr{border:none;border-top:1px solid var(--line);margin:30px 0}
+  .toc a{display:inline-block;margin-right:14px;font-size:13px}
+  .nowrap{white-space:nowrap}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>MSSQL → PostgreSQL Migration — Four-Arm Workflow Experiment</h1>
+<p class="sub">Same task (migrate a Java download backend MSSQL→PostgreSQL, verify per-endpoint against golden MSSQL), four execution disciplines.
+Read-only extraction from branches <code>naive</code> (A), <code>superpowers-end-to-end</code> (B), <code>superpowers-goal</code> (C1), <code>superpowers-workflow</code> (C2).
+Repo <code>clcom-product-downloader-migrate</code> · report generated 2026-06-23.</p>
+
+<div class="callout bad">
+<b>Read this first — the verifier is not what the experiment design assumed.</b> The brief frames success as a
+<em>per-endpoint, per-row A/B comparison against a golden MSSQL response</em>. In the committed artifacts that oracle was only partially realised:
+<ul>
+<li><b>Only Arm B</b> committed a <b>row-level</b> data-parity artifact (<code>326/326</code> table row-counts, live PG vs live MSSQL) <i>and</i> a real captured per-endpoint run (<code>newman-report.json</code>).</li>
+<li><b>A, C1, C2</b> verify with an <b>HTTP-2xx / no-DB-error smoke check</b>, not a golden-response row diff.</li>
+<li><b>Arm A committed no verifier artifact at all</b> — its Postman collection contains <b>zero assertions</b>; "47/47" is a number typed into an HTML report.</li>
+</ul>
+So a higher endpoint pass-rate does <b>not</b> mean stronger verification. This is recorded factually throughout; see <a href="#prov">Provenance</a>.
+</div>
+
+<p class="toc">Jump to:
+<a href="#table">Results table</a>
+<a href="#quality">Code-quality deep-dive</a>
+<a href="#recon">Faithful reconstruction</a>
+<a href="#deltas">Three comparisons</a>
+<a href="#prov">Provenance &amp; NOT FOUND</a>
+</p>
+
+<!-- ============================ RESULTS TABLE ============================ -->
+<h2 id="table">1 · Results table (4 × 4)</h2>
+<table>
+<thead>
+<tr><th style="width:7%">Arm</th><th style="width:25%">Correctness<br><span class="legend">(verifier pass rate)</span></th><th style="width:21%">Cost<br><span class="legend">(one total)</span></th><th style="width:20%">Completion time<br><span class="legend">(wall-clock)</span></th><th style="width:27%">Code quality<br><span class="legend">(rubric 1–5)</span></th></tr>
+</thead>
+<tbody>
+<tr>
+  <td><span class="arm armA">A</span><br><span class="sub">naive</span></td>
+  <td><b>47/47 (100%)</b> — but <span class="warn">self-asserted in HTML</span>. <span class="nf">No verifier artifact committed</span>; Postman collection has <b>0 assertions</b>. Means "ran without SQL error", not a row-level A/B.</td>
+  <td><b>27.03M</b> weighted units / <b>155.84M</b> tokens. <span class="warn">Self-reported in HTML; underlying telemetry file <span class="nf">NOT FOUND</span></span>.</td>
+  <td><span class="nf">NOT FOUND from git</span> (1 squashed commit). Self-reported <b>136 min</b> session span.</td>
+  <td>Robust <span class="s5">5</span> · Tests <span class="s1">1</span> · Struct <span class="s3">3</span> · Review <span class="nf">N/F</span><br><span class="sub">Strong conversion, near-zero verification rigor.</span></td>
+</tr>
+<tr>
+  <td><span class="arm armB">B</span><br><span class="sub">end-to-end</span></td>
+  <td><b>41/47 endpoints HTTP 2xx (87.2%)</b>. 6×500 traced to an external website-backend placeholder, <i>not</i> a migration regression. <span class="ok">Data layer: 326/326 tables row-count PASS</span> (only arm with a row-level check).</td>
+  <td><b>21,255,397</b> weighted units (~127.4M raw tokens); 12 subagents. <span class="ok">From committed telemetry JSON</span>. No USD.</td>
+  <td><b>~15.1 h</b> (21:18 → 12:30, 2026-06-16→17). Commit timestamps + telemetry agree. Active subagent compute ~2.84 h.</td>
+  <td>Robust <span class="s5">5</span> · Tests <span class="s4">4</span> · Struct <span class="s5">5</span> · Review <span class="nf">N/F</span><br><span class="sub">Highest quality; honest about the 6 failures.</span></td>
+</tr>
+<tr>
+  <td><span class="arm armC1">C1</span><br><span class="sub">/goal</span></td>
+  <td><b>47/47 (100%)</b> — but <span class="warn">HTTP-2xx only</span> (<code>200≤code&lt;300</code>). <code>endpoint-results.json</code> stores only <code>code</code>+<code>ms</code>; <span class="nf">no golden/row comparison</span>.</td>
+  <td><span class="nf">NOT FOUND</span>. Cost formula committed; operands withheld (harness doesn't expose token counts to the session).</td>
+  <td><b>~1 h 34 m</b> (self-reported, 21:50→23:24). Not commit-derivable (1 squashed commit).</td>
+  <td>Robust <span class="s5">5</span> · Tests <span class="s2">2</span> · Struct <span class="s4">4</span> · Review <span class="nf">N/F</span><br><span class="sub">Fastest; verifier harness not in repo.</span></td>
+</tr>
+<tr>
+  <td><span class="arm armC2">C2</span><br><span class="sub">/workflow</span></td>
+  <td><b>47/47 (100%)</b> — <span class="warn">HTTP-2xx newman, 6 rounds</span>. 1 business-FAIL (445/1) reclassified PASS (HTTP 200). Results live only inside the HTML report; <span class="nf">no separate results file</span>.</td>
+  <td><b>1,103,339 output tokens</b> (5,516,695 weighted units). <span class="warn">Only output class measured</span>; input/cache not tallied → full $ total <span class="nf">NOT FOUND</span>.</td>
+  <td><b>~10.29 h</b> for phases 0–5 (<b>96.5% in AWS SCT phase 1</b>). Fix-loop time not aggregated → figure is a lower bound. Not commit-derivable.</td>
+  <td>Robust <span class="s5">5</span> · Tests <span class="s1">1</span> · Struct <span class="s4">4</span> · Review <span class="nf">N/F</span><br><span class="sub">Orchestration committed; verifier assets not in repo.</span></td>
+</tr>
+</tbody>
+</table>
+<p class="legend">Weighted cost units use the formula committed in all four reports: <code>cost = input×1 + cache_read×0.1 + cache_write×1.25 + output×5</code>. The four cost figures are <b>not strictly comparable</b> — A &amp; C2 are partial, C1 is absent. See <a href="#deltas">§4</a>.</p>
+
+<!-- ============================ CODE QUALITY ============================ -->
+<h2 id="quality">2 · Code-quality deep-dive <span class="tag">centerpiece</span></h2>
+<p>Scored against the rubric: <b>correctness robustness</b>, <b>tests</b>, <b>structure &amp; readability</b>, <b>review trail</b>. Every score is backed by a real excerpt with file path + line. The thesis under test: <i>disciplined workflow makes quality stop depending on luck.</i></p>
+
+<div class="callout">
+<b>The headline finding on quality.</b> The <i>SQL-conversion craft</i> scored <b>5/5 on every arm</b> — even naive A genuinely handled <code>TOP</code>/<code>ISNULL</code>/<code>GETUTCDATE</code>/refcursor/citext/cross-DB. The arms <b>did not diverge on conversion correctness</b>; they diverged on everything that surrounds it: <b>verification rigor, commit hygiene, and reproducibility</b>. Tests scored A=1, C2=1, C1=2, B=4. <span class="nf">No arm produced a committed code-review score</span> (review trail = NOT FOUND on all four).
+</div>
+
+<!-- ARM A -->
+<h3><span class="arm armA">A</span> naive — verdict &amp; scores</h3>
+<div class="verdict"><b>Verdict:</b> A surprisingly competent conversion wrapped in an unverifiable shell. The hard dialect cases are all genuinely solved (it even reaches for <code>postgres_fdw</code> to handle cross-DB three-part names), but there are no tests, no committed verifier, a single squashed commit, and <b>plaintext DB passwords baked into committed SQL</b>. Quality here was a coin-flip that landed well on craft and badly on discipline.</div>
+<div class="scorebar">
+  <div class="score">Correctness robustness<br><span class="v s5">5 / 5</span></div>
+  <div class="score">Tests<br><span class="v s1">1 / 5</span></div>
+  <div class="score">Structure &amp; readability<br><span class="v s3">3 / 5</span></div>
+  <div class="score">Review trail<br><span class="v"><span class="nf">NOT FOUND</span></span></div>
+</div>
+
+<h4>Robustness — genuinely handled (5/5)</h4>
+<p>Cross-DB three-part names resolved with a real <code>postgres_fdw</code> server + imported foreign tables — the most distinctive choice of any arm:</p>
+<pre><span class="path">naive : src/com/cyberlink/seo/dao/DownloadDAO.java:113</span><code>SELECT platform FROM pms_productversiontype WHERE versiontypeid IN (
+  SELECT cyb.pvm_prodvertypeid FROM cyberlink_fdw.cyberlink_productversiontype ... )
+-- was: [PMS].[dbo].[ProductVersionType] joined to [Cyberlink].dbo.[Cyberlink_ProductVersionType]</code></pre>
+<p>The <code>{call …}</code> JDBC escape that breaks under pgjdbc was rewritten to a function select:</p>
+<pre><span class="path">naive : src/com/cyberlink/seo/dao/CSEDAO.java:41</span><code>pstmt = con.prepareStatement("SELECT * FROM CSE_querySIDInfoBySID(?)");
+// refcursor stored proc -> table-returning function</code></pre>
+
+<h4>Tests — none (1/5)</h4>
+<p>No <code>*Test.java</code>, no <code>src/test</code>. The Postman collection's test hook is empty — the "47/47" rests on this:</p>
+<pre><span class="path">naive : test_downloader_settings/postman/api.json:5158-5165</span><code>"listen": "test",
+"script": { "type": "text/javascript", "exec": [ "" ] }   // zero assertions</code></pre>
+
+<h4>Structure — plaintext secrets in committed SQL (3/5)</h4>
+<pre><span class="path">naive : sql/postgres/Downloader_fdw_views.sql:14-15</span><code>CREATE USER MAPPING FOR postgres SERVER cyberlink_srv
+    OPTIONS (user 'postgres', password 'postgres');   -- repeated for pc_srv, pms_srv</code></pre>
+<p>Plus a single squashed commit (<code>45e9ff7</code>) for a 42-file / +10,886 migration — no incremental history.</p>
+
+<h4>Review trail — <span class="nf">NOT FOUND</span></h4>
+<p>No code-review / score / audit file committed. The only narrative is the self-authored <code>MIGRATION_REPORT.html</code>.</p>
+
+<!-- ARM B -->
+<h3><span class="arm armB">B</span> end-to-end — verdict &amp; scores</h3>
+<div class="verdict"><b>Verdict:</b> The reference implementation. 24 atomic, conventionally-prefixed commits; a surgical Java diff (the +233K is captured artifacts, not hand code); a committed Newman run <i>and</i> a 326/326 row-count parity check against live MSSQL — the only arm whose verification touches actual rows. It is also the only arm honest enough to ship "<b>41/47</b>" rather than reclassify external-dependency failures as passes. Quality stopped being luck here.</div>
+<div class="scorebar">
+  <div class="score">Correctness robustness<br><span class="v s5">5 / 5</span></div>
+  <div class="score">Tests<br><span class="v s4">4 / 5</span></div>
+  <div class="score">Structure &amp; readability<br><span class="v s5">5 / 5</span></div>
+  <div class="score">Review trail<br><span class="v"><span class="nf">NOT FOUND</span></span></div>
+</div>
+
+<h4>Robustness — refcursor → SETOF function rewrite (5/5)</h4>
+<pre><span class="path">superpowers-end-to-end : migration/phase6-fix-views-and-functions.sql:221</span><code>CREATE OR REPLACE FUNCTION public.download_front(...) RETURNS SETOF public.download AS $BODY$
+  ... RETURN QUERY SELECT * FROM public.download ... ORDER BY downloadid DESC NULLS LAST LIMIT 1;
+$BODY$ LANGUAGE plpgsql;     -- preceded by DROP ROUTINE ...(integer, refcursor)</code></pre>
+<p>A real timestamp/text bug was caught and fixed during the loop — evidence of behavioural debugging, not just compile-green:</p>
+<pre><span class="path">superpowers-end-to-end : src/com/cyberlink/seo/dao/jdbctemplate/DownloaderDAO.java:53</span><code>... AND date = DATE_TRUNC('day', NOW() - INTERVAL '1 day')
+// was TO_CHAR(...) -> "operator does not exist: timestamp = text"</code></pre>
+
+<h4>Tests — real, committed A/B oracle (4/5)</h4>
+<pre><span class="path">superpowers-end-to-end : migration/data-verification.txt:7</span><code>TOTAL TABLES: 326   PASS: 326   FAIL: 0
+# per-table: db, table, baseline, source_rows(MSSQL), pg_rows, result
+Cyberlink  __activation_cdkeydb   265538   265567   265567  PASS</code></pre>
+<p>Held below 5/5 because the Postman layer asserts HTTP status only (<code>run.stats.assertions.total = 0</code>) — payload-field equivalence is checked at the DB-row layer, not the API layer.</p>
+
+<h4>Structure — 24 atomic commits (5/5)</h4>
+<pre><span class="path">git log superpowers-end-to-end (subjects)</span><code>fc5c133 refactor: convert MSSQL SQL dialect to PostgreSQL across DAOs/actions/JSPs
+c5f1379 feat: consolidate Cyberlink/PC/PMS into Downloader schemas + search_path
+2c3ba6a fix: resolve PostgreSQL migration issues surfaced by postman verification (Phase 6)</code></pre>
+
+<h4>Review trail — <span class="nf">NOT FOUND</span></h4>
+<p>The chain ran a controller-side "two-stage verify" (兩階段審查) between tasks, but produced <b>no scored review report</b>. Described, not artifacted:</p>
+<pre><span class="path">superpowers-end-to-end : migration-report.html:806</span><code>如何執行這份計畫? → Subagent-Driven(每個 task 派新 subagent + 兩階段審查)</code></pre>
+
+<!-- ARM C1 -->
+<h3><span class="arm armC1">C1</span> /goal — verdict &amp; scores</h3>
+<div class="verdict"><b>Verdict:</b> The fastest and leanest run, with the most <i>programmatic</i> conversion — a Python script introspects each refcursor proc and emits a typed table function. But the oracle the /goal loop optimised against was 2xx-only, and that harness is <b>not committed</b>, so the "100%" is neither row-level nor reproducible from the repo.</div>
+<div class="scorebar">
+  <div class="score">Correctness robustness<br><span class="v s5">5 / 5</span></div>
+  <div class="score">Tests<br><span class="v s2">2 / 5</span></div>
+  <div class="score">Structure &amp; readability<br><span class="v s4">4 / 5</span></div>
+  <div class="score">Review trail<br><span class="v"><span class="nf">NOT FOUND</span></span></div>
+</div>
+
+<h4>Robustness — programmatic refcursor→function generation (5/5)</h4>
+<pre><span class="path">superpowers-goal : docs/migration/convert_query_procs.py:108-110</span><code>ddl=(f"DROP ROUTINE IF EXISTS downloader_dbo.{name};\n"
+     f"CREATE FUNCTION downloader_dbo.{name}({sig})\nRETURNS TABLE(\n    {rettab}\n) "
+     f"LANGUAGE plpgsql AS $fn$\n#variable_conflict use_column\nBEGIN\n  RETURN QUERY {q};\nEND;\n$fn$;")</code></pre>
+<p>Four dialect transforms in one converted statement (TOP→LIMIT, ISNULL→COALESCE, brackets/dbo. stripped, three-part name flattened):</p>
+<pre><span class="path">superpowers-goal : src/com/cyberlink/seo/dao/DownloadDAO.java:113</span><code>- SELECT [Platform] FROM [PMS].[dbo].[ProductVersionType] WHERE [VersionTypeID] IN
+-   ( SELECT [CYB].[PVM_ProdVerTypeId] FROM [Cyberlink].dbo.[Cyberlink_ProductVersionType] AS CYB ... )
++ SELECT Platform FROM ProductVersionType WHERE VersionTypeID IN
++   ( SELECT CYB.PVM_ProdVerTypeId FROM Cyberlink_ProductVersionType AS CYB ... )</code></pre>
+
+<h4>Tests — converters self-check, but no A/B harness committed (2/5)</h4>
+<p>The verifier output is a status-code dump with no golden/row keys; the runnable oracle (Postman collection / newman config) is absent from the tree:</p>
+<pre><span class="path">superpowers-goal : docs/migration/build_report.py:49</span><code>passing=sum(1 for e in endpoints if e['code'] and 200&lt;=e['code']&lt;300)   # 2xx == pass</code></pre>
+
+<h4>Structure — surgical &amp; commented, minor magic constants (4/5)</h4>
+<pre><span class="path">superpowers-goal : docs/migration/extra_functions.sql:11</span><code>WHERE dow.productid IN (352,398,388)   -- carried-over magic ids, uncommented</code></pre>
+<p>Single squashed commit (<code>40b9b1a</code>) erases the 7-iteration history the telemetry describes.</p>
+
+<h4>Review trail — <span class="nf">NOT FOUND</span></h4>
+<p><code>git grep -liE "review|score|grade|critique" -- docs/</code> returns nothing on this branch.</p>
+
+<!-- ARM C2 -->
+<h3><span class="arm armC2">C2</span> /workflow — verdict &amp; scores</h3>
+<div class="verdict"><b>Verdict:</b> The most rigorous <i>type-system</i> treatment (13 CI keys retyped to <code>citext</code>; every ported function carries a provenance header), and the only arm that committed its <b>orchestration script</b> as the verifier harness. But there are no checked-in tests, the Postman/newman assets the workflow drives live outside the repo, and 96.5% of the measured ~10.3 h was spent inside AWS SCT.</div>
+<div class="scorebar">
+  <div class="score">Correctness robustness<br><span class="v s5">5 / 5</span></div>
+  <div class="score">Tests<br><span class="v s1">1 / 5</span></div>
+  <div class="score">Structure &amp; readability<br><span class="v s4">4 / 5</span></div>
+  <div class="score">Review trail<br><span class="v"><span class="nf">NOT FOUND</span></span></div>
+</div>
+
+<h4>Robustness — citext at the type level, with rationale (5/5)</h4>
+<pre><span class="path">superpowers-workflow : sql/postgres/functions/downloader_querybytokenid.sql:8,20</span><code>-- downloader_v2.tokenid is citext (case-insensitive); citext has an implicit cast from varchar,
+RETURNS TABLE( tokenid citext, ... )   -- equality is case-insensitive, same as MSSQL default collation</code></pre>
+
+<h4>Tests — harness is the workflow script; assets not in repo (1/5)</h4>
+<pre><span class="path">superpowers-workflow : .claude/workflows/mssql-to-postgres-migration.workflow.js:148-159</span><code>for (let round = 1; round &lt;= MAX_VALIDATION_ROUNDS; round++) {
+  const nm = await agent(`... Run: newman run ${SETTINGS}/postman/api.json against ${baseUrl} ...`)
+  if (!nm || nm.failed === 0) { green = ...; break }
+  const fixResults = await parallel((nm.failures||[]).map((f,i)=>()=>      // one fixer per failing endpoint
+    agent(`... make ONE failing endpoint pass. Failing endpoint: ${f.endpoint} ...`)))
+}</code></pre>
+<p>The Postman collection it runs (<code>test_downloader_settings/postman/api.json</code>) and <code>env.local</code> are <b>not committed to this branch</b>, so the verifier is not reproducible from the repo. No <code>*Test.java</code>.</p>
+
+<h4>Structure — documented ports, minor scratch dupes (4/5)</h4>
+<p><code>sql/work/</code> duplicates several functions also under <code>sql/postgres/functions/</code> (e.g. <code>download_front.sql</code> in both) — possible dead/scratch SQL; hardcoded absolute paths in the workflow. Single squashed commit (<code>798d2d9</code>) with a thorough message.</p>
+
+<h4>Review trail — <span class="nf">NOT FOUND</span></h4>
+<p>The workflow has phases 0–7 (env, schema, data, dialect, config, build, validation-loop, report) — <b>no review stage</b>. Grep for review/score/grade hits only the word "Review" inside a phase-1 prompt.</p>
+
+<!-- SIDE BY SIDE -->
+<h2>2b · Same hard case, different arms — side by side</h2>
+
+<h3>Case-folding / case-insensitive keys</h3>
+<p>The single clearest divergence in <i>approach</i> (all four are correct; the discipline differs). A &amp; C2 use the <code>citext</code> type; B &amp; C1 use explicit <code>LOWER()</code> on both sides.</p>
+<div class="grid2">
+  <div class="panel">
+    <h4><span class="arm armA">A</span> citext column type</h4>
+    <pre><span class="path">naive : sql/postgres/Cyberlink_tables.sql:17</span><code>    innerproductname citext,
+    productname      citext,</code></pre>
+  </div>
+  <div class="panel">
+    <h4><span class="arm armC2">C2</span> citext column + documented rationale</h4>
+    <pre><span class="path">superpowers-workflow : sql/postgres/functions/digital_copy_querybysr.sql:10,17</span><code>-- digital_copy_sr.sr is citext (case-insensitive); citext
+-- has an implicit cast from varchar so the bind works
+    sr            citext,</code></pre>
+  </div>
+  <div class="panel">
+    <h4><span class="arm armB">B</span> explicit LOWER() both sides</h4>
+    <pre><span class="path">superpowers-end-to-end : migration/phase6-fix-extra-functions.sql:64</span><code>IF EXISTS (SELECT 1 FROM public.generic_trial
+  WHERE LOWER(msrid)=LOWER(par_msrid)
+    AND LOWER(sr)=LOWER(par_sr)) THEN</code></pre>
+  </div>
+  <div class="panel">
+    <h4><span class="arm armC1">C1</span> explicit LOWER(), citext consciously dropped</h4>
+    <pre><span class="path">superpowers-goal : docs/migration/extra_functions.sql:16</span><code>SELECT dow.productid, LOWER(dow2.countrycodeiso2), count(*), d
+-- report: "Handled — procs use LOWER(); no citext needed."</code></pre>
+  </div>
+</div>
+
+<h3>refcursor stored proc → PostgreSQL function</h3>
+<div class="grid2">
+  <div class="panel">
+    <h4><span class="arm armA">A</span> hand-rewritten function + JDBC select</h4>
+    <pre><span class="path">naive : src/com/cyberlink/seo/dao/CSEDAO.java:41</span><code>prepareStatement("SELECT * FROM CSE_querySIDInfoBySID(?)")</code></pre>
+  </div>
+  <div class="panel">
+    <h4><span class="arm armB">B</span> DROP ROUTINE + CREATE FUNCTION SETOF</h4>
+    <pre><span class="path">superpowers-end-to-end : migration/phase6-fix-views-and-functions.sql:221</span><code>CREATE OR REPLACE FUNCTION public.download_front(...)
+  RETURNS SETOF public.download AS $BODY$ ... $BODY$;</code></pre>
+  </div>
+  <div class="panel">
+    <h4><span class="arm armC1">C1</span> Python introspects &amp; generates DDL</h4>
+    <pre><span class="path">superpowers-goal : docs/migration/convert_query_procs.py:108</span><code>CREATE FUNCTION downloader_dbo.{name}({sig})
+RETURNS TABLE( {rettab} ) LANGUAGE plpgsql ...</code></pre>
+  </div>
+  <div class="panel">
+    <h4><span class="arm armC2">C2</span> ported function + pgjdbc {call} note</h4>
+    <pre><span class="path">superpowers-workflow : sql/postgres/functions/downloader_querybytokenid.sql:19</span><code>RETURNS TABLE( tokenid citext, ... )
+-- pgjdbc translates {call f(?)} -> SELECT * FROM f(?)</code></pre>
+  </div>
+</div>
+
+<!-- ============================ RECONSTRUCTION ============================ -->
+<h2 id="recon">3 · Faithful reconstruction (verbatim artifacts)</h2>
+
+<h3><span class="arm armA">A</span> naive — the prompt that drove it</h3>
+<pre><span class="path">naive : MIGRATION_REPORT.html:174-186 (committed verbatim)</span><code>1. 將 DB 和程式碼從 MSSQL 遷移到 PostgreSQL
+2. 不要偷看 git history 和其他的 git branch
+3. 最後用 postman 驗證正確性
+[turn 3 acceptance bar]  所有 postman 都要通過      ("all postman must pass")</code></pre>
+<h4>Real verifier "output" (self-asserted, not machine-produced)</h4>
+<pre><span class="path">naive : MIGRATION_REPORT.html:157 &amp; :160</span><code>&lt;div class="stat pass"&gt;&lt;div class="n"&gt;47&lt;span class="u"&gt;/47&lt;/span&gt;&lt;/div&gt;&lt;div class="l"&gt;Postman pass&lt;/div&gt;&lt;/div&gt;
+... Driven by 1 orchestrator + 15 subagents across 244 tool calls · model claude-opus-4-8 · session span 136 min</code></pre>
+<h4>Cost line (self-reported)</h4>
+<pre><span class="path">naive : MIGRATION_REPORT.html:281</span><code>Total | 155.84M (cache_read) | 4.63M (cache_write) | 1.09M (output) | 27.03M (cost units)</code></pre>
+<p class="sub">Review comments: <span class="nf">NOT FOUND</span> — no independent review artifact on this branch.</p>
+
+<h3><span class="arm armB">B</span> end-to-end — prompt, spec, plan</h3>
+<pre><span class="path">superpowers-end-to-end : migration-report.html:793-795 (original prompt)</span><code>use superpowers skill brainstorming
+1. 將 DB 和程式碼從 MSSQL 遷移到 PostgreSQL
+2. 不要偷看 git history 和其他的 git branch
+3. 最後用 postman 驗證正確性</code></pre>
+<pre><span class="path">superpowers-end-to-end : docs/superpowers/plans/2026-06-16-mssql-to-postgres-migration.md:1-9</span><code># MSSQL → PostgreSQL Migration Implementation Plan
+REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development
+Goal: migrate WAR + 4 DBs, "prove correctness by running the full postman/api.json collection green"
+Constraints: Do NOT read git history or other branches. Fully autonomous (no human-in-the-loop).</code></pre>
+<h4>Real verifier output (per-endpoint, captured)</h4>
+<pre><span class="path">superpowers-end-to-end : migration/newman-report.json (run.executions[*])</span><code>{ "name":"query-front",               "method":"POST", "response.code":200, "status":"OK" }
+{ "name":"digital-copy/digital-copy.do","method":"POST", "response.code":500, "status":"Internal Server Error" }
+# tallies: 137× code:200, 6× code:500  ·  run.failures: []  ·  headline: "41 / 47 Postman endpoints return HTTP 2xx"</code></pre>
+<pre><span class="path">superpowers-end-to-end : telemetry.jsonl (task 6-verify)</span><code>41/47 PASS (from 13/47); ... 6 .do endpoints: DB write OK on PG then fail on external
+website-backend call (unsubstituted {WEBSITE_BACKEND_DOMAIN} dev placeholder, outward-facing) - NOT migration regression</code></pre>
+<h4>Cost telemetry (machine-recorded)</h4>
+<pre><span class="path">superpowers-end-to-end : migration/telemetry-tokens.json:122-128</span><code>"input": 269283, "cache_write": 4480470, "cache_read": 122036813, "output": 636369,
+"total_cost_units": 21255396.8, "subagent_count": 12</code></pre>
+
+<h3><span class="arm armC1">C1</span> /goal — spec &amp; verifier output</h3>
+<pre><span class="path">superpowers-goal : docs/superpowers/specs/2026-06-16-...-design.md (DoD)</span><code>2. postman/api.json 內每一個 endpoint 都成功回應(2xx / 合理 payload,無 500 或 DB 錯誤)。
+[§5 驗證] newman(Postman CLI)無頭跑 collection。
+[約束] 不查看 git history、不參考其他 git branch;全自動執行,無人為介入。</code></pre>
+<pre><span class="path">superpowers-goal : docs/migration/endpoint-results.json:1-12 (verbatim)</span><code>[
+ { "name": "query-front", "method": "POST", "code": 200, "ms": 225 },
+ { "name": "query-front-version-type-channel-type", "method": "POST", "code": 200, "ms": 18 },
+ ...   ]   // all 47 entries: "code": 200 ; no expected/golden/mssql/rows/diff keys exist</code></pre>
+<pre><span class="path">superpowers-goal : migration-report.html:183</span><code>Start 2026-06-22 21:50 → finish ~23:24. Total ≈ 1 h 34 m.</code></pre>
+<p class="sub">Cost: <span class="nf">NOT FOUND</span> — "precise figures must be read from the user's Claude Code usage view" (migration-report.html:188). Review comments: <span class="nf">NOT FOUND</span>.</p>
+
+<h3><span class="arm armC2">C2</span> /workflow — orchestration script &amp; results</h3>
+<pre><span class="path">superpowers-workflow : .claude/workflows/mssql-to-postgres-migration.workflow.js:98,148-159</span><code>const MAX_VALIDATION_ROUNDS = 6
+for (let round = 1; round &lt;= MAX_VALIDATION_ROUNDS; round++) {
+  const nm = await agent(`... Run: newman run ${SETTINGS}/postman/api.json ...`)   // tally precisely
+  if (!nm || nm.failed === 0) break
+  const fixResults = await parallel((nm.failures||[]).map((f,i)=>()=>
+    agent(`... make ONE failing endpoint pass. Failing endpoint: ${f.endpoint} ...`)))   // fan-out one fixer/failure
+}</code></pre>
+<h4>Real verifier output (only inside the HTML report)</h4>
+<pre><span class="path">superpowers-workflow : migration-report.html:79,103,241</span><code>47 / 47   Newman requests passing
+Round 6 ✓   47 / 0
+R6 returns {"status":"FAIL"} on test data 445/1 — classified PASS (HTTP 200, business "no match", no DB error)</code></pre>
+<pre><span class="path">superpowers-workflow : migration-report.html:436,466</span><code>workflowOutputTokensSpent = 1,103,339 (output tokens)
+Phases 0–5 total | 37,060 s · ~10.29 h    (Phase 1 AWS SCT = ~96.5%)</code></pre>
+<p class="sub">Review comments: <span class="nf">NOT FOUND</span> — workflow has no review phase.</p>
+
+<!-- ============================ DELTAS ============================ -->
+<h2 id="deltas">4 · Three comparisons — deltas as numbers only</h2>
+<p class="legend">No interpretation in this section. Figures carried from §1; "u" = weighted cost units.</p>
+
+<h3>A vs the rest</h3>
+<table>
+<thead><tr><th>Metric</th><th><span class="arm armA">A</span></th><th><span class="arm armB">B</span></th><th><span class="arm armC1">C1</span></th><th><span class="arm armC2">C2</span></th></tr></thead>
+<tbody>
+<tr><td>Endpoint pass rate</td><td>47/47 (100%)*</td><td>41/47 (87.2%)</td><td>47/47 (100%)</td><td>47/47 (100%)</td></tr>
+<tr><td>Verifier oracle</td><td>none committed</td><td>HTTP 2xx + 326/326 rows</td><td>HTTP 2xx</td><td>HTTP 2xx</td></tr>
+<tr><td>Verifier artifacts committed</td><td>0</td><td>2 (newman-report.json, data-verification.txt)</td><td>1 (endpoint-results.json)</td><td>0 (in-HTML only)</td></tr>
+<tr><td>Cost</td><td>27.03M u*</td><td>21,255,397 u</td><td>NOT FOUND</td><td>5,516,695 u (output-only)</td></tr>
+<tr><td>Wall-clock</td><td>136 min*</td><td>~906 min</td><td>~94 min</td><td>~617 min</td></tr>
+<tr><td>Commits</td><td>1</td><td>24</td><td>1</td><td>1</td></tr>
+<tr><td>Tests score</td><td>1</td><td>4</td><td>2</td><td>1</td></tr>
+</tbody>
+</table>
+<p class="legend">* self-reported in HTML, not machine-verified.</p>
+
+<h3>B vs C (C1, C2)</h3>
+<table>
+<thead><tr><th>Metric</th><th><span class="arm armB">B</span></th><th><span class="arm armC1">C1</span></th><th><span class="arm armC2">C2</span></th></tr></thead>
+<tbody>
+<tr><td>Endpoint pass rate</td><td>41/47 (87.2%)</td><td>47/47 (100%)</td><td>47/47 (100%)</td></tr>
+<tr><td>Row-level data check</td><td>326/326 tables</td><td>none</td><td>none</td></tr>
+<tr><td>Cost</td><td>21,255,397 u</td><td>NOT FOUND</td><td>5,516,695 u (output-only)</td></tr>
+<tr><td>Wall-clock</td><td>~906 min</td><td>~94 min</td><td>~617 min</td></tr>
+<tr><td>Commits</td><td>24</td><td>1</td><td>1</td></tr>
+<tr><td>Diff size</td><td>59 files / +233,010</td><td>28 files / +1,752</td><td>58 files / +3,755</td></tr>
+<tr><td>Tests score</td><td>4</td><td>2</td><td>1</td></tr>
+<tr><td>Structure score</td><td>5</td><td>4</td><td>4</td></tr>
+</tbody>
+</table>
+
+<h3>C1 vs C2</h3>
+<table>
+<thead><tr><th>Metric</th><th><span class="arm armC1">C1</span> /goal</th><th><span class="arm armC2">C2</span> /workflow</th></tr></thead>
+<tbody>
+<tr><td>Endpoint pass rate</td><td>47/47 (100%)</td><td>47/47 (100%)</td></tr>
+<tr><td>Wall-clock</td><td>~94 min</td><td>~617 min</td></tr>
+<tr><td>Cost</td><td>NOT FOUND</td><td>5,516,695 u (output-only)</td></tr>
+<tr><td>Diff size</td><td>28 files / +1,752 / −68</td><td>58 files / +3,755 / −107</td></tr>
+<tr><td>Verifier output</td><td>endpoint-results.json (code+ms)</td><td>in-HTML table only</td></tr>
+<tr><td>Orchestration committed</td><td>Python converter scripts</td><td>.claude/workflows/*.workflow.js</td></tr>
+<tr><td>Case-folding approach</td><td>LOWER()</td><td>citext</td></tr>
+<tr><td>Commits</td><td>1</td><td>1</td></tr>
+<tr><td>Robust / Tests / Struct / Review</td><td>5 / 2 / 4 / NF</td><td>5 / 1 / 4 / NF</td></tr>
+</tbody>
+</table>
+
+<!-- ============================ PROVENANCE ============================ -->
+<h2 id="prov">5 · Provenance &amp; NOT FOUND</h2>
+<p>Every number and quoted excerpt, mapped to its source. All inspected read-only via <code>git show &lt;branch&gt;:&lt;path&gt;</code> / <code>git grep</code> / <code>git log</code>. No branch was modified. Merge-base for diffs: <code>89c665a</code> for A, <code>dbc4981</code> for B/C1/C2.</p>
+
+<table>
+<thead><tr><th>Claim</th><th>Arm</th><th>Source (file:line / json-path)</th></tr></thead>
+<tbody>
+<tr><td>47/47 "Postman pass" (self-asserted)</td><td>A</td><td><code>MIGRATION_REPORT.html:157</code></td></tr>
+<tr><td>136 min session span; 1 orch + 15 subagents</td><td>A</td><td><code>MIGRATION_REPORT.html:160</code></td></tr>
+<tr><td>27.03M cost units / 155.84M tokens</td><td>A</td><td><code>MIGRATION_REPORT.html:281</code></td></tr>
+<tr><td>Postman collection has 0 assertions</td><td>A</td><td><code>test_downloader_settings/postman/api.json:5158-5165</code></td></tr>
+<tr><td>postgres_fdw cross-DB resolution</td><td>A</td><td><code>src/.../DownloadDAO.java:113</code>; <code>sql/postgres/Downloader_fdw_views.sql:12-33</code></td></tr>
+<tr><td>Plaintext FDW passwords</td><td>A</td><td><code>sql/postgres/Downloader_fdw_views.sql:14-15,21-22,27-28</code></td></tr>
+<tr><td>refcursor→function (JDBC select)</td><td>A</td><td><code>src/.../CSEDAO.java:41</code>; <code>sql/postgres/proc_B.sql:148,330</code></td></tr>
+<tr><td>citext columns</td><td>A</td><td><code>sql/postgres/Cyberlink_tables.sql:17</code></td></tr>
+<tr><td>Single commit</td><td>A</td><td><code>45e9ff7</code> (2026-06-22 20:27:47)</td></tr>
+<tr><td>41/47 endpoints HTTP 2xx</td><td>B</td><td><code>migration-report.html:42</code>; <code>migration/newman-report.json</code> (137× code:200, 6× code:500)</td></tr>
+<tr><td>326/326 tables row-count PASS</td><td>B</td><td><code>migration/data-verification.txt:7,14</code></td></tr>
+<tr><td>6 failures = external website-backend placeholder</td><td>B</td><td><code>docs/superpowers/telemetry.jsonl</code> (task 6-verify)</td></tr>
+<tr><td>21,255,397 cost units; 12 subagents</td><td>B</td><td><code>migration/telemetry-tokens.json:122-128</code></td></tr>
+<tr><td>~15.1 h wall-clock (21:18→12:30)</td><td>B</td><td><code>migration-report.html:679-681</code>; <code>telemetry.jsonl</code> run_start/run_complete; commits <code>7684a5b</code>→<code>2c3ba6a</code></td></tr>
+<tr><td>refcursor→SETOF; DATE_TRUNC fix</td><td>B</td><td><code>migration/phase6-fix-views-and-functions.sql:221</code>; <code>src/.../jdbctemplate/DownloaderDAO.java:53</code></td></tr>
+<tr><td>LOWER() case-folding</td><td>B</td><td><code>migration/phase6-fix-extra-functions.sql:64</code></td></tr>
+<tr><td>24 atomic commits</td><td>B</td><td><code>git log dbc4981..superpowers-end-to-end</code></td></tr>
+<tr><td>47/47 2xx; pass criterion 200≤code&lt;300</td><td>C1</td><td><code>docs/migration/endpoint-results.json</code> (47× code:200); <code>docs/migration/build_report.py:49</code></td></tr>
+<tr><td>~1h34m wall-clock (21:50→23:24)</td><td>C1</td><td><code>migration-report.html:168,183</code>; <code>docs/migration/telemetry.md:16-25</code></td></tr>
+<tr><td>refcursor→TABLE function generator</td><td>C1</td><td><code>docs/migration/convert_query_procs.py:108-110</code></td></tr>
+<tr><td>Dialect transforms in one query</td><td>C1</td><td><code>src/.../DownloadDAO.java:113</code></td></tr>
+<tr><td>Magic ids (352,398,388)</td><td>C1</td><td><code>docs/migration/extra_functions.sql:11,19</code></td></tr>
+<tr><td>47/47 newman, 6 rounds; 445/1 reclassified PASS</td><td>C2</td><td><code>migration-report.html:79,103,241</code></td></tr>
+<tr><td>1,103,339 output tokens (5,516,695 u)</td><td>C2</td><td><code>migration-report.html:436,442</code></td></tr>
+<tr><td>~10.29 h phases 0–5; SCT ~96.5%</td><td>C2</td><td><code>migration-report.html:458,466,470</code></td></tr>
+<tr><td>citext keys + rationale</td><td>C2</td><td><code>sql/postgres/functions/downloader_querybytokenid.sql:8,19-20</code>; <code>digital_copy_querybysr.sql:10,17</code></td></tr>
+<tr><td>Phase-6 fan-out validation loop</td><td>C2</td><td><code>.claude/workflows/mssql-to-postgres-migration.workflow.js:98,148-159</code></td></tr>
+</tbody>
+</table>
+
+<h3 class="nf">NOT FOUND — explicitly absent</h3>
+<table>
+<thead><tr><th>Missing item</th><th>Arm(s)</th><th>Note</th></tr></thead>
+<tbody>
+<tr><td>Per-endpoint, per-row A/B comparison vs golden MSSQL</td><td>A, C1, C2</td><td>All three verify by HTTP 2xx only; no golden-response row diff. (Only B does row-level, and only at the table-count layer.)</td></tr>
+<tr><td>Any committed verifier artifact</td><td>A</td><td>No newman/results/verification file; Postman collection has 0 assertions.</td></tr>
+<tr><td>Cost / token total</td><td>C1</td><td>Formula committed, operands withheld by harness (<code>migration-report.html:188</code>).</td></tr>
+<tr><td>Full cost (input + cache classes)</td><td>C2</td><td>Only output tokens tallied (<code>migration-report.html:449</code>).</td></tr>
+<tr><td>Underlying cost telemetry file</td><td>A</td><td>Figure exists only as narrative in the HTML.</td></tr>
+<tr><td>Wall-clock derivable from git</td><td>A, C1, C2</td><td>Single squashed commit each; only self-reported clock times exist.</td></tr>
+<tr><td>Committed code-review / review-agent score</td><td>A, B, C1, C2</td><td><b>All four.</b> B ran a controller two-stage verify (described, unscored); no arm shipped a review report.</td></tr>
+<tr><td>Reproducible verifier harness in repo</td><td>C1, C2</td><td>The Postman collection / newman config the loops drive lives outside the branch.</td></tr>
+</tbody>
+</table>
+
+<hr>
+<p class="sub">Generated by read-only inspection of four git branches on 2026-06-23. No branch was modified. Where a metric was absent or ambiguous it is marked <span class="nf">NOT FOUND</span> rather than estimated.</p>
+
+</div>
+</body>
+</html>
