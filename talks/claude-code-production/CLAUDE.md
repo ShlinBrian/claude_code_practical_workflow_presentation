@@ -28,6 +28,27 @@ The deck builds in chapters. Concepts must not appear as concrete examples **bef
 
 When asked to "remove spoilers", sweep the whole deck once (grep for the case/experiment terms above with line numbers, partitioned by chapter boundary) rather than fixing one slide at a time.
 
+## Layout repair style
+
+When fixing slide layout, keep the deck's current dark IDE/terminal aesthetic and make small, targeted layout changes instead of rewriting slides.
+
+Use these rules for readability fixes:
+
+1. **Keep the 16:9 stage fixed.** Do not add responsive reflow or phone-specific rearrangements. The deck should letterbox on narrow screens; keep `minScale: 0.1` and `scrollActivationWidth: null` unless there is a deliberate reason to revisit the viewport behavior.
+2. **Prefer structural fixes over arbitrary `<br>` breaks.** If a label wraps badly, first adjust the container width, grid/flex gap, padding, or local font size. Use `white-space: nowrap` for short labels that must stay atomic.
+3. **Do not shrink whole slides to hide problems.** Reduce only the narrow component that is failing, and keep body copy comfortably readable. Avoid global font-size changes unless the entire deck is being rebalanced.
+4. **For horizontal process rows, preserve the row when the relationship is the point.** Widen the flow container, reduce arrow padding/gaps, or trim card padding so nodes such as `A vs B = result` remain on one visual line.
+5. **For dense prose, split by meaning, not by accidental wrap.** Use explicit line blocks such as `.q-line` for quote-like takeaways, with comfortable line-height and small vertical gaps. A long connected paragraph is harder to read than three clear beats.
+6. **Keep slide text and script in sync only for content edits.** Pure layout fixes that do not change wording do not require `script-zh.md` changes. If wording changes, update the matching script section in the same pass.
+7. **Verify the exact cited slides after every layout patch.** Check the real rendered URL/hash, not only the source. Confirm the problematic text is no longer wrapped or crowded.
+
+Recent examples to preserve:
+
+- Handover steps: widen `.handover-box`, slightly reduce `.hsteps .hstep .t`, and keep short step titles on one line.
+- Lifecycle skill labels: give the lifecycle row enough width, tighten local padding/gaps, and keep skill labels atomic.
+- Self-verifying quote: split a long quote into three `.q-line` beats instead of leaving it as one dense block.
+- Verifier equation: widen the `.flow` container so `PostgreSQL response vs golden MSSQL response = per-endpoint, per-row A/B` reads as one equation.
+
 ## Verifying layout
 
 `npm start` serves on `:8000`; open `#/<h>/<v>` to inspect a slide. The Playwright MCP browser cannot reach the host's `localhost` from its sandbox — verify layout in a real browser, or use another screenshot path.
