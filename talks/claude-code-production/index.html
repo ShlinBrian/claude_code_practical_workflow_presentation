@@ -12,7 +12,7 @@
 
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=Noto+Sans+TC:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
 		<style>
 			:root {
@@ -40,7 +40,7 @@
 				--r-main-color: var(--text);
 				--r-heading-color: var(--text);
 				--r-link-color: var(--flow);
-				--r-heading-font: 'Space Grotesk', 'Noto Sans TC', system-ui, sans-serif;
+				--r-heading-font: 'Bricolage Grotesque', 'Noto Sans TC', system-ui, sans-serif;
 				--r-main-font: 'Noto Sans TC', 'Inter', system-ui, sans-serif;
 				--r-heading-text-transform: none;
 				--r-heading-letter-spacing: -0.02em;
@@ -48,8 +48,8 @@
 			}
 
 			.reveal { font-weight: 400; }
-			.reveal h1, .reveal h2, .reveal h3, .reveal h4 { text-transform: none; font-weight: 600; }
-			.reveal h1 { letter-spacing: -0.03em; }
+			.reveal h1, .reveal h2, .reveal h3, .reveal h4 { text-transform: none; font-weight: 600; letter-spacing: -0.02em; }
+			.reveal h1 { font-weight: 700; letter-spacing: -0.03em; }
 			.reveal ul, .reveal ol { text-align: left; }
 			.reveal li { margin-bottom: 0.4em; }
 
@@ -181,7 +181,7 @@
 					max-width: 95%; margin: 0.5em auto; }
 				.inv .cell { background: var(--surface); border: 1px solid var(--border);
 					border-radius: 10px; padding: 18px 14px; text-align: center; }
-				.inv .cell .n { font-family: 'Space Grotesk', sans-serif; font-weight: 700;
+				.inv .cell .n { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700;
 					font-size: 1.5em; color: var(--flow); line-height: 1; }
 				.inv .cell .k { font-size: 0.5em; color: var(--text); margin-top: 8px; font-weight: 600; }
 				.inv .cell .s { font-size: 0.42em; color: var(--faint); margin-top: 3px; }
@@ -205,7 +205,7 @@
 				background: var(--surface); border: 1px solid var(--border);
 				border-radius: 10px; padding: 18px 14px; text-align: center;
 			}
-			.stat .v { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1.6em; line-height: 1; }
+			.stat .v { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 1.6em; line-height: 1; }
 			.stat .v.ok { color: var(--ok); }
 			.stat .v.fl { color: var(--flow); }
 			.stat .l { font-size: 0.42em; color: var(--faint); margin-top: 8px; line-height: 1.4; }
@@ -384,7 +384,7 @@
 
 			/* big number */
 			.big-num {
-				font-family: 'Space Grotesk', sans-serif;
+				font-family: 'Bricolage Grotesque', sans-serif;
 				font-weight: 700; font-size: 4em; line-height: 1;
 				color: var(--flow);
 			}
@@ -443,7 +443,7 @@
 				color: var(--faint); font-size: 1.4em; padding: 0 18px; }
 
 			/* ── handover: shared box so steps + code share one left edge ── */
-			.handover-box { width: 900px; max-width: 96%; margin: 0.4em auto 0; }
+			.handover-box { width: 1040px; max-width: 96%; margin: 0.4em auto 0; }
 			.handover-box .hsteps { width: 100%; }
 			.handover-box .hbox-term { width: 100%; max-width: none; margin: 0.4em 0 0; }
 
@@ -456,7 +456,7 @@
 				display: flex; flex-direction: column; gap: 5px; }
 			.hsteps .hstep.on-goal { border-left-color: var(--goal); }
 			.hsteps .hstep.on-flow { border-left-color: var(--flow); }
-			.hsteps .hstep .t { font-weight: 600; font-size: 0.62em; }
+			.hsteps .hstep .t { font-weight: 600; font-size: 0.58em; white-space: nowrap; }
 			.hsteps .hstep .d { color: var(--muted); font-size: 0.46em; line-height: 1.4; }
 			.hsteps .harr { display: flex; align-items: center; justify-content: center;
 				color: var(--faint); font-size: 1.2em; padding: 0 10px; }
@@ -477,21 +477,26 @@
 
 			/* ── superpowers lifecycle bar ── */
 			.lifecycle { display: flex; align-items: stretch; justify-content: center; gap: 0;
-				max-width: 96%; margin: 0.5em auto; }
+				max-width: 100%; margin: 0.5em auto; }
 			.lc-stage { background: var(--surface); border: 1px solid var(--border);
-				border-radius: 10px; padding: 16px 16px 14px; text-align: left; flex: 1;
+				border-radius: 10px; padding: 16px 14px 14px; text-align: left; flex: 1;
 				display: flex; flex-direction: column; min-width: 0; }
 			.lc-stage .st { font-family: 'JetBrains Mono', monospace; font-size: 0.42em;
 				letter-spacing: 0.12em; text-transform: uppercase; color: var(--faint); margin-bottom: 8px; }
-			.lc-stage .sk { font-size: 0.5em; color: var(--muted); padding: 3px 0 3px 14px;
-				position: relative; line-height: 1.4; }
+			.lc-stage .sk { font-size: 0.47em; color: var(--muted); padding: 3px 0 3px 14px;
+				position: relative; line-height: 1.4; white-space: nowrap; }
 			.lc-stage .sk::before { content: '›'; position: absolute; left: 2px; color: var(--flow); }
 			.lc-stage .sk b { color: var(--text); font-weight: 600; }
 			.lc-stage.star { border-color: var(--skill); border-top: 3px solid var(--skill); }
 			.lc-stage.star .st { color: var(--skill); }
 			.lc-stage.star .sk.hero { font-size: 0.6em; color: var(--skill); font-weight: 700; padding-left: 0; margin-bottom: 6px; }
 			.lc-stage.star .sk.hero::before { content: '★ '; color: var(--skill); position: static; }
-			.lc-arr { display: flex; align-items: center; color: var(--faint); font-size: 1.1em; padding: 0 8px; }
+			.lc-arr { display: flex; align-items: center; color: var(--faint); font-size: 1.1em; padding: 0 5px; }
+
+			/* ── self-verifying quote: explicit beats over a dense paragraph ── */
+			.verify-quote { line-height: 1.5; }
+			.verify-quote .q-line { display: block; }
+			.verify-quote .q-line + .q-line { margin-top: 0.35em; }
 
 			/* ── screenshot placeholder ── */
 			.shot {
@@ -688,7 +693,7 @@
 						<h3>What you get back</h3>
 						<div class="card accent-warn" style="margin-top:0.4em;max-width:80%;">
 							<p class="mid" style="margin:0;">
-								It rewrites the SQL, swaps the driver, the build goes green —<br>and it confidently says <strong class="c-text">"done."</strong>
+								It rewrites the SQL, swaps the driver, the build goes green — and it confidently says <strong class="c-text">"done."</strong>
 							</p>
 						</div>
 						<p class="mid c-muted" style="margin:0.6em 0 0.2em;">Three things are missing — and they're the whole game:</p>
@@ -869,10 +874,10 @@ return results.filter(r => r.verdict.faithful)</code></pre>
 							<div class="step on-goal"><span class="t c-goal">The migration <em>came with</em> a verifier</span><span class="d">golden MSSQL — every endpoint already has a correct answer to A/B against. Free.</span></div>
 							<div class="step on-flow"><span class="t c-flow">Normal feature work does <em>not</em></span><span class="d">no golden answer exists yet — the verifier is your <strong class="c-text">test suite</strong>, and you have to build it.</span></div>
 						</div>
-						<blockquote style="margin-top:0.5em;">
-							<span class="c-goal mono">/goal</span> and <span class="c-flow mono">/workflow</span> are <strong class="c-text">self-verifying</strong> — they loop against a verifier.
-							So if the verifier doesn't exist yet, <strong class="c-text">building it is task zero</strong>, not task N.
-							Thin coverage → the loop is blind, and you can't trust anything it ships.
+						<blockquote class="verify-quote" style="margin-top:0.5em;">
+							<span class="q-line"><span class="c-goal mono">/goal</span> and <span class="c-flow mono">/workflow</span> are <strong class="c-text">self-verifying</strong> — they loop against a verifier.</span>
+							<span class="q-line">So if the verifier doesn't exist yet, <strong class="c-text">building it is task zero</strong>, not task N.</span>
+							<span class="q-line">Thin coverage → the loop is blind, and you can't trust anything it ships.</span>
 						</blockquote>
 						<p class="xs c-faint" style="margin-top:0.4em;">Anthropic's line: <em>if you can't verify it, don't ship it.</em></p>
 					</section>
@@ -997,7 +1002,7 @@ return results.filter(r => r.verdict.faithful)</code></pre>
 					<section>
 						<div class="takeaway">What makes "done" objective</div>
 						<h3 style="margin-bottom:0.3em;">The verifier = Definition of Done</h3>
-						<div class="flow" style="max-width:80%;">
+						<div class="flow" style="max-width:96%;">
 							<div class="step on-flow"><span class="t">PostgreSQL response</span></div>
 							<div class="arr">vs</div>
 							<div class="step on-goal"><span class="t">golden MSSQL response</span></div>
@@ -1117,6 +1122,11 @@ return results.filter(r => r.verdict.faithful)</code></pre>
 				width: 1280,
 				height: 720,
 				margin: 0.08,
+				minScale: 0.1,
+				// Keep a fixed 16:9 stage on every screen, phones included:
+				// disable reveal's auto "scroll view" so narrow viewports scale
+				// (letterbox) the stage instead of reflowing slides into a column.
+				scrollActivationWidth: null,
 				plugins: [RevealHighlight],
 			});
 
