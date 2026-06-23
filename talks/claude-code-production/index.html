@@ -426,6 +426,62 @@
 				border-radius: 5px; padding: 1px 7px; white-space: nowrap;
 			}
 
+			/* ── experiment arm buttons ── */
+			.exp-btns {
+				display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+				margin: 0.5em auto;
+			}
+			.exp-btn {
+				font-family: 'JetBrains Mono', monospace; font-size: 0.52em;
+				font-weight: 700; border: none; border-radius: 8px;
+				padding: 10px 22px; cursor: pointer; transition: opacity 0.15s, transform 0.1s;
+				letter-spacing: 0.04em;
+			}
+			.exp-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+			.exp-btn:active { transform: translateY(0); }
+			.exp-btn.arm-a  { background: #c9a0ff; color: #0b0d11; }
+			.exp-btn.arm-b  { background: #56d364; color: #0b0d11; }
+			.exp-btn.arm-c1 { background: #7aa2ff; color: #0b0d11; }
+			.exp-btn.arm-c2 { background: #5fd0c5; color: #0b0d11; }
+
+			/* ── lightbox ── */
+			.lb-overlay {
+				display: none; position: fixed; inset: 0; z-index: 9999;
+				background: rgba(0,0,0,0.88); align-items: center; justify-content: center;
+				flex-direction: column; gap: 16px;
+			}
+			.lb-overlay.open { display: flex; }
+			.lb-overlay img {
+				max-width: 88vw; max-height: 76vh;
+				border-radius: 8px; border: 1px solid #333;
+				display: block; object-fit: contain;
+			}
+			.lb-close {
+				position: fixed; top: 18px; right: 24px;
+				font-size: 28px; color: #aaa; cursor: pointer; background: none; border: none;
+				line-height: 1; z-index: 10000;
+			}
+			.lb-close:hover { color: #fff; }
+			.lb-nav {
+				display: flex; align-items: center; gap: 20px;
+				font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #9aa4b2;
+			}
+			.lb-nav button {
+				background: #1d212b; border: 1px solid #2b313c; border-radius: 7px;
+				color: #e6e9ef; font-family: 'JetBrains Mono', monospace;
+				font-size: 13px; padding: 6px 16px; cursor: pointer;
+			}
+			.lb-nav button:hover { background: #2b313c; }
+			.lb-counter { min-width: 70px; text-align: center; }
+
+			/* ── warn badge inline ── */
+			.warn-badge {
+				font-family: 'JetBrains Mono', monospace; font-size: 0.65em;
+				background: rgba(207,92,92,0.15); color: var(--warn);
+				border: 1px solid var(--warn); border-radius: 4px;
+				padding: 0 5px; white-space: nowrap; vertical-align: middle;
+			}
+
 			/* ── persist pair (memory → CLAUDE.md), strict horizontal ── */
 			.persist { display: grid; grid-template-columns: 1fr auto 1fr; gap: 0;
 				align-items: stretch; max-width: 780px; margin: 0.5em auto; }
@@ -1025,20 +1081,49 @@ return results.filter(r => r.verdict.faithful)</code></pre>
 						<p class="mid c-muted" style="margin-top:0.6em;">Anchor: I did this kind of migration <strong class="c-text">by hand once</strong>, with weaker LLMs — about <strong class="c-goal">a month</strong>.</p>
 					</section>
 
-					<!-- TBD results -->
+					<!-- Results -->
 					<section>
-						<div class="takeaway">Results land here after the run</div>
-						<h3 style="margin-bottom:0.3em;">Results <span class="tbd">TBD</span></h3>
-						<table class="cost-table" style="font-size:0.5em;">
+						<div class="takeaway">Four runs, same task — what the data shows</div>
+						<h3 style="margin-bottom:0.3em;">Results</h3>
+						<table class="cost-table" style="font-size:0.46em;">
 							<thead><tr><th>run</th><th>correctness</th><th>cost</th><th>time</th><th>code quality</th></tr></thead>
 							<tbody>
-								<tr><td class="exp">A · naive</td><td><span class="tbd">TBD</span></td><td><span class="tbd">TBD</span></td><td><span class="tbd">TBD</span></td><td><span class="tbd">TBD</span></td></tr>
-								<tr><td class="exp">B · full superpowers</td><td><span class="tbd">TBD</span></td><td><span class="tbd">TBD</span></td><td><span class="tbd">TBD</span></td><td><span class="tbd">TBD</span></td></tr>
-								<tr><td class="exp">C1 · brainstorm + /goal</td><td><span class="tbd">TBD</span></td><td><span class="tbd">TBD</span></td><td><span class="tbd">TBD</span></td><td><span class="tbd">TBD</span></td></tr>
-								<tr><td class="exp">C2 · brainstorm + /workflow</td><td><span class="tbd">TBD</span></td><td><span class="tbd">TBD</span></td><td><span class="tbd">TBD</span></td><td><span class="tbd">TBD</span></td></tr>
+								<tr class="dear">
+									<td class="exp">A · naive</td>
+									<td>47/47 &nbsp;<span class="warn-badge">⚠ self-asserted</span><br><span style="color:var(--warn);font-size:0.85em;">0 real assertions</span></td>
+									<td>27.03M units<br><span style="color:var(--faint);font-size:0.85em;">self-reported</span></td>
+									<td>136 min<br><span style="color:var(--faint);font-size:0.85em;">self-reported</span></td>
+									<td>Robust 5 · Tests 1 · Struct 3</td>
+								</tr>
+								<tr class="cheap">
+									<td class="exp">B · full superpowers</td>
+									<td style="color:var(--ok);">41/47 HTTP 2xx<br><span style="font-size:0.85em;">+ 326/326 rows ✓</span></td>
+									<td>21.26M units<br><span style="color:var(--ok);font-size:0.85em;">from telemetry</span></td>
+									<td>~15.1 h</td>
+									<td>Robust 5 · Tests 4 · Struct 5</td>
+								</tr>
+								<tr>
+									<td class="exp">C1 · brainstorm + /goal</td>
+									<td>47/47 HTTP 2xx<br><span style="color:var(--faint);font-size:0.85em;">no row diff</span></td>
+									<td style="color:var(--faint);">NOT FOUND</td>
+									<td>~94 min</td>
+									<td>Robust 5 · Tests 2 · Struct 4</td>
+								</tr>
+								<tr>
+									<td class="exp">C2 · brainstorm + /workflow</td>
+									<td>47/47 HTTP 2xx<br><span style="color:var(--faint);font-size:0.85em;">6 rounds, no row diff</span></td>
+									<td>5.52M units<br><span style="color:var(--faint);font-size:0.85em;">output-only</span></td>
+									<td>~10.3 h</td>
+									<td>Robust 5 · Tests 1 · Struct 4</td>
+								</tr>
 							</tbody>
 						</table>
-						<div class="shot" style="margin-top:0.5em;"><div class="cap"><b>📷 SCREENSHOT</b> — A/B comparison report (per-endpoint pass/fail)</div></div>
+						<div class="exp-btns" style="margin-top:0.5em;">
+							<button class="exp-btn arm-a"  onclick="lbOpen('naive',15)">A · naive &nbsp;📷</button>
+							<button class="exp-btn arm-b"  onclick="lbOpen('superpowers',25)">B · superpowers &nbsp;📷</button>
+							<button class="exp-btn arm-c1" onclick="lbOpen('goal',4)">C1 · /goal &nbsp;📷</button>
+							<button class="exp-btn arm-c2" onclick="lbOpen('workflow',7)">C2 · /workflow &nbsp;📷</button>
+						</div>
 					</section>
 
 					<!-- when NOT to automate -->
@@ -1111,9 +1196,44 @@ return results.filter(r => r.verdict.faithful)</code></pre>
 			</div>
 		</div>
 
+		<!-- ── lightbox overlay ── -->
+		<div class="lb-overlay" id="lb">
+			<button class="lb-close" onclick="lbClose()">✕</button>
+			<img id="lb-img" src="" alt="">
+			<div class="lb-nav">
+				<button onclick="lbStep(-1)">← prev</button>
+				<span class="lb-counter" id="lb-counter"></span>
+				<button onclick="lbStep(1)">next →</button>
+			</div>
+		</div>
+
 		<script src="../../dist/reveal.js"></script>
 		<script src="../../dist/plugin/highlight.js"></script>
 		<script>
+			// ── lightbox logic ──
+			var _lbArm = '', _lbTotal = 0, _lbIdx = 1;
+			function lbOpen(arm, total) {
+				_lbArm = arm; _lbTotal = total; _lbIdx = 1;
+				lbShow();
+				document.getElementById('lb').classList.add('open');
+			}
+			function lbClose() { document.getElementById('lb').classList.remove('open'); }
+			function lbStep(d) { _lbIdx = Math.max(1, Math.min(_lbTotal, _lbIdx + d)); lbShow(); }
+			function lbShow() {
+				document.getElementById('lb-img').src = 'exp/exp_' + _lbArm + '_' + _lbIdx + '.png';
+				document.getElementById('lb-counter').textContent = _lbIdx + ' / ' + _lbTotal;
+			}
+			document.getElementById('lb').addEventListener('click', function(e) {
+				if (e.target === this) lbClose();
+			});
+			document.addEventListener('keydown', function(e) {
+				var lb = document.getElementById('lb');
+				if (!lb.classList.contains('open')) return;
+				if (e.key === 'ArrowRight') lbStep(1);
+				else if (e.key === 'ArrowLeft') lbStep(-1);
+				else if (e.key === 'Escape') lbClose();
+			});
+
 			Reveal.initialize({
 				hash: true,
 				transition: 'slide',
