@@ -929,6 +929,8 @@ return results.filter(r => r.verdict.ok)</code></pre>
 
 					<section>
 						<div class="takeaway">Self-verifying tools — only as good as what they verify against</div>
+						<div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:1.5em;letter-spacing:-0.02em;color:var(--goal);text-align:center;margin-bottom:0.15em;">Evaluation</div>
+						<div class="mid c-faint" style="text-align:center;margin-bottom:0.4em;">the single most important part of the loop tooling</div>
 						<h3 style="margin-bottom:0.3em;">First build the verifier</h3>
 						<div class="flow" style="max-width:90%;">
 							<div class="step on-goal"><span class="t c-goal">Some tasks <em>come with</em> a verifier</span><span class="d">when a correct "old" answer already exists, you get an oracle for free to check against.</span></div>
@@ -936,7 +938,7 @@ return results.filter(r => r.verdict.ok)</code></pre>
 						</div>
 						<blockquote class="verify-quote" style="margin-top:0.5em;">
 							<span class="q-line"><span class="c-goal mono">/goal</span> and <span class="c-flow mono">/workflow</span> are <strong class="c-text">self-verifying</strong> — they loop against a verifier.</span>
-							<span class="q-line">So if the verifier doesn't exist yet, <strong class="c-text">building it is task zero</strong>, not task N.</span>
+							<span class="q-line">So if the verifier doesn't exist yet, <strong class="c-text">build the verifier first</strong> — it's step one, not the last step.</span>
 							<span class="q-line">Thin coverage → the loop is blind, and you can't trust anything it ships.</span>
 						</blockquote>
 						<p class="xs c-faint" style="margin-top:0.4em;">Anthropic's line: <em>if you can't verify it, don't ship it.</em></p>
