@@ -273,6 +273,13 @@ SuperPowers 🦸 會反問：「保持一切正常」到底是指 API 回應一�
 重點是最下面這句：**難的從來不是「跑不跑得起來」，而是「答案還對不對」。**
 這句話，就是後面那個「裁判」存在的理由。
 
+### Slide 11/3 — Phase B · 搬資料（25 秒）
+
+Phase A 是程式碼，Phase B 是資料本身。
+做法很直接：用 SCT BatchExecutor 從 MSSQL export，載入 PostgreSQL——39 萬筆橫跨 23 張表，搭配全小寫識別符和 citext。
+關鍵是這句：**我們不直接驗資料有沒有搬對——因為 API 的 A/B verifier 就已經幫我們證明了。**
+每個 endpoint 都對上 golden MSSQL，資料跟轉換就都正確，端對端。一個裁判，涵蓋兩個 Phase。
+
 ---
 
 ## 第五章：實驗（slide 12 ~ 13/4 — 約 2.5 分鐘）
