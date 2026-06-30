@@ -415,11 +415,13 @@
 			.term .pr { color: var(--flow); }
 			.term .pr::before { content: '$ '; color: var(--faint); }
 			.term .ag { color: var(--muted); display: block; }
-			.term .ag::before { content: '⏺ '; color: var(--goal); }
+			.term .ag::before { content: ''; display:inline-block; width:18px; height:15px;
+			  background: url('assets/claude-icon.png') center/contain no-repeat;
+			  margin-right: 8px; vertical-align: -2px; }
 			.term .sp { color: var(--skill); display: block; }
-			.term .sp::before { content: ''; display:inline-block; width:14px; height:14px;
-			  background: url('assets/superpowers-icon.png') center/contain no-repeat;
-			  margin-right: 7px; vertical-align: -2px; }
+			.term .sp::before { content: ''; display:inline-block; width:18px; height:15px;
+			  background: url('assets/claude-icon.png') center/contain no-repeat;
+			  margin-right: 8px; vertical-align: -2px; }
 			.term .cm { color: var(--faint); }
 
 			/* ── TBD placeholder badge ── */
@@ -557,6 +559,9 @@
 			.verify-quote { line-height: 1.5; }
 			.verify-quote .q-line { display: block; }
 			.verify-quote .q-line + .q-line { margin-top: 0.35em; }
+			/* end-of-run flush note: split into per-meaning lines for readability */
+			.flush-note .fl-line { display: block; line-height: 1.5; }
+			.flush-note .fl-line + .fl-line { margin-top: 0.3em; }
 
 			/* ── screenshot placeholder ── */
 			.shot {
@@ -611,7 +616,7 @@
 					<div class="flow" style="margin-top:0.4em;">
 						<div id="framing-left" class="step on-warn frame-q" style="max-width:340px;">
 							<span class="t c-warn">&ldquo;Can the agent do it?&rdquo;</span>
-							<span class="d">Polishing prompts plateaus — and leaves you waiting for a better model.</span>
+							<span class="d">Prompt tuning has limits — and leaves you waiting for a better model.</span>
 						</div>
 						<div class="arr">vs</div>
 						<div id="framing-right" class="step on-goal frame-q dim" style="max-width:390px;">
@@ -620,7 +625,7 @@
 						</div>
 					</div>
 					<span class="fragment" data-fragment-index="1" data-frame="framing-shift"></span>
-					<p class="mid c-muted" style="margin-top:0.9em;">Everything in this talk is one of those two levers.</p>
+					<p class="mid c-muted" style="margin-top:0.9em;">Everything in this talk helps you get there.</p>
 				</section>
 
 
@@ -641,18 +646,21 @@
 						<div class="takeaway">Start here — the cheapest wins you can use today</div>
 						<h3 style="margin-bottom:0.5em;">You shouldn't have to repeat yourself</h3>
 						<div class="ba">
-							<div class="before">
+							<div id="hygiene-left" class="before frame-q">
 								<div class="lbl">The pain</div>
-								Halfway through, context fills up — or the agent forgets a decision.<br>
-								You <strong class="c-text">re-explain the whole task</strong>, every time.
+								Context fills up mid-task.<br>
+								The agent forgets an earlier decision.<br>
+								Either way, you <strong class="c-text">re-explain the whole thing</strong>.
 							</div>
 							<div class="vs">→</div>
-							<div class="after">
+							<div id="hygiene-right" class="after frame-q dim">
 								<div class="lbl">The fix</div>
-								A few small habits make state easy to restore<br>
-								— so you <strong class="c-text">steer</strong>, instead of re-narrating.
+								Persist decisions as you go.<br>
+								Hand state forward when context fills.<br>
+								So you <strong class="c-text">steer</strong>, instead of re-narrating.
 							</div>
 						</div>
+						<span class="fragment" data-fragment-index="1" data-frame="hygiene-shift"></span>
 						<p class="mid c-muted" style="margin-top:0.7em;">Three moves, by <em>when</em> you reach for them — <strong>during the run · at the end · when context fills</strong>.</p>
 					</section>
 
@@ -676,20 +684,33 @@
 					<section>
 						<div class="takeaway">End of the run — flush what's durable</div>
 						<h3 style="margin-bottom:0.4em;">Persist decisions so next time starts informed</h3>
-						<div class="persist">
+
+						<!-- a tiny dialogue, then one instruction that captures the durable fact -->
+						<div class="term" style="font-size:0.46em;width:80%;">
+							<span class="pr">the buttons look too close together — add more space</span>
+							<span class="ag">Done — I added more space between the buttons.</span><br>
+							<span class="cm"># you like it → ask it to remember this for next time</span><br>
+							<span class="pr">nice — save this spacing as the rule in CLAUDE.md</span>
+							<span class="ag">Saved to CLAUDE.md. Next time I'll use the same spacing.</span>
+						</div>
+
+						<!-- where facts live: auto-collected now → durable, committed -->
+						<div class="persist" style="margin-top:0.5em;">
 							<div class="pcard p-goal">
 								<span class="pt">memory.md</span>
-								<span class="pd">this session's accumulated facts · project-local, not committed</span>
+								<span class="pd">auto-built by Claude Code<br>this session's facts<br>not committed</span>
 							</div>
 							<div class="parrow">→</div>
 							<div class="pcard p-flow">
 								<span class="pt">CLAUDE.md</span>
-								<span class="pd">committed, project-based — read at the start of every future session</span>
+								<span class="pd">committed<br>read at the start of<br>every future session</span>
 							</div>
 						</div>
-						<p class="mid c-muted" style="margin-top:0.6em;line-height:1.7;">
-Promote with one instruction — <span class="mono c-goal">"promote the durable facts from memory.md into CLAUDE.md"</span> — a small flush step you can automate.<br>
-Keep CLAUDE.md short: promote <strong class="c-text">only durable facts</strong>, not the whole session. <strong class="c-text">Pass what you learned forward, so next time starts smarter.</strong></p>
+
+						<p class="mid c-muted flush-note" style="margin-top:0.5em;">
+							<span class="fl-line">At the end, just say <span class="mono c-goal">"keep the rules worth remembering"</span> and it tidies them up.</span>
+							<span class="fl-line">Keep it short — <strong class="c-text">only what's worth keeping</strong>.</span>
+						</p>
 					</section>
 
 					<!-- context-full handover: /clear + handoff.md beats /compact -->
@@ -1290,10 +1311,26 @@ return results.filter(r => r.verdict.ok)</code></pre>
 			}
 			Reveal.on('fragmentshown', function(event) {
 				if (event.fragment.dataset.frame === 'framing-shift') _framingUpdate(true);
+				if (event.fragment.dataset.frame === 'hygiene-shift') _hygieneUpdate(true);
 			});
 			Reveal.on('fragmenthidden', function(event) {
 				if (event.fragment.dataset.frame === 'framing-shift') _framingUpdate(false);
+				if (event.fragment.dataset.frame === 'hygiene-shift') _hygieneUpdate(false);
 			});
+
+			// ── hygiene slide #/4/0: emphasize pain → fix ──
+			function _hygieneUpdate(forward) {
+				var left  = document.getElementById('hygiene-left');
+				var right = document.getElementById('hygiene-right');
+				if (!left || !right) return;
+				if (forward) {
+					left.classList.add('dim');
+					right.classList.remove('dim');
+				} else {
+					left.classList.remove('dim');
+					right.classList.add('dim');
+				}
+			}
 
 		</script>
 	</body>
