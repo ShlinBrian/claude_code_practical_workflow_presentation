@@ -716,36 +716,30 @@
 					<!-- context-full handover: /clear + handoff.md beats /compact -->
 					<section>
 						<div class="takeaway">When context fills up: control the handoff yourself</div>
-						<h3 style="margin-bottom:0.3em;">Context full → <span class="mono">/clear</span> + <span class="mono">handoff.md</span>, not <span class="mono">/compact</span></h3>
-						<div class="ba" style="margin-bottom:0.3em;">
-							<div class="before">
-								<div class="lbl">✗ /compact</div>
-								The model auto-summarizes —<br>
-								<strong class="c-text">you don't control what survives.</strong><br>
-								The detail you needed can quietly get dropped.
-							</div>
-							<div class="vs">vs</div>
-							<div class="after">
-								<div class="lbl">✓ /clear + handoff.md</div>
-								<strong class="c-text">You</strong> write down what to keep;<br>
-								a fresh agent resumes from it cold.<br>
-								Nothing important is left to chance.
-							</div>
+						<h3 style="margin-bottom:0.4em;">Context full → <span class="mono">/clear</span> + <span class="mono">handoff.md</span>, not <span class="mono">/compact</span></h3>
+
+						<!-- the prompt: you ask for the handoff instead of letting /compact guess -->
+						<div class="term" style="font-size:0.46em;width:80%;">
+							<span class="cm"># context is full — don't let /compact guess what to keep</span><br>
+							<span class="pr">write a handoff.md: what's done, what's next, key decisions</span>
+							<span class="ag">Wrote handoff.md. /clear, and a fresh agent can resume from it.</span>
 						</div>
-						<div class="handover-box">
-							<div class="hsteps">
-								<div class="hstep on-goal"><span class="t">1 · Write <span class="mono">handoff.md</span></span><span class="d">done · next ·<br>key decisions &amp; constraints</span></div>
-								<div class="harr">→</div>
-								<div class="hstep"><span class="t">2 · <span class="mono">/clear</span></span><span class="d">bloated context gone;<br>cost resets</span></div>
-								<div class="harr">→</div>
-								<div class="hstep on-flow"><span class="t">3 · Fresh agent reads it</span><span class="d">resumes — no re-explaining</span></div>
-							</div>
-							<div class="term hbox-term" style="font-size:0.44em;">
-								<span class="cm"># handoff.md</span><br>
-								## Done: data layer ported, 30/48 modules migrated<br>
-								## Next: finish the remaining 18 modules, run the verifier<br>
-								## Decisions: all-lowercase identifiers; work in worktree
-							</div>
+
+						<!-- the flow: write → clear → fresh agent resumes -->
+						<div class="hsteps" style="margin-top:0.5em;width:80%;margin-left:auto;margin-right:auto;">
+							<div class="hstep on-goal"><span class="t">1 · Write <span class="mono">handoff.md</span></span><span class="d">done · next ·<br>key decisions</span></div>
+							<div class="harr">→</div>
+							<div class="hstep"><span class="t">2 · <span class="mono">/clear</span></span><span class="d">bloated context gone;<br>cost resets</span></div>
+							<div class="harr">→</div>
+							<div class="hstep on-flow"><span class="t">3 · Fresh agent reads it</span><span class="d">resumes —<br>no re-explaining</span></div>
+						</div>
+
+						<!-- what the handoff actually looks like -->
+						<div class="term" style="font-size:0.44em;width:80%;margin-top:0.5em;">
+							<span class="cm"># handoff.md</span><br>
+							## Done: data layer ported, 30/48 modules migrated<br>
+							## Next: finish the remaining 18 modules, run the verifier<br>
+							## Decisions: all-lowercase identifiers; work in worktree
 						</div>
 					</section>
 
