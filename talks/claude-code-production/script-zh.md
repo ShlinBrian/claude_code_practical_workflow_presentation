@@ -6,6 +6,45 @@
 
 ---
 
+<!-- INDEX MAP — real slide hash → one-line title
+  #/0      封面
+  #/1      Agenda
+  #/2      Two questions / framing
+  #/3      Divider 01 Everyday hygiene
+  #/4/0    Pain opener "repeat yourself"
+  #/4/1    During-run: rewind/btw/subagent
+  #/4/2    memory.md → CLAUDE.md
+  #/4/3    handoff.md + /clear
+  #/5      Divider 02 The naive way
+  #/6/0    "就把資料庫搬一搬"
+  #/6/1    Three gaps
+  #/7      Divider 03 The method
+  #/8/0    3-tools overview: SuperPowers · /goal · /workflow
+  #/8/1    SuperPowers lifecycle bar
+  #/8/2    brainstorming flow
+  #/8/3    "Migrate the DB" → a spec (brainstorming worked example)
+  #/8/4    Two process skills (REMOVED in Task 9)
+  #/9/0    /goal — loop until the goal is met
+  #/9/1    /workflow — multi-agent fan-out
+  #/9/2    When to use which
+  #/9/3    First build the verifier
+  #/10     Divider 04 The case
+  #/11/0   Not a swap-driver job
+  #/11/1   Scale inventory
+  #/11/2   Four hard problems, four solutions
+  #/12     Divider 05 The experiment
+  #/13/0   How much method?
+  #/13/1   The verifier = Definition of Done
+  #/13/2   How we compare
+  #/13/3   Results
+  #/13/4   When NOT to automate
+  #/14     Divider 06 Pre-flight checklist
+  #/15     Five questions before you fly
+  #/16     Closing
+-->
+
+---
+
 ## 開場（slide 0、1、2 — 約 1.5 分鐘）
 
 ### Slide 0 — 封面（15 秒）
@@ -51,16 +90,20 @@
 右邊是解法：幾個簡單的習慣，讓「狀態」變得很便宜就能恢復——
 這樣你是在**操控**它，而不是一直在**重新講故事**。
 
-### Slide 4/1 — 讓這一輪不要跑歪（40 秒）
+### Slide 4/1 — 讓這一輪不要跑歪（30 秒）
 
-三個動作，我直接給你怎麼用，不是只講名字。
+兩個動作，我直接給你怎麼用，不是只講名字。
 第一，`/rewind`：發現它走錯了，直接倒回出錯之前的那個檢查點，**不用重新解釋**。
 第二，`/btw`：跑到一半想補一個事實，不用打斷它——
 比如「staging 資料庫是唯讀的，絕對不要寫入」，一句話塞進去就好。
-第三，session 結束前，把 `memory.md` 裡的長期事實**整理進 `CLAUDE.md`**——
-這樣下一次開新的 session，它一開始就知道專案的規矩，你不用再從頭講。
 
-### Slide 4/2 — context 滿了：交接給新 agent（40 秒）
+### Slide 4/2 — 把這次學到的帶進下一次（25 秒）
+
+session 結束前，把 `memory.md` 裡的長期事實**整理進 `CLAUDE.md`**——
+這樣下一次開新的 session，它一開始就知道專案的規矩，你不用再從頭講。
+決定一次，永遠不用再重新解釋。
+
+### Slide 4/3 — context 滿了：交接給新 agent（40 秒）
 
 最後一招最實用：當 context 真的滿了，**不要硬撐、不要重講——直接交接**。
 流程很簡單：
@@ -104,7 +147,14 @@ agent 會很認真地改 SQL、換掉 driver，build 變綠燈，然後**很有�
 接下來是今天的核心：我怎麼把這三個洞補起來。
 分兩部分——先講 skills，再講 `/goal` 跟 `/workflow`。
 
-### Slide 8/0 — Skills 對應到開發生命週期（35 秒）
+### Slide 8/0 — 三個工具，一條 pipeline（20 秒）
+
+這一章的核心只有三樣東西，先給大家一眼看清全局。
+**SuperPowers** 負責把任務轉成帶有「完成定義」的規格；
+**`/goal`** 跟 **`/workflow`** 是接著執行的兩種方式——一個走「循環到目標達成」，一個走「多 agent 平行展開」。
+三個工具，一條 pipeline：先定義好，再跑起來。
+
+### Slide 8/1 — Skills 對應到開發生命週期（35 秒）
 
 先說什麼是 skill。skill 不是 prompt——它把一段**流程**編碼起來，
 告訴 agent 「**怎麼做**」，而不只是「做什麼」。
@@ -112,7 +162,7 @@ agent 會很認真地改 SQL、換掉 driver，build 變綠燈，然後**很有�
 右邊是「實作跟驗證」：用 subagent 跑 TDD、系統化除錯、code review、最後驗證。
 重點是：品質不再取決於你今天剛好有沒有把 prompt 寫好——好流程變成預設值。
 
-### Slide 8/1 — brainstorming（40 秒）
+### Slide 8/2 — brainstorming（40 秒）
 
 這是我最常用、最關鍵的一個 skill。它的流程就是這個垂直的圖：
 先探索專案脈絡 → 一次只問你一個問題 → 提兩三個方案讓你比較 →
@@ -120,7 +170,7 @@ agent 會很認真地改 SQL、換掉 driver，build 變綠燈，然後**很有�
 最關鍵的一點：**在設計被你核可之前，它拒絕寫任何程式碼。**
 這個「卡住不動」就是它的價值所在。
 
-### Slide 8/2 — 「搬資料庫」變成一份規格（35 秒）
+### Slide 8/3 — 「搬資料庫」變成一份規格（35 秒）
 
 把剛剛那句一行的 prompt 丟進 brainstorming 會發生什麼？
 它會反問：「保持一切正常」到底是指 API 回應一樣、還是資料庫狀態一樣？
@@ -129,7 +179,7 @@ agent 會很認真地改 SQL、換掉 driver，build 變綠燈，然後**很有�
 就變成一份有**可測試 DoD** 的規格。
 這份規格，正好就是 `/goal` 跟 `/workflow` 接下來要吃的東西。
 
-### Slide 8/3 — 規劃，然後系統化除錯（30 秒）
+### Slide 8/4 — 規劃，然後系統化除錯（30 秒）
 
 再補兩個你會一直重複用到的 skill。
 **writing-plans**：把規格切成一個個小的、可以獨立測試的任務，每個都有檔案、測試、commit。
