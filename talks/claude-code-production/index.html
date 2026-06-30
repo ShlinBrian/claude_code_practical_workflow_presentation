@@ -416,6 +416,10 @@
 			.term .pr::before { content: '$ '; color: var(--faint); }
 			.term .ag { color: var(--muted); display: block; }
 			.term .ag::before { content: '⏺ '; color: var(--goal); }
+			.term .sp { color: var(--skill); display: block; }
+			.term .sp::before { content: ''; display:inline-block; width:14px; height:14px;
+			  background: url('assets/superpowers-icon.png') center/contain no-repeat;
+			  margin-right: 7px; vertical-align: -2px; }
 			.term .cm { color: var(--faint); }
 
 			/* ── TBD placeholder badge ── */
@@ -864,12 +868,13 @@ Keep CLAUDE.md short: promote <strong class="c-text">only durable facts</strong>
 						<div class="takeaway">What it looks like on the migration task</div>
 						<h3 style="margin-bottom:0.3em;">"Migrate the DB" → a spec</h3>
 						<div class="term" style="font-size:0.5em;">
-							<span class="ag">"keep everything working" = same API responses, or same DB state?</span>
-							<span class="pr">Same HTTP responses, byte-for-byte where data allows.</span>
-							<span class="ag">How do we verify that automatically?</span>
-							<span class="pr">A/B every endpoint vs a golden MSSQL, row-by-row.</span>
-							<span class="cm">→ committed: docs/specs/mssql-pg-migration-design.md (with DoD)</span>
+							<span class="sp">"keep everything working" — define it. Same API responses?</span>
+							<span class="pr">Yes: the app runs on PostgreSQL and every endpoint in postman/api.json returns 2xx / a sane payload — no 500s, no DB errors.</span>
+							<span class="sp">How do we verify that automatically?</span>
+							<span class="pr">Run the Postman collection headless with newman, every endpoint, each run.</span>
+							<span class="cm">→ committed: docs/superpowers/specs/…-migration-design.md (with DoD)</span>
 						</div>
+						<button class="exp-btn arm-c1" style="margin-top:0.4em;" onclick="specOpen()">See the real spec &nbsp;📄</button>
 						<p class="mid c-goal" style="margin-top:0.5em;font-weight:600;">A committed spec with a testable DoD — exactly what <span class="mono">/goal</span> &amp; <span class="mono">/workflow</span> consume.</p>
 					</section>
 
@@ -1202,6 +1207,12 @@ return results.filter(r => r.verdict.ok)</code></pre>
 			</div>
 		</div>
 
+		<!-- ── spec text overlay ── -->
+		<div class="lb-overlay" id="speclb">
+			<button class="lb-close" onclick="specClose()">✕</button>
+			<pre id="spec-pre" style="max-width:84vw;max-height:80vh;overflow:auto;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:24px 28px;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.6;color:var(--text);white-space:pre-wrap;text-align:left;"></pre>
+		</div>
+
 		<script src="../../dist/reveal.js"></script>
 		<script src="../../dist/plugin/highlight.js"></script>
 		<script>
@@ -1223,11 +1234,28 @@ return results.filter(r => r.verdict.ok)</code></pre>
 			});
 			document.addEventListener('keydown', function(e) {
 				var lb = document.getElementById('lb');
+				if (e.key === 'Escape') {
+					if (lb.classList.contains('open')) lbClose();
+					specClose();
+					return;
+				}
 				if (!lb.classList.contains('open')) return;
 				if (e.key === 'ArrowRight') lbStep(1);
 				else if (e.key === 'ArrowLeft') lbStep(-1);
-				else if (e.key === 'Escape') lbClose();
 			});
+
+			// ── spec overlay logic ──
+			function specOpen(){
+				var box=document.getElementById('speclb'); box.classList.add('open');
+				var pre=document.getElementById('spec-pre');
+				if(!pre.dataset.loaded){
+					fetch('method/method_superpowers_spec.md').then(r=>r.text())
+						.then(t=>{ pre.textContent=t; pre.dataset.loaded='1'; })
+						.catch(()=>{ pre.textContent='(could not load method/method_superpowers_spec.md)'; });
+				}
+			}
+			function specClose(){ document.getElementById('speclb').classList.remove('open'); }
+			document.getElementById('speclb').addEventListener('click',function(e){ if(e.target===this) specClose(); });
 
 			Reveal.initialize({
 				hash: true,

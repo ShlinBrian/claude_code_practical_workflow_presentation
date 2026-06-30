@@ -187,10 +187,11 @@ skill 不是 prompt——它把一段**流程**編碼起來，
 ### Slide 8/3 — 「搬資料庫」變成一份規格（35 秒）
 
 把剛剛那句一行的 prompt 丟進 brainstorming 會發生什麼？
-它會反問：「保持一切正常」到底是指 API 回應一樣、還是資料庫狀態一樣？
+SuperPowers 🦸 會反問：「保持一切正常」到底是指 API 回應一樣、還是資料庫狀態一樣？
 還有：我們要怎麼**自動驗證**這件事？
-答案——把每一支 endpoint 拿去跟一份「黃金 MSSQL」逐列比對——
-就變成一份有**可測試 DoD** 的規格。
+答案是真實的 DoD：把 `postman/api.json` 裡的每一支 endpoint 用 **newman** 跑一遍，
+確保全部回 2xx、沒有 500、沒有 DB 錯誤——這就是可測試的 Definition of Done。
+這份規格已經提交進 repo，按「📄 See the real spec」按鈕可以直接看。
 這份規格，正好就是 `/goal` 跟 `/workflow` 接下來要吃的東西。
 
 ### Slide 9/0 — `/goal`：循環到目標達成（40 秒）
