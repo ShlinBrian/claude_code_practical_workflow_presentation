@@ -806,6 +806,10 @@ Keep CLAUDE.md short: promote <strong class="c-text">only durable facts</strong>
 
 					<!-- SuperPowers lifecycle bar -->
 					<section>
+						<div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:0.2em;">
+						  <img src="assets/superpowers-icon.png" alt="" style="width:34px;height:34px;">
+						  <span class="c-skill mono" style="font-size:0.8em;letter-spacing:0.04em;">SuperPowers</span>
+						</div>
 						<div class="takeaway">SuperPowers — skills mapped to the dev lifecycle</div>
 						<h3 style="margin-bottom:0.3em;">A skill encodes <em>how</em> to work, not just <em>what</em></h3>
 						<div class="lifecycle">
@@ -835,6 +839,7 @@ Keep CLAUDE.md short: promote <strong class="c-text">only durable facts</strong>
 						</div>
 						<p class="mid c-muted" style="margin-top:0.6em;line-height:1.7;">Quality stops depending on whether today's prompt happened to be good.<br>
 						<span class="c-skill">brainstorming</span> is the entry point.</p>
+						<button class="exp-btn arm-c2" style="margin-top:0.3em;" onclick="lbOpenPath('method/method_superpowers_', 25)">See a real SuperPowers run &nbsp;📷</button>
 					</section>
 
 					<section>
@@ -1217,16 +1222,16 @@ return results.filter(r => r.verdict.ok)</code></pre>
 		<script src="../../dist/plugin/highlight.js"></script>
 		<script>
 			// ── lightbox logic ──
-			var _lbArm = '', _lbTotal = 0, _lbIdx = 1;
-			function lbOpen(arm, total) {
-				_lbArm = arm; _lbTotal = total; _lbIdx = 1;
-				lbShow();
-				document.getElementById('lb').classList.add('open');
+			var _lbPrefix = 'exp/exp_naive_', _lbTotal = 0, _lbIdx = 1;
+			function lbOpenPath(prefix, total) {
+				_lbPrefix = prefix; _lbTotal = total; _lbIdx = 1;
+				document.getElementById('lb').classList.add('open'); lbShow();
 			}
+			function lbOpen(arm, total) { lbOpenPath('exp/exp_' + arm + '_', total); }
 			function lbClose() { document.getElementById('lb').classList.remove('open'); }
 			function lbStep(d) { _lbIdx = Math.max(1, Math.min(_lbTotal, _lbIdx + d)); lbShow(); }
 			function lbShow() {
-				document.getElementById('lb-img').src = 'exp/exp_' + _lbArm + '_' + _lbIdx + '.png';
+				document.getElementById('lb-img').src = _lbPrefix + _lbIdx + '.png';
 				document.getElementById('lb-counter').textContent = _lbIdx + ' / ' + _lbTotal;
 			}
 			document.getElementById('lb').addEventListener('click', function(e) {

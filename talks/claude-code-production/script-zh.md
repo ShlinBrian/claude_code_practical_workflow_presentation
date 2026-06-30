@@ -168,11 +168,13 @@ agent 會很認真地改 SQL、換掉 driver，build 變綠燈，然後**很有�
 
 ### Slide 8/1 — Skills 對應到開發生命週期（35 秒）
 
-先說什麼是 skill。skill 不是 prompt——它把一段**流程**編碼起來，
+這頁開始講 SuperPowers。上方可以看到 SuperPowers 的圖示跟名稱。
+skill 不是 prompt——它把一段**流程**編碼起來，
 告訴 agent 「**怎麼做**」，而不只是「做什麼」。
 左邊是「定義跟規劃」：brainstorming、writing-plans、用 git worktree 隔離；
 右邊是「實作跟驗證」：用 subagent 跑 TDD、系統化除錯、code review、最後驗證。
 重點是：品質不再取決於你今天剛好有沒有把 prompt 寫好——好流程變成預設值。
+點按鈕可以看實際一次 SuperPowers 跑起來的截圖。
 
 ### Slide 8/2 — brainstorming（40 秒）
 
