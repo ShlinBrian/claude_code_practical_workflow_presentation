@@ -899,6 +899,10 @@ Keep CLAUDE.md short: promote <strong class="c-text">only durable facts</strong>
 					<section>
 						<div class="takeaway">/workflow — orchestrate many agents deterministically</div>
 						<h3 style="margin-bottom:0.2em;"><span class="c-flow mono">/workflow</span> — multi-agent fan-out</h3>
+						<div class="term" style="font-size:0.5em;margin-bottom:0.4em;">
+							<span class="cm"># you invoke it in natural language — the agent authors &amp; runs the script:</span><br>
+							<span class="pr">/workflow process every independent unit in parallel, then verify each</span>
+						</div>
 						<pre class="code"><code class="language-javascript">// process many independent units in parallel, then verify each
 const units = await agent('list the work items', {schema: ITEMS})
 const results = await pipeline(
@@ -907,7 +911,7 @@ const results = await pipeline(
   c => agent(`verify ${c.id}`, {phase: 'verify', schema: VERDICT})
 )
 return results.filter(r => r.verdict.ok)</code></pre>
-						<p class="mid c-muted" style="margin-top:0.3em;">Each unit flows do→verify independently. Wall-clock = slowest chain, not the sum.</p>
+						<p class="mid c-muted" style="margin-top:0.3em;">You say it in words; `/workflow` turns it into a deterministic script — shown below. Each unit flows do→verify independently. Wall-clock = slowest chain, not the sum.</p>
 					</section>
 
 					<section>
