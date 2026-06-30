@@ -102,11 +102,18 @@
 比如「staging 資料庫是唯讀的，絕對不要寫入」，一句話塞進去就好。
 第三，建立一個 subagent：告訴它「掃描所有模組、只回傳失敗的那些」——這樣雜訊的任務交給新的 context，結果才回來，不會吃掉你的 context 空間。
 
-### Slide 4/2 — 把這次學到的帶進下一次（25 秒）
+### Slide 4/2 — 把這次學到的帶進下一次（30 秒）
 
-session 結束前，把 `memory.md` 裡的長期事實**整理進 `CLAUDE.md`**——
-這樣下一次開新的 session，它一開始就知道專案的規矩，你不用再從頭講。
-決定一次，永遠不用再重新解釋。
+這頁講的是 session 結束前最後一個動作。
+先看兩個檔案的角色：
+`memory.md` 是這一輪累積的事實——專案本地的、沒有 commit、下次 session 開新的沒有這些。
+`CLAUDE.md` 正好相反——它是 commit 進去的、下一次 session 開啟的時候會讀到，長期存在。
+
+怎麼做呢？就是一個自動化指令：「promote durable facts from memory.md into CLAUDE.md」——
+一句話，就把這次的重點事實推進去。
+但關鍵限制是：CLAUDE.md 不能太長。要進去的，只挑那些**真的值得記住的東西**——
+不是把整個 memory session 倒進去，而是**只挑 durable 的、下一個人會用到的**。
+這樣下一次開新 session，它一開始就知道專案的規矩，省你一遍解釋。
 
 ### Slide 4/3 — context 滿了：交接給新 agent（40 秒）
 

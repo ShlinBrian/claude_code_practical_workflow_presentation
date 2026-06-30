@@ -675,16 +675,17 @@
 						<div class="persist">
 							<div class="pcard p-goal">
 								<span class="pt">memory.md</span>
-								<span class="pd">the facts the agent accumulated this session</span>
+								<span class="pd">this session's accumulated facts · project-local, not committed</span>
 							</div>
 							<div class="parrow">→</div>
 							<div class="pcard p-flow">
 								<span class="pt">CLAUDE.md</span>
-								<span class="pd">promote the durable ones — committed, read on every future session</span>
+								<span class="pd">committed, project-based — read at the start of every future session</span>
 							</div>
 						</div>
-						<p class="mid c-muted" style="margin-top:0.6em;line-height:1.7;">Examples: all-lowercase identifier rule · staging DB is read-only · work in a worktree.<br>
-						<strong class="c-text">Decide once, never re-explain.</strong></p>
+						<p class="mid c-muted" style="margin-top:0.6em;line-height:1.7;">
+Promote with one instruction — <span class="mono c-goal">"promote the durable facts from memory.md into CLAUDE.md"</span> — a small flush step you can automate.<br>
+Keep CLAUDE.md short: promote <strong class="c-text">only durable facts</strong>, not the whole session. <strong class="c-text">Pass what you learned forward, so next time starts smarter.</strong></p>
 					</section>
 
 					<!-- context-full handover: /clear + handoff.md beats /compact -->
