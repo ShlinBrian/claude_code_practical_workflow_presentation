@@ -105,6 +105,13 @@
 			.card.accent-flow .card-label { color: var(--flow); }
 			.card.accent-warn .card-label { color: var(--warn); }
 			.card.accent-skill .card-label { color: var(--skill); }
+			.card.accent-text { border-left: 4px solid var(--text); }
+			.card.accent-text .card-label { color: var(--text); }
+			/* three stacked beat-cards (e.g. What / The bar / The shape) */
+			.case3 { display: flex; flex-direction: column; gap: 14px; max-width: 84%; margin: 0.3em auto; }
+			.case3 .card { margin: 0; max-width: 100%; padding: 14px 20px; }
+			.case3 .card .card-label { margin-bottom: 0.5em; }
+			.case3 .card .mid { font-size: 0.62em; }
 
 			/* ── two-col ── */
 			.two-col {
@@ -195,6 +202,12 @@
 				.pf .f { border-left: 4px solid var(--ok); }
 				.pf .ar { display: flex; align-items: center; color: var(--faint); font-size: 1.1em; }
 				.pf .p b, .pf .f b { color: var(--text); font-weight: 600; }
+				/* plain-first Phase A rows: headline leads, jargon demoted to a small tag */
+				.pf .head { display: block; font-weight: 700; color: var(--text); font-size: 1.12em; margin-bottom: 4px; }
+				.pf .sub { display: block; color: var(--muted); }
+				.pf .tag { display: inline-block; margin-top: 6px; font-size: 0.82em; color: var(--faint);
+					background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 5px; padding: 1px 7px; }
+				.pf .tag .mono { color: var(--muted); }
 
 			/* ── stat grid ── */
 			.stats {
@@ -413,7 +426,7 @@
 				line-height: 1.6; width: 88%; margin: 0.4em auto;
 			}
 			.term .pr { color: var(--flow); }
-			.term .pr::before { content: '$ '; color: var(--faint); }
+			.term .pr::before { content: '❯ '; color: var(--faint); }
 			.term .ag { color: var(--muted); display: block; }
 			.term .ag::before { content: ''; display:inline-block; width:18px; height:15px;
 			  background: url('assets/claude-icon.png') center/contain no-repeat;
@@ -599,11 +612,10 @@
 					<h2 style="font-size:1.5em;">Agenda</h2>
 					<ol class="agenda">
 						<li><span class="n">01</span><div><div class="t">Everyday hygiene</div><div class="s">The cheapest wins — moves you can use in your next session</div></div></li>
-						<li><span class="n">02</span><div><div class="t">The naive way</div><div class="s">A one-line prompt on a real task — and the three gaps it leaves</div></div></li>
-						<li><span class="n">03</span><div><div class="t">The method</div><div class="s">Skills &amp; brainstorming, then <span class="mono">/goal</span> and <span class="mono">/workflow</span></div></div></li>
-						<li><span class="n">04</span><div><div class="t">The case</div><div class="s">A real MSSQL → PostgreSQL migration: why it's hard</div></div></li>
-						<li><span class="n">05</span><div><div class="t">The comparison</div><div class="s">Four runs, same task — what the data shows</div></div></li>
-						<li><span class="n">06</span><div><div class="t">Pre-flight checklist</div><div class="s">Five questions to take home</div></div></li>
+						<li><span class="n">02</span><div><div class="t">The method</div><div class="s">The naive way &amp; its three gaps, then <span class="mono">SuperPowers</span>, <span class="mono">/goal</span>, <span class="mono">/workflow</span></div></div></li>
+						<li><span class="n">03</span><div><div class="t">The case</div><div class="s">A real MSSQL → PostgreSQL migration: why it's hard</div></div></li>
+						<li><span class="n">04</span><div><div class="t">The comparison</div><div class="s">Four runs, same task — what the data shows</div></div></li>
+						<li><span class="n">05</span><div><div class="t">Pre-flight checklist</div><div class="s">Five questions to take home</div></div></li>
 					</ol>
 				</section>
 
@@ -648,16 +660,16 @@
 						<div class="ba">
 							<div id="hygiene-left" class="before frame-q">
 								<div class="lbl">The pain</div>
-								Context fills up mid-task.<br>
-								The agent forgets an earlier decision.<br>
-								Either way, you <strong class="c-text">re-explain the whole thing</strong>.
+								<strong>Context fills up</strong> or <strong>usage runs out</strong> mid-task<br>
+								The agent forgets an earlier decision<br>
+								<span style="display:block;font-size:1.25em;margin-top:0.35em;line-height:1.4;">⇒ Need to <strong class="c-warn">re-explain the whole thing</strong>.</span>
 							</div>
 							<div class="vs">→</div>
 							<div id="hygiene-right" class="after frame-q dim">
 								<div class="lbl">The fix</div>
-								Persist decisions as you go.<br>
-								Hand state forward when context fills.<br>
-								So you <strong class="c-text">steer</strong>, instead of re-narrating.
+								<strong>Steer the live context</strong> while you work<br>
+								<strong>Hand state off</strong> before context runs out<br>
+								<span style="display:block;font-size:1.25em;margin-top:0.35em;line-height:1.4;">⇒ You <strong class="c-ok">steer</strong>, not restart.</span>
 							</div>
 						</div>
 						<span class="fragment" data-fragment-index="1" data-frame="hygiene-shift"></span>
@@ -746,25 +758,23 @@
 				</section>
 
 
-				<!-- ════════ DIVIDER 02 ════════ -->
+				<!-- ════════ DIVIDER 02 — THE METHOD (opens with the naive way) ════════ -->
 				<section class="divider">
 					<div class="ch-num">Chapter 02</div>
-					<h2>The naive way</h2>
-					<p class="ch-sub">A one-line prompt on a real task — and the three gaps it leaves</p>
+					<h2>The method</h2>
+					<p class="ch-sub">First the naive way and the three gaps it leaves — then three tools that close them: <span class="mono">SuperPowers</span>, <span class="mono">/goal</span>, <span class="mono">/workflow</span></p>
 					<div class="ch-rule"></div>
 				</section>
 
 
-				<!-- ════════ THE NAIVE WAY (arm A) ════════ -->
+				<!-- ════════ THE NAIVE WAY (arm A) — now the opener of The method ════════ -->
 				<section>
 					<section>
 						<div class="takeaway">A real-looking one-line prompt · <span class="badge">A</span> naive run</div>
-						<h3>"Just migrate the database"</h3>
+						<h3>The naive way</h3>
 						<div class="term">
-							<span class="pr">claude</span><br>
 							<span class="cm"># the prompt most people would write:</span><br>
-							Migrate this Java service from MSSQL to PostgreSQL.<br>
-							Keep everything working.
+							<span class="pr">Migrate this Java service from MSSQL to PostgreSQL.<br>&nbsp;&nbsp;Keep everything working.</span>
 						</div>
 						<p class="mid c-muted" style="margin-top:0.8em;">Looks reasonable. It is a trap.</p>
 					</section>
@@ -787,22 +797,13 @@
 				</section>
 
 
-				<!-- ════════ DIVIDER 03 ════════ -->
-				<section class="divider">
-					<div class="ch-num">Chapter 03</div>
-					<h2>The method</h2>
-					<p class="ch-sub">Three tools — <span class="mono">SuperPowers</span>, <span class="mono">/goal</span>, and <span class="mono">/workflow</span></p>
-					<div class="ch-rule"></div>
-				</section>
-
-
 				<!-- ════════ SUPERPOWERS SKILLS ════════ -->
 				<section>
 
 					<!-- 3-tools overview -->
 					<section>
 						<div class="takeaway">The method — three tools, one pipeline</div>
-						<h3 style="margin-bottom:0.3em;">SuperPowers · <span class="c-goal mono">/goal</span> · <span class="c-flow mono">/workflow</span></h3>
+						<h3 style="margin-bottom:0.3em;">The better tools</h3>
 						<div class="tools3">
 							<div class="tool t-sp">
 								<div class="nm">SuperPowers</div>
@@ -904,8 +905,7 @@
 						<h3 style="margin-bottom:0.3em;"><span class="c-goal mono">/goal</span> — loop until the goal is met</h3>
 						<div class="term" style="font-size:0.5em;">
 							<span class="cm"># hand it the spec + a machine-checkable goal:</span><br>
-							<span class="pr">/goal Every test passes AND output matches the</span><br>
-							&nbsp;&nbsp;<span class="pr">expected baseline. Spec: …design.md</span><br>
+							<span class="pr">/goal Every test passes AND output matches the<br>&nbsp;&nbsp;expected baseline. Spec: …design.md</span><br>
 							<span class="ag">build → test → check → fix → repeat until the verifier passes</span>
 						</div>
 						<p class="mid c-muted" style="margin-top:0.5em;">Only works if the goal is <strong class="c-text">machine-checkable</strong>. No verifier → it loops or stops on a vibe.</p>
@@ -961,9 +961,9 @@ return results.filter(r => r.verdict.ok)</code></pre>
 				</section>
 
 
-				<!-- ════════ DIVIDER 04 ════════ -->
+				<!-- ════════ DIVIDER 03 ════════ -->
 				<section class="divider">
-					<div class="ch-num">Chapter 04</div>
+					<div class="ch-num">Chapter 03</div>
 					<h2>The case</h2>
 					<p class="ch-sub">A real MSSQL → PostgreSQL migration — why it's hard</p>
 					<div class="ch-rule"></div>
@@ -975,11 +975,30 @@ return results.filter(r => r.verdict.ok)</code></pre>
 
 					<section>
 						<div class="takeaway">A real, completed migration — the credibility anchor</div>
-						<h3 style="margin-bottom:0.3em;">Not a "swap the JDBC driver" job</h3>
-						<div class="card accent-goal" style="max-width:84%;">
-							<p class="mid" style="margin:0;line-height:1.65;">A years-old <strong class="c-text">commercial download backend still in production</strong> — real users hit it every day — moved off <strong class="c-text">Microsoft SQL Server</strong><br>(data, schema, stored procedures, dialect SQL in Java/JSP) onto <strong class="c-text">PostgreSQL</strong>.<br><br>The bar: <strong class="c-goal">every API returns the correct response on PostgreSQL.</strong> A wrong answer ships to real customers.</p>
+						<h3 style="margin-bottom:0.35em;">Not a "swap the JDBC driver" job</h3>
+						<div class="case3">
+							<div class="card accent-text flush-note">
+								<div class="card-label">What</div>
+								<p class="mid" style="margin:0;line-height:1.5;">
+									<span class="fl-line">A years-old commercial download backend, still in production — real users every day.</span>
+									<span class="fl-line">Moved <strong class="c-text">MSSQL → PostgreSQL</strong>: data, schema, stored procedures, dialect SQL in Java/JSP.</span>
+								</p>
+							</div>
+							<div class="card accent-goal flush-note">
+								<div class="card-label">The bar</div>
+								<p class="mid" style="margin:0;line-height:1.5;">
+									<span class="fl-line">Every API must return the <strong class="c-goal">correct</strong> response on PostgreSQL.</span>
+									<span class="fl-line">A wrong answer ships to real customers.</span>
+								</p>
+							</div>
+							<div class="card accent-flow flush-note">
+								<div class="card-label">The shape</div>
+								<p class="mid" style="margin:0;line-height:1.5;">
+									<span class="fl-line">Difficulty stacks in two phases:</span>
+									<span class="fl-line"><strong class="c-flow">Phase A · migrate the schema</strong>, then <strong class="c-goal">Phase B · migrate the data</strong>.</span>
+								</p>
+							</div>
 						</div>
-						<p class="mid c-muted" style="margin-top:0.5em;">Difficulty stacks in two phases — <strong class="c-flow">structure + code</strong>, then <strong class="c-goal">data migration</strong>.</p>
 					</section>
 
 					<!-- scale inventory -->
@@ -993,46 +1012,50 @@ return results.filter(r => r.verdict.ok)</code></pre>
 
 					<!-- semantic gap problems → fixes -->
 					<section>
-						<div class="takeaway">Phase A — structure + code: the semantic gap, and how each was beaten</div>
-						<h3 style="margin-bottom:0.2em;">Phase A · 4 problems → 4 fixes</h3>
+						<div class="takeaway">Phase A — migrate the schema: four kinds of semantic gap, each closed</div>
+						<h3 style="margin-bottom:0.15em;">Phase A · migrate the schema <span class="c-muted" style="font-size:0.5em;font-weight:400;">— the semantic gap, 4 kinds of mismatch</span></h3>
 						<div class="pf">
 							<div class="row">
-								<div class="p"><b>SCT is GUI-only</b>, but had to run fully automated in headless WSL</div>
+								<div class="p"><span class="head">The migration tool won't automate</span><span class="sub">it's GUI-only — but the run had to be fully headless</span><span class="tag">AWS <span class="mono">SCT</span></span></div>
 								<div class="ar">→</div>
-								<div class="f">SCT <b>BatchExecutor CLI</b> + bundled Corretto 17; control codes <span class="mono">0x1f/0x1e</span> as delimiters</div>
+								<div class="f">drive it from its CLI, headless end-to-end</div>
 							</div>
 							<div class="row">
-								<div class="p"><b>Cross-DB joins</b> — MSSQL 3-part names; PostgreSQL can't</div>
+								<div class="p"><span class="head">SQL written for the other engine</span><span class="sub">cross-DB joins &amp; dialect that only MSSQL accepts</span><span class="tag">cross-DB · dialect</span></div>
 								<div class="ar">→</div>
-								<div class="f">app only uses <span class="mono">main / main_write / downloader</span> (all Downloader) — <b>tractable</b></div>
+								<div class="f">app only ever hits one database → <b>tractable</b></div>
 							</div>
 							<div class="row">
-								<div class="p">SCT made <b>INOUT refcursor</b> procs — but pgjdbc <span class="mono">{call…}</span> needs functions</div>
+								<div class="p"><span class="head">Stored procedures don't map across</span><span class="sub">the converted procs don't fit what the Java driver calls</span><span class="tag"><span class="mono">refcursor</span></span></div>
 								<div class="ar">→</div>
-								<div class="f">rewrite to <span class="mono">RETURNS SETOF</span> functions; <span class="mono">citext</span> for case; rebuild views</div>
+								<div class="f">rewrite as <span class="mono">RETURNS SETOF</span> functions</div>
 							</div>
 							<div class="row">
-								<div class="p"><b>Dialect + case</b> — <span class="mono">TOP ISNULL GETDATE() dbo. [brackets]</span></div>
+								<div class="p"><span class="head">Identifiers fold differently</span><span class="sub">case &amp; dialect (<span class="mono">TOP ISNULL [brackets]</span>) don't match</span><span class="tag"><span class="mono">citext</span></span></div>
 								<div class="ar">→</div>
-								<div class="f"><b>all-lowercase</b> strategy — drop brackets so PostgreSQL folds &amp; compares</div>
+								<div class="f"><b>all-lowercase</b> strategy + <span class="mono">citext</span></div>
 							</div>
 						</div>
-						<p class="mid c-goal" style="margin-top:0.5em;font-weight:600;text-align:center;">The hard part isn't "does it run" — it's "is the answer <em>still correct</em>."</p>
+						<p class="mid c-goal verify-quote" style="margin-top:0.4em;font-weight:700;text-align:center;font-size:0.88em;">
+							<span class="q-line">The hard part isn't "does it run."</span>
+							<span class="q-line">It's "is the answer <em>still correct</em>."</span>
+						</p>
 					</section>
 
 					<!-- Phase B — data migration -->
 					<section>
-						<div class="takeaway">Phase B — once the structure runs, move the data</div>
+						<div class="takeaway">Phase B — once the schema runs, migrate the data</div>
 						<h3 style="margin-bottom:0.3em;">Phase B · migrate the data</h3>
 						<div class="flow">
 							<div class="step on-flow"><span class="t">Export from MSSQL</span><span class="d">SCT BatchExecutor · <span class="mono">0x1f/0x1e</span> delimiters (never appear in the data)</span></div>
 							<div class="arr">→</div>
 							<div class="step on-goal"><span class="t">Load into PostgreSQL</span><span class="d">~390k rows across 23 tables · all-lowercase identifiers · <span class="mono">citext</span></span></div>
 						</div>
-						<div class="card accent-goal" style="margin-top:0.5em;max-width:88%;">
-							<p class="mid" style="margin:0;line-height:1.7;">How do we know the data landed right?<br>
-							<strong class="c-goal">We don't check it directly — the API A/B verifier proves it.</strong><br>
-							If every endpoint matches golden MSSQL, the data <em>and</em> the conversion are both correct, end-to-end.</p>
+						<div class="card accent-goal flush-note" style="margin-top:0.5em;max-width:88%;">
+							<p class="mid" style="margin:0;line-height:1.55;">
+								<span class="fl-line">How do we know the data landed right?</span>
+								<span class="fl-line"><strong class="c-goal">We don't check it directly — we replay every API call on both databases and compare the answers.</strong></span>
+							</p>
 						</div>
 						<p class="mid c-muted" style="margin-top:0.5em;">One verifier covers both phases — no separate row-by-row data audit.</p>
 					</section>
@@ -1040,9 +1063,9 @@ return results.filter(r => r.verdict.ok)</code></pre>
 				</section>
 
 
-				<!-- ════════ DIVIDER 05 ════════ -->
+				<!-- ════════ DIVIDER 04 ════════ -->
 				<section class="divider">
-					<div class="ch-num">Chapter 05</div>
+					<div class="ch-num">Chapter 04</div>
 					<h2>The comparison</h2>
 					<p class="ch-sub">Four runs, same task — what the data shows</p>
 					<div class="ch-rule"></div>
@@ -1159,9 +1182,9 @@ return results.filter(r => r.verdict.ok)</code></pre>
 				</section>
 
 
-				<!-- ════════ DIVIDER 06 ════════ -->
+				<!-- ════════ DIVIDER 05 ════════ -->
 				<section class="divider">
-					<div class="ch-num">Chapter 06</div>
+					<div class="ch-num">Chapter 05</div>
 					<h2>Pre-flight checklist</h2>
 					<p class="ch-sub">Five questions to take home</p>
 					<div class="ch-rule"></div>
