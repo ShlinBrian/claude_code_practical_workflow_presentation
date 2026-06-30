@@ -962,7 +962,7 @@ return results.filter(r => r.verdict.ok)</code></pre>
 						<div class="takeaway">A real, completed migration — the credibility anchor</div>
 						<h3 style="margin-bottom:0.3em;">Not a "swap the JDBC driver" job</h3>
 						<div class="card accent-goal" style="max-width:84%;">
-							<p class="mid" style="margin:0;line-height:1.65;">A years-old commercial download backend moved off <strong class="c-text">Microsoft SQL Server</strong><br>— data, schema, stored procedures, and dialect SQL embedded in Java/JSP —<br>onto <strong class="c-text">PostgreSQL</strong>.<br><br>The bar: <strong class="c-goal">every API returns the correct response on PostgreSQL.</strong></p>
+							<p class="mid" style="margin:0;line-height:1.65;">A years-old <strong class="c-text">commercial download backend still in production</strong> — real users hit it every day — moved off <strong class="c-text">Microsoft SQL Server</strong><br>(data, schema, stored procedures, dialect SQL in Java/JSP) onto <strong class="c-text">PostgreSQL</strong>.<br><br>The bar: <strong class="c-goal">every API returns the correct response on PostgreSQL.</strong> A wrong answer ships to real customers.</p>
 						</div>
 						<p class="mid c-muted" style="margin-top:0.5em;">Difficulty stacks in two phases — <strong class="c-flow">structure + code</strong>, then <strong class="c-goal">data migration</strong>.</p>
 					</section>
@@ -971,14 +971,8 @@ return results.filter(r => r.verdict.ok)</code></pre>
 					<section>
 						<div class="takeaway">The scale — what had to move</div>
 						<h3 style="margin-bottom:0.3em;">What had to move</h3>
-						<div class="inv">
-							<div class="cell"><div class="n">376,701</div><div class="k">Downloader</div><div class="s">main DB · 18 tables</div></div>
-							<div class="cell"><div class="n">8,258</div><div class="k">Cyberlink</div><div class="s">3 tables</div></div>
-							<div class="cell"><div class="n">121</div><div class="k">PC</div><div class="s">1 table</div></div>
-							<div class="cell"><div class="n">4,958</div><div class="k">PMS</div><div class="s">1 table</div></div>
-						</div>
-						<div class="card accent-flow" style="margin-top:0.5em;max-width:70%;">
-							<p class="mid" style="margin:0;text-align:center;"><strong class="c-flow">48</strong> stored procedures / functions &nbsp;+&nbsp; <strong class="c-flow">4</strong> views <span class="c-faint">(PVM/SID)</span> in Downloader</p>
+						<div class="card accent-flow" style="max-width:80%;">
+							<p class="mid" style="margin:0;text-align:center;line-height:1.7;"><strong class="c-flow">~390k rows</strong> across <strong class="c-flow">23 tables</strong> · <strong class="c-flow">48</strong> procs + <strong class="c-flow">4</strong> views · <strong class="c-flow">4</strong> databases</p>
 						</div>
 					</section>
 

@@ -250,18 +250,15 @@ SuperPowers 🦸 會反問：「保持一切正常」到底是指 API 回應一�
 ### Slide 11/0 — 這不是「換個 JDBC driver」（35 秒）
 
 先說清楚規模。這不是換個 driver 就好。
-這是一個跑了很多年的商用下載後端，要整套從 Microsoft SQL Server 搬到 PostgreSQL——
+這是一個跑了很多年、至今還在線上的商用下載後端——**真實用戶每天都在用**——整套從 Microsoft SQL Server 搬到 PostgreSQL。
 包含資料、schema、stored procedure，還有**埋在 Java/JSP 裡的方言 SQL**。
-而且標準很硬：**每一支 API 在 PostgreSQL 上都要回傳正確的結果才算數。**
+而且標準很硬：**每一支 API 在 PostgreSQL 上都要回傳正確的結果才算數。錯誤的答案會直接送到真實用戶手上。**
 難度疊在兩個面向上——**規模**，跟**語意落差**。
 
 ### Slide 11/1 — 要搬的東西（30 秒）
 
-先看規模。
-主資料庫 Downloader：18 張表、將近 38 萬筆；
-另外還有 Cyberlink、PC、PMS 幾個庫。
-還有 **48 支 stored procedure / function，加上 4 個 view**。
-這些不是估的，是實際搬完、跟來源核對過的數字。
+先看規模。大約 **39 萬筆資料**、分散在 **23 張表**，加上 **48 支 procedure / function 和 4 個 view**，橫跨 **4 個資料庫**。
+這夠大、讓人一眼看出「這不是三行 SQL 的活兒」，但重點不是讓你去記每個細節，而是看整個規模的信號。
 
 ### Slide 11/2 — 四個難題，四個解法（60 秒）
 
