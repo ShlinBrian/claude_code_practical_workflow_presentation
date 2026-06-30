@@ -698,7 +698,8 @@
 							<span class="ag">Done — I added more space between the buttons</span><br>
 							<span class="cm"># you like it → ask it to remember this for next time</span><br>
 							<span class="pr">nice — save this spacing as the rule in CLAUDE.md</span>
-							<span class="ag">Saved to CLAUDE.md. Next time I'll use the same spacing.</span>
+							<span class="ag">Saved to CLAUDE.md</span>
+							<span class="ag">Next time I'll use the same spacing</span>
 						</div>
 
 						<!-- where facts live: auto-collected now → durable, committed -->
@@ -728,7 +729,8 @@
 						<div class="term" style="font-size:0.46em;width:80%;">
 							<span class="cm"># context is full — don't let /compact guess what to keep</span><br>
 							<span class="pr">write a handoff.md: what's done, what's next, key decisions</span>
-							<span class="ag">Wrote handoff.md. /clear, and a fresh agent can resume from it.</span>
+							<span class="ag">Wrote handoff.md</span>
+							<span class="ag">/clear, and a fresh agent can resume from it</span>
 						</div>
 
 						<!-- the flow: write → clear → fresh agent resumes -->
@@ -768,7 +770,10 @@
 							<span class="cm"># the prompt most people would write:</span><br>
 							<span class="pr">Migrate this Java service from MSSQL to PostgreSQL.<br>&nbsp;&nbsp;Keep everything working.</span>
 						</div>
-						<p class="mid c-muted" style="margin-top:0.8em;">Looks reasonable. It is a trap.</p>
+						<p class="mid c-muted flush-note" style="margin-top:0.8em;">
+							<span class="fl-line">Looks reasonable</span>
+							<span class="fl-line">It is a trap</span>
+						</p>
 					</section>
 
 					<section>
@@ -798,17 +803,17 @@
 							<div class="tool t-sp">
 								<div class="nm">SuperPowers</div>
 								<div class="role">Encode the process</div>
-								<div class="desc">Skills that tell the agent <em>how</em> to work.<br>brainstorming turns a request into a spec + Definition of Done</div>
+								<div class="desc">Skills that tell the agent <em>how</em> to work<br>brainstorming turns a request into a spec + Definition of Done</div>
 							</div>
 							<div class="tool t-goal">
 								<div class="nm">/goal</div>
 								<div class="role">Loop until the goal is met</div>
-								<div class="desc">Hand it a spec + a machine-checkable goal.<br>It builds, tests, fixes until the verifier passes</div>
+								<div class="desc">Hand it a spec + a machine-checkable goal<br>It builds, tests, fixes until the verifier passes</div>
 							</div>
 							<div class="tool t-flow">
 								<div class="nm">/workflow</div>
 								<div class="role">Fan out many agents</div>
-								<div class="desc">Orchestrate independent units in parallel.<br>N conversions at once, each isolated</div>
+								<div class="desc">Orchestrate independent units in parallel<br>N conversions at once, each isolated</div>
 							</div>
 						</div>
 						<p class="mid c-muted" style="margin-top:0.5em;">SuperPowers produces the spec; <span class="c-goal mono">/goal</span> and <span class="c-flow mono">/workflow</span> are two ways to execute against it</p>
@@ -846,8 +851,10 @@
 								<div class="sk"><b>verification</b></div>
 							</div>
 						</div>
-						<p class="mid c-muted" style="margin-top:0.6em;line-height:1.7;">Quality stops depending on whether today's prompt happened to be good.<br>
-						<span class="c-skill">brainstorming</span> is the entry point.</p>
+						<p class="mid c-muted flush-note" style="margin-top:0.6em;line-height:1.7;">
+							<span class="fl-line">Quality stops depending on whether today's prompt happened to be good</span>
+							<span class="fl-line"><span class="c-skill">brainstorming</span> is the entry point</span>
+						</p>
 						<button class="exp-btn arm-c2" style="margin-top:0.3em;" onclick="lbOpenPath('method/method_superpowers_', 25)">See a real SuperPowers run &nbsp;📷</button>
 					</section>
 
@@ -865,14 +872,18 @@
 							<div class="arr" style="padding:3px 0;">↓</div>
 							<div class="step on-goal" style="padding:11px 18px;background:linear-gradient(135deg,rgba(227,179,65,0.08),transparent);"><span class="t c-goal"><span class="mono" style="font-size:0.78em;">05</span> &nbsp;Commit a spec — with a Definition of Done</span></div>
 						</div>
-						<p class="mid c-muted" style="margin-top:0.4em;">Refuses to write code until the design is approved. <strong class="c-text">That gate is the point.</strong></p>
+						<p class="mid c-muted flush-note" style="margin-top:0.4em;">
+							<span class="fl-line">Refuses to write code until the design is approved</span>
+							<span class="fl-line"><strong class="c-text">That gate is the point</strong></span>
+						</p>
 					</section>
 
 					<section>
 						<h3 style="margin-bottom:0.3em;">"Migrate the DB" → a spec</h3>
 						<div class="term" style="font-size:0.5em;">
-							<span class="sp">"keep everything working" — define it. Same API responses?</span>
-							<span class="pr">Yes: the app runs on PostgreSQL and every endpoint in postman/api.json returns 2xx / a sane payload — no 500s, no DB errors.</span>
+							<span class="sp">"keep everything working" — define it</span>
+							<span class="sp">Same API responses?</span>
+							<span class="pr">Yes: the app runs on PostgreSQL and every endpoint in postman/api.json returns 2xx / a sane payload — no 500s, no DB errors</span>
 							<span class="sp">How do we verify that automatically?</span>
 							<span class="pr">Run the Postman collection headless with newman, every endpoint, each run</span>
 							<span class="cm">→ committed: docs/superpowers/specs/…-migration-design.md (with DoD)</span>
@@ -894,7 +905,10 @@
 							<span class="pr">/goal Every test passes AND output matches the<br>&nbsp;&nbsp;expected baseline. Spec: …design.md</span><br>
 							<span class="ag">build → test → check → fix → repeat until the verifier passes</span>
 						</div>
-						<p class="mid c-muted" style="margin-top:0.5em;">Only works if the goal is <strong class="c-text">machine-checkable</strong>. No verifier → it loops or stops on a vibe.</p>
+						<p class="mid c-muted flush-note" style="margin-top:0.5em;">
+							<span class="fl-line">Only works if the goal is <strong class="c-text">machine-checkable</strong></span>
+							<span class="fl-line">No verifier → it loops or stops on a vibe</span>
+						</p>
 					</section>
 
 					<section>
@@ -911,7 +925,11 @@ const results = await pipeline(
   c => agent(`verify ${c.id}`, {phase: 'verify', schema: VERDICT})
 )
 return results.filter(r => r.verdict.ok)</code></pre>
-						<p class="mid c-muted" style="margin-top:0.3em;">You say it in words; `/workflow` turns it into a deterministic script — shown below. Each unit flows do→verify independently. Wall-clock = slowest chain, not the sum.</p>
+						<p class="mid c-muted flush-note" style="margin-top:0.3em;">
+							<span class="fl-line">You say it in words; `/workflow` turns it into a deterministic script — shown below</span>
+							<span class="fl-line">Each unit flows do→verify independently</span>
+							<span class="fl-line">Wall-clock = slowest chain, not the sum</span>
+						</p>
 					</section>
 
 					<section>
@@ -921,7 +939,7 @@ return results.filter(r => r.verdict.ok)</code></pre>
 							<div class="step on-flow"><span class="t c-flow mono">/workflow</span><span class="d">many independent units · want parallelism + isolation · deterministic structure</span></div>
 						</div>
 						<div class="card accent-flow" style="margin-top:0.5em;max-width:88%;">
-							<p class="mid" style="margin:0;line-height:1.7;"><strong class="c-flow">Hybrid (most realistic):</strong> a main-loop <span class="c-goal mono">/goal</span> drives the overall build/test/fix<br>and calls <span class="c-flow mono">/workflow</span> to fan out the independent units inside it.</p>
+							<p class="mid" style="margin:0;line-height:1.7;"><strong class="c-flow">Hybrid (most realistic):</strong> a main-loop <span class="c-goal mono">/goal</span> drives the overall build/test/fix<br>and calls <span class="c-flow mono">/workflow</span> to fan out the independent units inside it</p>
 						</div>
 						<p class="xs c-faint" style="margin-top:0.4em;">Later we'll put this choice to the test on a real task</p>
 					</section>
@@ -976,7 +994,7 @@ return results.filter(r => r.verdict.ok)</code></pre>
 								<div class="card-label">The shape</div>
 								<p class="mid" style="margin:0;line-height:1.5;">
 									<span class="fl-line">Difficulty stacks in two phases:</span>
-									<span class="fl-line"><strong class="c-flow">Phase A · migrate the schema</strong>, then <strong class="c-goal">Phase B · migrate the data</strong>.</span>
+									<span class="fl-line"><strong class="c-flow">Phase A · migrate the schema</strong>, then <strong class="c-goal">Phase B · migrate the data</strong></span>
 								</p>
 							</div>
 						</div>
@@ -1145,9 +1163,11 @@ return results.filter(r => r.verdict.ok)</code></pre>
 							<div class="step on-warn"><span class="t c-warn">Irreversible side effects</span><span class="d">deleting data · external APIs · moving money</span></div>
 							<div class="step on-warn"><span class="t c-warn">Domain knowledge not in the repo</span><span class="d">the agent can't read what isn't written down</span></div>
 						</div>
-						<div class="card accent-goal" style="margin-top:0.6em;max-width:88%;">
-							<p class="mid" style="margin:0;line-height:1.7;">Human review is the new bottleneck → force <strong class="c-goal">small PRs that carry their own A/B evidence</strong>.<br>
-							Review the evidence, not every diff line.</p>
+						<div class="card accent-goal flush-note" style="margin-top:0.6em;max-width:88%;">
+							<p class="mid" style="margin:0;line-height:1.7;">
+									<span class="fl-line">Human review is the new bottleneck → force <strong class="c-goal">small PRs that carry their own A/B evidence</strong></span>
+									<span class="fl-line">Review the evidence, not every diff line</span>
+							</p>
 						</div>
 					</section>
 
@@ -1168,9 +1188,9 @@ return results.filter(r => r.verdict.ok)</code></pre>
 				<section>
 					<h3 style="margin-bottom:0.3em;">Pre-flight checklist</h3>
 					<ol class="checklist" style="max-width:88%;">
-						<li><div><div class="h">Definition of done</div><div class="q">Is there a <strong class="c-text">machine-checkable</strong> "done"? No verifier → <strong class="c-text">build the tests first</strong>, then run.</div></div></li>
+						<li><div><div class="h">Definition of done</div><div class="q flush-note"><span class="fl-line">Is there a <strong class="c-text">machine-checkable</strong> "done"?</span><span class="fl-line">No verifier → <strong class="c-text">build the tests first</strong>, then run</span></div></div></li>
 						<li><div><div class="h">Goal</div><div class="q">Do you want a <strong class="c-text">deliverable and a decision</strong>, or did you just describe one action?</div></div></li>
-						<li><div><div class="h">Boundaries</div><div class="q">What's off-limits? Fence irreversible side effects first.</div></div></li>
+						<li><div><div class="h">Boundaries</div><div class="q flush-note"><span class="fl-line">What's off-limits?</span><span class="fl-line">Fence irreversible side effects first</span></div></div></li>
 						<li><div><div class="h">Legibility</div><div class="q">Can the agent understand the code? Missing a map → <strong class="c-text">add it first</strong>.</div></div></li>
 						<li><div><div class="h">Stage</div><div class="q">Do you want it to <strong class="c-text">think, compare, decide, or do</strong> right now?</div></div></li>
 					</ol>
@@ -1195,9 +1215,9 @@ return results.filter(r => r.verdict.ok)</code></pre>
 					<p class="mid c-muted fragment" style="margin-top:1.3em;max-width:680px;margin-left:auto;margin-right:auto;line-height:1.8;">
 						The shift worth making: from <strong class="c-text">executor</strong><br>
 						to the person who <strong class="c-goal">defines the task</strong><br>
-						and <strong class="c-flow">makes the code legible</strong>.<br>
+						and <strong class="c-flow">makes the code legible</strong><br>
 						Those two the agent can't replace —<br>
-						and every bit compounds as it gets stronger.</p>
+						and every bit compounds as it gets stronger</p>
 					<div class="sig fragment">RD Camp · 2026</div>
 				</section>
 
