@@ -564,6 +564,10 @@
 			}
 			.shot .cap { font-size: 0.5em; letter-spacing: 0.06em; }
 			.shot .cap b { color: var(--muted); }
+
+			/* framing: emphasize one question at a time */
+			.reveal .frame-q { transition: opacity 0.3s, filter 0.3s; }
+			.reveal .frame-q.dim { opacity: 0.28; filter: grayscale(0.4); }
 		</style>
 	</head>
 	<body>
@@ -601,16 +605,17 @@
 					<p class="mid c-faint" style="margin:0 0 0.3em;">Behind all six chapters, one idea runs through everything.</p>
 					<h3 style="font-size:1.3em;margin-bottom:0.5em;">Two questions, very different leverage</h3>
 					<div class="flow" style="margin-top:0.4em;">
-						<div class="step on-warn" style="max-width:340px;">
+						<div id="framing-left" class="step on-warn frame-q" style="max-width:340px;">
 							<span class="t c-warn">&ldquo;Can the agent do it?&rdquo;</span>
 							<span class="d">Polishing prompts plateaus — and leaves you waiting for a better model.</span>
 						</div>
 						<div class="arr">vs</div>
-						<div class="step on-goal" style="max-width:390px;">
+						<div id="framing-right" class="step on-goal frame-q dim" style="max-width:390px;">
 							<span class="t c-goal">&ldquo;Have I defined the task<br><em>and the environment</em><br>well enough that it can?&rdquo;</span>
 							<span class="d">The leverage is the spec, the definition of done, and the workspace you hand it.</span>
 						</div>
 					</div>
+					<span class="fragment" data-fragment-index="1" data-frame="framing-shift"></span>
 					<p class="mid c-muted" style="margin-top:0.9em;">Everything in this talk is one of those two levers.</p>
 				</section>
 
@@ -1248,6 +1253,28 @@ return results.filter(r => r.verdict.ok)</code></pre>
 				// (letterbox) the stage instead of reflowing slides into a column.
 				scrollActivationWidth: null,
 				plugins: [RevealHighlight],
+			});
+
+			// ── framing slide #/2: emphasize one question at a time ──
+			function _framingUpdate(forward) {
+				var left  = document.getElementById('framing-left');
+				var right = document.getElementById('framing-right');
+				if (!left || !right) return;
+				if (forward) {
+					// fragment 1 shown: dim left, emphasize right
+					left.classList.add('dim');
+					right.classList.remove('dim');
+				} else {
+					// fragment hidden (going back): emphasize left, dim right
+					left.classList.remove('dim');
+					right.classList.add('dim');
+				}
+			}
+			Reveal.on('fragmentshown', function(event) {
+				if (event.fragment.dataset.frame === 'framing-shift') _framingUpdate(true);
+			});
+			Reveal.on('fragmenthidden', function(event) {
+				if (event.fragment.dataset.frame === 'framing-shift') _framingUpdate(false);
 			});
 
 		</script>
