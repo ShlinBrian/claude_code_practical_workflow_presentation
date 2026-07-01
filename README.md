@@ -1,3 +1,16 @@
+> **About this repository**
+>
+> This is a personal talk — **"Claude Code in Production: A Practical RD Workflow"** —
+> whose slides live in [`talks/claude-code-production/`](talks/claude-code-production/).
+> It is built on **[reveal.js](https://github.com/hakimel/reveal.js)** by Hakim El Hattab
+> and the reveal.js contributors, used under the MIT License (see [`LICENSE`](LICENSE)).
+> The reveal.js framework source (`js/`, `css/`, `plugin/`, `dist/`) is unmodified;
+> my own additions are the `talks/` presentation content plus project docs and tooling.
+>
+> The original reveal.js README follows below.
+
+---
+
 <p align="center">
   <a href="https://revealjs.com">
   <img src="https://hakim-static.s3.amazonaws.com/reveal-js/logo/v1/reveal-black-text-sticker.png" alt="reveal.js" width="500">
