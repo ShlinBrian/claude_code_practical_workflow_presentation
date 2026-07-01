@@ -28,7 +28,8 @@
 				--goal-dim: #7a6526;
 				--flow: #4ec9c0;
 				--flow-dim: #2c6661;
-				--skill: #b48ead;
+				--skill: #bb81b0;
+				--naive: #788eae;
 				--ok: #5ec27a;
 				--warn: #cf5c5c;
 				--c-input: #3d4752;
@@ -458,10 +459,10 @@
 			}
 			.exp-btn:hover { opacity: 0.85; transform: translateY(-1px); }
 			.exp-btn:active { transform: translateY(0); }
-			.exp-btn.arm-a  { background: #c9a0ff; color: #0b0d11; }
-			.exp-btn.arm-b  { background: #56d364; color: #0b0d11; }
-			.exp-btn.arm-c1 { background: #7aa2ff; color: #0b0d11; }
-			.exp-btn.arm-c2 { background: #5fd0c5; color: #0b0d11; }
+			.exp-btn.arm-a  { background: var(--naive); color: #0b0d11; }
+			.exp-btn.arm-b  { background: var(--skill); color: #0b0d11; }
+			.exp-btn.arm-c1 { background: var(--goal); color: #0b0d11; }
+			.exp-btn.arm-c2 { background: var(--flow); color: #0b0d11; }
 
 			/* ── lightbox ── */
 			.lb-overlay {
@@ -998,6 +999,7 @@
 						<div class="term" style="font-size:0.5em;">
 							<span class="sp">"keep everything working" — define it; same API responses?</span>
 							<span class="pr">Yes: the app runs on PostgreSQL and every endpoint in postman/api.json returns 2xx / a sane payload — no 500s, no DB errors</span>
+							<br><br>
 							<span class="sp">How do we verify that automatically?</span>
 							<span class="pr">Run the Postman collection headless with newman, every endpoint, each run</span>
 							<span class="cm">→ committed: docs/superpowers/specs/…-migration-design.md (with DoD)</span>
@@ -1273,13 +1275,13 @@ return results.filter(r => r.verdict.ok)</code></pre>
 					<section>
 						<h3 style="margin-bottom:0.2em;">How much method should drive it?</h3>
 						<div class="flow vert" style="max-width:820px;gap:0;">
-							<div class="step on-warn" style="padding:11px 18px;border-left-color:#c9a0ff;"><span class="t"><span class="badge" style="color:#c9a0ff;border-color:#c9a0ff;">A</span> &nbsp;Naive</span><span class="d">one-line prompt, repo as-is → the trap</span></div>
+							<div class="step on-warn" style="padding:11px 18px;border-left-color:var(--naive);"><span class="t"><span class="badge" style="color:var(--naive);border-color:var(--naive);">A</span> &nbsp;Naive</span><span class="d">one-line prompt, repo as-is → the trap</span></div>
 							<div class="arr" style="font-size:0.62em;padding:5px 0;">↓ &nbsp;add the full method</div>
-							<div class="step on-skill" style="padding:11px 18px;border-left-color:#56d364;"><span class="t"><span class="badge" style="color:#56d364;border-color:#56d364;">B</span> &nbsp;Full Superpowers</span><span class="d">brainstorming → writing-plans → worktrees → subagent TDD → debugging → review → verification</span></div>
+							<div class="step on-skill" style="padding:11px 18px;border-left-color:var(--skill);"><span class="t"><span class="badge" style="color:var(--skill);border-color:var(--skill);">B</span> &nbsp;Full Superpowers</span><span class="d">brainstorming → writing-plans → worktrees → subagent TDD → debugging → review → verification</span></div>
 							<div class="arr" style="font-size:0.62em;padding:5px 0;">↓ &nbsp;keep brainstorm, swap to a lean executor</div>
 							<div class="flow" style="margin:0;gap:14px;">
-								<div class="step on-goal" style="min-width:210px;padding:11px 18px;border-left-color:#7aa2ff;"><span class="t"><span class="badge" style="color:#7aa2ff;border-color:#7aa2ff;">C1</span> &nbsp;Brainstorm + <span class="mono">/goal</span></span><span class="d">spec w/ DoD → raw /goal loop to verifier</span></div>
-								<div class="step on-flow" style="min-width:210px;padding:11px 18px;border-left-color:#5fd0c5;"><span class="t"><span class="badge" style="color:#5fd0c5;border-color:#5fd0c5;">C2</span> &nbsp;Brainstorm + <span class="mono">/workflow</span></span><span class="d">same front half → /workflow fan-out</span></div>
+								<div class="step on-goal" style="min-width:210px;padding:11px 18px;border-left-color:var(--goal);"><span class="t"><span class="badge" style="color:var(--goal);border-color:var(--goal);">C1</span> &nbsp;Brainstorm + <span class="mono">/goal</span></span><span class="d">spec w/ DoD → raw /goal loop to verifier</span></div>
+								<div class="step on-flow" style="min-width:210px;padding:11px 18px;border-left-color:var(--flow);"><span class="t"><span class="badge" style="color:var(--flow);border-color:var(--flow);">C2</span> &nbsp;Brainstorm + <span class="mono">/workflow</span></span><span class="d">same front half → /workflow fan-out</span></div>
 							</div>
 						</div>
 						<p class="xs c-faint" style="margin-top:0.4em;">A vs rest = method beats one-liner · B vs C = full vs lean · C1 vs C2 = /goal vs /workflow</p>
@@ -1350,28 +1352,28 @@ return results.filter(r => r.verdict.ok)</code></pre>
 							<thead><tr><th>run</th><th>correctness</th><th>cost</th><th>time</th><th>code quality</th></tr></thead>
 							<tbody>
 								<tr class="dear">
-									<td class="exp" style="color:#c9a0ff;">A · naive</td>
+									<td class="exp" style="color:var(--naive);">A · naive</td>
 									<td>47/47 &nbsp;<span class="warn-badge">⚠ self-asserted</span><br><span style="color:var(--warn);font-size:0.85em;">0 real assertions</span></td>
 									<td>27.03M units<br><span style="color:var(--faint);font-size:0.85em;">self-reported</span></td>
 									<td>136 min<br><span style="color:var(--faint);font-size:0.85em;">self-reported</span></td>
 									<td>Robust 5 · Tests 1 · Struct 3</td>
 								</tr>
 								<tr class="cheap">
-									<td class="exp" style="color:#56d364;">B · full superpowers</td>
+									<td class="exp" style="color:var(--skill);">B · full superpowers</td>
 									<td style="color:var(--ok);">41/47 HTTP 2xx<br><span style="font-size:0.85em;">+ 326/326 rows ✓</span></td>
 									<td>21.26M units<br><span style="color:var(--ok);font-size:0.85em;">from telemetry</span></td>
 									<td>~15.1 h</td>
 									<td>Robust 5 · Tests 4 · Struct 5</td>
 								</tr>
 								<tr>
-									<td class="exp" style="color:#7aa2ff;">C1 · brainstorm + /goal</td>
+									<td class="exp" style="color:var(--goal);">C1 · brainstorm + /goal</td>
 									<td>47/47 HTTP 2xx<br><span style="color:var(--faint);font-size:0.85em;">no row diff</span></td>
 									<td style="color:var(--faint);">NOT FOUND</td>
 									<td>~94 min</td>
 									<td>Robust 5 · Tests 2 · Struct 4</td>
 								</tr>
 								<tr>
-									<td class="exp" style="color:#5fd0c5;">C2 · brainstorm + /workflow</td>
+									<td class="exp" style="color:var(--flow);">C2 · brainstorm + /workflow</td>
 									<td>47/47 HTTP 2xx<br><span style="color:var(--faint);font-size:0.85em;">6 rounds, no row diff</span></td>
 									<td>5.52M units<br><span style="color:var(--faint);font-size:0.85em;">output-only</span></td>
 									<td>~10.3 h</td>
