@@ -552,22 +552,22 @@
 			.tool .desc { font-size: 0.5em; color: var(--muted); margin-top: 6px; line-height: 1.5; }
 
 			/* ── superpowers lifecycle bar ── */
-			.lifecycle { display: flex; align-items: stretch; justify-content: center; gap: 0;
-				max-width: 100%; margin: 0.5em auto; }
+			.lifecycle { display: flex; align-items: stretch; justify-content: center; gap: 4px;
+				max-width: 100%; margin: 1.6em auto; }
 			.lc-stage { background: var(--surface); border: 1px solid var(--border);
-				border-radius: 10px; padding: 16px 14px 14px; text-align: left; flex: 1;
-				display: flex; flex-direction: column; min-width: 0; }
-			.lc-stage .st { font-family: 'JetBrains Mono', monospace; font-size: 0.42em;
-				letter-spacing: 0.12em; text-transform: uppercase; color: var(--faint); margin-bottom: 8px; }
-			.lc-stage .sk { font-size: 0.47em; color: var(--muted); padding: 3px 0 3px 14px;
-				position: relative; line-height: 1.4; white-space: nowrap; }
+				border-radius: 12px; padding: 26px 12px 24px; text-align: left; flex: 1;
+				display: flex; flex-direction: column; min-width: 0; min-height: 210px; }
+			.lc-stage .st { font-family: 'JetBrains Mono', monospace; font-size: 0.56em;
+				letter-spacing: 0.12em; text-transform: uppercase; color: var(--faint); margin-bottom: 14px; }
+			.lc-stage .sk { font-size: 0.52em; color: var(--muted); padding: 6px 0 6px 16px;
+				position: relative; line-height: 1.5; white-space: nowrap; }
 			.lc-stage .sk::before { content: '›'; position: absolute; left: 2px; color: var(--flow); }
 			.lc-stage .sk b { color: var(--text); font-weight: 600; }
 			.lc-stage.star { border-color: var(--skill); border-top: 3px solid var(--skill); }
 			.lc-stage.star .st { color: var(--skill); }
-			.lc-stage.star .sk.hero { font-size: 0.6em; color: var(--skill); font-weight: 700; padding-left: 0; margin-bottom: 6px; }
+			.lc-stage.star .sk.hero { font-size: 0.72em; color: var(--skill); font-weight: 700; padding-left: 0; margin-bottom: 12px; }
 			.lc-stage.star .sk.hero::before { content: '★ '; color: var(--skill); position: static; }
-			.lc-arr { display: flex; align-items: center; color: var(--faint); font-size: 1.1em; padding: 0 5px; }
+			.lc-arr { display: flex; align-items: center; color: var(--faint); font-size: 1.2em; padding: 0 3px; }
 
 			/* ── self-verifying quote: explicit beats over a dense paragraph ── */
 			.verify-quote { line-height: 1.5; }
@@ -688,8 +688,10 @@
 						<div class="ba">
 							<div id="hygiene-left" class="before frame-q">
 								<div class="lbl">The pain</div>
-								<strong>Context fills up</strong> or <strong>usage runs out</strong> mid-task<br>
-								The agent forgets an earlier decision<br>
+								- Context filling up <br>
+								- usage running out <br>
+								- The agent forgets an earlier decision<br>
+								
 								<span style="display:block;font-size:1.25em;margin-top:0.35em;line-height:1.4;">⇒ Need to <strong class="c-warn">re-explain the whole thing</strong></span>
 							</div>
 							<div class="vs">→</div>
@@ -701,7 +703,7 @@
 							</div>
 						</div>
 						<span class="fragment" data-fragment-index="1" data-frame="hygiene-shift"></span>
-						<p class="mid c-muted" style="margin-top:0.7em;">Three moves, by <em>when</em> you reach for them — <strong>during the run · at the end · when context fills</strong></p>
+						<!-- <p class="mid c-muted" style="margin-top:0.7em;">Three moves, by <em>when</em> you reach for them — <strong>during the run · at the end · when context fills</strong></p> -->
 						<aside class="notes" data-slide="4/0">
 							（左邊亮）
 							大家一定常常遇過跑到一半，context 快滿了，或者 usage 快沒了
@@ -921,9 +923,9 @@
 
 					<!-- SuperPowers lifecycle bar -->
 					<section>
-						<div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:0.2em;">
-						  <img src="assets/superpowers-icon.png" alt="" style="width:34px;height:34px;">
-						  <span class="c-skill mono" style="font-size:0.8em;letter-spacing:0.04em;">SuperPowers</span>
+						<div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:0.2em;">
+						  <span class="c-skill mono" style="font-size:1.0em;letter-spacing:0.04em;">SuperPowers</span>
+						  <span class="c-muted mono" style="font-size:0.7em;letter-spacing:0.02em;display:inline-flex;align-items:center;gap:4px;">&nbsp;<svg viewBox="0 0 16 16" style="width:0.9em;height:0.9em;fill:currentColor;" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.02 1.93-.02 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8Z"></path></svg> 243k⭐</span>
 						</div>
 						<h3 style="margin-bottom:0.3em;">A skill encodes <em>how</em> to work, not just <em>what</em></h3>
 						<div class="lifecycle">
@@ -951,19 +953,20 @@
 								<div class="sk"><b>verification</b></div>
 							</div>
 						</div>
-						<p class="mid c-muted flush-note" style="margin-top:0.6em;line-height:1.7;">
+						<!-- <p class="mid c-muted flush-note" style="margin-top:0.6em;line-height:1.7;">
 							<span class="fl-line">Quality stops depending on whether today's prompt happened to be good</span>
 							<span class="fl-line"><span class="c-skill">brainstorming</span> is the entry point</span>
-						</p>
-						<button class="exp-btn arm-c2" style="margin-top:0.3em;" onclick="lbOpenPath('method/method_superpowers_', 25)">See a real SuperPowers run &nbsp;📷</button>
+						</p> -->
+						<!-- <button class="exp-btn arm-c2" style="margin-top:0.3em;" onclick="lbOpenPath('method/method_superpowers_', 25)">See a real SuperPowers run &nbsp;📷</button> -->
 						<aside class="notes" data-slide="7/1">
-							這頁開始講 SuperPowers。上方可以看到 SuperPowers 的圖示跟名稱。
-							skill 不是 prompt——它把一段**流程**編碼起來，
-							告訴 agent 「**怎麼做**」，而不只是「做什麼」。
-							左邊是「定義跟規劃」：brainstorming、writing-plans、用 git worktree 隔離；
-							右邊是「實作跟驗證」：用 subagent 跑 TDD、系統化除錯、code review、最後驗證。
-							重點是：品質不再取決於你今天剛好有沒有把 prompt 寫好——好流程變成預設值。
-							點按鈕可以看實際一次 SuperPowers 跑起來的截圖。
+							大家用 Claude Code 應該都有這種經驗：同一個需求，今天丟出去結果很讚，明天再丟一次就爛掉。差別往往只是那天 prompt 剛好寫得好不好。
+							SuperPowers 想解決的就是這件事。它其實是一套完整的軟體開發方法論 — 底層是一組可組合的 skill，再加上一些初始指令，確保你的 agent 真的會去用它們。
+							這裡可能有人會想：這不就是 Claude Code 內建的 plan mode 嗎？
+							差別在於 — plan mode 是 Anthropic 用權限層做的『硬關卡』，把 Claude 鎖成唯讀、不准它碰檔案；
+							而 SuperPowers 是用 skill 疊出來的一整套流程，管的不只是『動手前先規劃』這一關，而是從定義、規劃、建構到驗證，每一步該怎麼做都寫進去。
+							換句話說，plan mode 是一道門，SuperPowers 是整條產線。
+							所以它不是教 AI 『做什麼』，而是把『怎麼做』寫死成流程 — 定義、規劃、建構、驗證，四個階段一路走下來。
+							品質就不再靠運氣，而是靠流程。而這整條線的入口，就是 brainstorming。下一頁我拆給大家看它到底在做什麼。
 						</aside>
 					</section>
 
