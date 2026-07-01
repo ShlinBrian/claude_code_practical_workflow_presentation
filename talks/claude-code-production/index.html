@@ -604,6 +604,11 @@
 						BrianSH Lin<br>
 						<span class="mono" style="font-size:0.82em;color:var(--faint);">RD-CL.com</span>
 					</p>
+					<aside class="notes" data-slide="0">
+						大家好，我是 Brian，來自 RD-CL.com。
+						今天這個分享叫「Claude Code in Production」，副標是 **一套實際可用的 RD 工作流**。
+						今天要分享一個**我自己每天在用、而且如果覺得不錯，可以直接複製**的流程。
+					</aside>
 				</section>
 
 
@@ -617,6 +622,15 @@
 						<li><span class="n">04</span><div><div class="t">The comparison</div><div class="s">Four runs, same task — what the data shows</div></div></li>
 						<li><span class="n">05</span><div><div class="t">Pre-flight checklist</div><div class="s">Five questions to take home</div></div></li>
 					</ol>
+					<aside class="notes" data-slide="1">
+						先看一下今天的路線。
+						我會從**最簡單、你今天回去就能用**的日常習慣開始；
+						接著示範一個大家最常犯的錯誤——丟一句話給 agent；
+						然後進到核心的**方法**：解紹一個叫做superpowers的skill，還有 `/goal` 跟 `/workflow`；
+						再用一個**真實的資料庫遷移案例**讓大家感受難度；
+						最後是我設計的一組**比較**，跟一張可以帶回家的**檢查清單**。
+						每一章前面都會有一頁過場，讓大家知道我們走到哪。
+					</aside>
 				</section>
 
 
@@ -637,6 +651,18 @@
 					</div>
 					<span class="fragment" data-fragment-index="1" data-frame="framing-shift"></span>
 					<p class="mid c-muted" style="margin-top:0.9em;">Everything in this talk helps you get there</p>
+					<aside class="notes" data-slide="2">
+						整場分享其實只有一個核心想法，就在這頁。
+
+						（第一下：左邊亮）
+						大多數人面對 agent 會問左邊這個問題：**「這個 agent 做得到嗎？」**
+						這個問題的麻煩是——它會卡住。再怎麼調整prompt都還是有天花板，調到最後就是在等下一個更強的模型。
+
+						（第二下：右邊亮、左邊暗）
+						我想請大家換成右邊這個問題：**「我有沒有把任務跟環境，定義到它做得到的程度？」**
+						使用AI開發真正的槓桿不在 prompt 的措辭，而在**規格、完成的定義、還有你交給它的工作環境**。
+						今天所有的內容，都是在幫你做到這件事。
+					</aside>
 				</section>
 
 
@@ -645,6 +671,10 @@
 					<div class="ch-num">Chapter 01</div>
 					<h2>Everyday hygiene</h2>
 					<div class="ch-rule"></div>
+					<aside class="notes" data-slide="3">
+						接下來這些是**今天回去馬上就能用或改善**的小習慣。
+						因為這些方法門檻最低、回報最即時。
+					</aside>
 				</section>
 
 
@@ -671,6 +701,20 @@
 						</div>
 						<span class="fragment" data-fragment-index="1" data-frame="hygiene-shift"></span>
 						<p class="mid c-muted" style="margin-top:0.7em;">Three moves, by <em>when</em> you reach for them — <strong>during the run · at the end · when context fills</strong></p>
+						<aside class="notes" data-slide="4/0">
+							（左邊亮）
+							大家一定常常遇過跑到一半，context 快滿了，或者 usage 快沒了
+							或者 agent 忘記了你前面講過的決定。
+							結果呢？你得**把整個任務從頭再解釋一遍**——而且每次都這樣。
+							（第二下：右邊亮、左邊暗）
+							解法很直白：第一，**在跑的過程中主動控制當前的 context**（等一下的 /rewind、/btw、subagent 就是在做這件事）；第二，在 **context 用完前，把狀態交接出去**。
+							所以你是在**指揮**它，而不是整個**重來**。
+
+							接下來三頁，就是三個動作：你在什麼時候用它們:
+							1. 對話來回執行期間的時候
+							2. 對話結束前
+							3. 還有 context 滿了的時候或想使用新的agent的時候
+						</aside>
 					</section>
 
 					<!-- during the run: three moves that protect context -->
@@ -686,6 +730,12 @@
 							<span class="pr">create a subagent to scan all modules and return only the ones that fail</span>
 						</div>
 						<p class="mid c-muted" style="margin-top:0.5em;"><span class="c-goal mono">/rewind</span> back out · <span class="c-goal mono">/btw</span> look up without growing context · <span class="c-goal mono">subagent</span> type an instruction to spin one up</p>
+						<aside class="notes" data-slide="4/1">
+							讓這一個session不要跑歪:
+							1. `/rewind`：發現它走錯了，直接倒回出錯之前的那個檢查點，**不用重新解釋**。
+							2. `/btw`：跑到一半想問某個當前執行問題
+							3. 建立一個 subagent：告訴它「掃描所有模組、只回傳失敗的那些」—— 這樣雜訊的任務交給新的 context，只有結果傳回來，不會吃掉你的 context 空間。
+						</aside>
 					</section>
 
 					<!-- end of run: persist what's durable -->
@@ -718,6 +768,21 @@
 							<span class="fl-line">At the end, just say <span class="mono c-goal">"keep the rules worth remembering"</span> and it tidies them up</span>
 							<span class="fl-line">Keep it short — <strong class="c-text">only what's worth keeping</strong></span>
 						</p>
+						<aside class="notes" data-slide="4/2">
+							這頁講的是 session 結束前，如果你對操作滿意，應該存入長期記憶。
+							看上面這段對話：
+							我說「按鈕看起來太擠了，把間距加大一點」，它就幫我把按鈕之間的距離拉開。
+							我看了結果覺得不錯，這時候做法很簡單，直接跟 agent 講一句：「把這個間距存成規則寫進 CLAUDE.md」，它就記起來了。
+							重點是：這不再是這一次的調整，而是變成專案的規矩，下一次它就用同樣的間距。
+
+							再看下面兩個檔案的角色：
+							`memory.md` 是這一輪累積的事實，**Claude Code 自動幫你建**、專案本地、沒有 commit。
+							`CLAUDE.md` 正好相反——commit 進去、下一次 session 一開啟就讀到，長期存在。
+
+							你可以在收尾的時候直接講一句「把值得記住的規則整理一下」，它就會幫你把這一輪的重點挑出來、整理好。
+							但要注意 CLAUDE.md 不能太長，需要人工審核只留那些**真的值得記住的東西**，不是把整個 session 倒進去。
+							這樣下一次開新 session，它一開始就知道專案的規矩，省你一遍解釋。
+						</aside>
 					</section>
 
 					<!-- context-full handover: /clear + handoff.md beats /compact -->
@@ -747,6 +812,11 @@
 							## Next: finish the remaining 18 modules, run the verifier<br>
 							## Decisions: all-lowercase identifiers; work in worktree
 						</div>
+						<aside class="notes" data-slide="4/3">
+							最後一招：當 context 真的滿了，你可以用 `/compact` 讓模型自己摘要，但那樣**你控制不了什麼會被留下來**；所以這裡是可以跟 agent 講一句「寫一份 handoff.md：做完了什麼、接下來做什麼、有哪些關鍵決定」。
+							中間就是三步流程：先寫好 `handoff.md`；然後 `/clear`，把臃腫的 context 丟掉、成本歸零；新的 agent 讀完就能**冷啟動接手**，完全不用你重新解釋整個任務。
+							像是下面的範例，可以就是一份很短的交接筆記。
+						</aside>
 					</section>
 
 				</section>
@@ -757,6 +827,12 @@
 					<div class="ch-num">Chapter 02</div>
 					<h2>The method</h2>
 					<div class="ch-rule"></div>
+					<aside class="notes" data-slide="5">
+						接下來是今天的核心：方法。但在講方法之前，先看看**不用方法**會怎樣——
+						我們其實很想要非常簡單的丟一句話給 agent，然後期待它生出可以上線的東西。
+						我會先示範這種 naive 做法留下的三個洞，再講三個工具怎麼把洞補起來。
+						舉例來說：
+					</aside>
 				</section>
 
 
@@ -772,6 +848,11 @@
 							<span class="fl-line">Looks reasonable</span>
 							<span class="fl-line">It is a trap</span>
 						</p>
+						<aside class="notes" data-slide="6/0">
+							這是大多數人會打的 prompt：
+							「把這個 Java 服務從 MSSQL 搬到 PostgreSQL，**保持一切正常運作**。」
+							看起來很合理對不對？它有描述任務、也有目標。
+						</aside>
 					</section>
 
 					<section>
@@ -787,6 +868,20 @@
 							<div class="step on-warn"><span class="t c-warn">No definition of done</span><span class="d">nothing checks the answers are still correct</span></div>
 							<div class="step on-warn"><span class="t c-warn">No isolation</span><span class="d">it edited your working tree in place</span></div>
 						</div>
+						<aside class="notes" data-slide="6/1">
+							1. agent 會很認真地改 SQL
+							2. 換掉 driver
+							3. build 變綠燈
+							4. 然後**很有自信地說「完成了」**。
+							從它的角度看，它真的成功了。
+
+							但：
+							1. **沒有規格**——「保持一切正常」根本沒有定義。
+							2. **沒有完成的定義**——沒有任何東西在檢查答案是不是還正確。
+							3. **沒有隔離**——它直接改了你的工作目錄。
+
+							這三個洞，就是接下來方法要補的東西。
+						</aside>
 					</section>
 				</section>
 
@@ -815,6 +910,12 @@
 							</div>
 						</div>
 						<p class="mid c-muted" style="margin-top:0.5em;">SuperPowers produces the spec; <span class="c-goal mono">/goal</span> and <span class="c-flow mono">/workflow</span> are two ways to execute against it</p>
+						<aside class="notes" data-slide="7/0">
+							這一章的核心只有三樣東西，先給大家一眼看清全局。
+							**SuperPowers** 負責把任務轉成帶有「完成定義」的規格；
+							**`/goal`** 跟 **`/workflow`** 是接著執行的兩種方式——一個走「循環到目標達成」，一個走「多 agent 平行展開」。
+							三個工具，一條 pipeline：先定義好，再跑起來。
+						</aside>
 					</section>
 
 					<!-- SuperPowers lifecycle bar -->
@@ -854,6 +955,15 @@
 							<span class="fl-line"><span class="c-skill">brainstorming</span> is the entry point</span>
 						</p>
 						<button class="exp-btn arm-c2" style="margin-top:0.3em;" onclick="lbOpenPath('method/method_superpowers_', 25)">See a real SuperPowers run &nbsp;📷</button>
+						<aside class="notes" data-slide="7/1">
+							這頁開始講 SuperPowers。上方可以看到 SuperPowers 的圖示跟名稱。
+							skill 不是 prompt——它把一段**流程**編碼起來，
+							告訴 agent 「**怎麼做**」，而不只是「做什麼」。
+							左邊是「定義跟規劃」：brainstorming、writing-plans、用 git worktree 隔離；
+							右邊是「實作跟驗證」：用 subagent 跑 TDD、系統化除錯、code review、最後驗證。
+							重點是：品質不再取決於你今天剛好有沒有把 prompt 寫好——好流程變成預設值。
+							點按鈕可以看實際一次 SuperPowers 跑起來的截圖。
+						</aside>
 					</section>
 
 					<section>
@@ -874,6 +984,13 @@
 							<span class="fl-line">Refuses to write code until the design is approved</span>
 							<span class="fl-line"><strong class="c-text">That gate is the point</strong></span>
 						</p>
+						<aside class="notes" data-slide="7/2">
+							這是我最常用、最關鍵的一個 skill。它的流程就是這個垂直的圖：
+							先探索專案脈絡 → 一次只問你一個問題 → 提兩三個方案讓你比較 →
+							分段呈現設計、一段一段讓你確認 → 最後**產出一份帶有「完成定義」的規格、commit 進去**。
+							最關鍵的一點：**在設計被你核可之前，它拒絕寫任何程式碼。**
+							這個「卡住不動」就是它的價值所在。
+						</aside>
 					</section>
 
 					<section>
@@ -887,6 +1004,15 @@
 						</div>
 						<button class="exp-btn arm-c1" style="margin-top:0.4em;" onclick="specOpen()">See the real spec &nbsp;📄</button>
 						<p class="mid c-goal" style="margin-top:0.5em;font-weight:600;">A committed spec with a testable DoD — exactly what <span class="mono">/goal</span> &amp; <span class="mono">/workflow</span> consume</p>
+						<aside class="notes" data-slide="7/3">
+							把剛剛那句一行的 prompt 丟進 brainstorming 會發生什麼？
+							SuperPowers 🦸 會反問：「保持一切正常」到底是指 API 回應一樣、還是資料庫狀態一樣？
+							還有：我們要怎麼**自動驗證**這件事？
+							答案是真實的 DoD：把 `postman/api.json` 裡的每一支 endpoint 用 **newman** 跑一遍，
+							確保全部回 2xx、沒有 500、沒有 DB 錯誤——這就是可測試的 Definition of Done。
+							這份規格已經提交進 repo，按「📄 See the real spec」按鈕可以直接看。
+							這份規格，正好就是 `/goal` 跟 `/workflow` 接下來要吃的東西。
+						</aside>
 					</section>
 
 				</section>
@@ -906,6 +1032,14 @@
 							<span class="fl-line">Only works if the goal is <strong class="c-text">machine-checkable</strong></span>
 							<span class="fl-line">No verifier → it loops or stops on a vibe</span>
 						</p>
+						<aside class="notes" data-slide="8/0">
+							方法的第二部分，是兩種「把 token 花得有價值」的方式。
+							先講 `/goal`。你給它規格、再給它一個**機器可檢查**的目標，
+							它就會一直跑「build → 測試 → 比對 → 修」這個循環，直到通過為止。
+							關鍵限制就寫在投影片上：**目標一定要機器可檢查。**
+							沒有這個「裁判」，它就會空轉，或者憑感覺停下來。
+							這也是為什麼前面 brainstorming 那麼重要——它產出的規格，裡面就帶著這個裁判。
+						</aside>
 					</section>
 
 					<section>
@@ -927,6 +1061,16 @@ return results.filter(r => r.verdict.ok)</code></pre>
 							<span class="fl-line">Each unit flows do→verify independently</span>
 							<span class="fl-line">Wall-clock = slowest chain, not the sum</span>
 						</p>
+						<aside class="notes" data-slide="8/1">
+							你用自然語言下 `/workflow` 指令，它幫你編成這段確定性的 JS 腳本 — 不會用的人才看得懂它怎麼運作。
+
+							`/workflow` 是給「可以拆成很多獨立小單位、平行處理」的工作。
+							這段程式碼示意的就是：把**所有要處理的工作項目**列出來，
+							每一個各自在自己的 worktree 裡處理，再各自驗證。
+							兩個關鍵特性：
+							時間上，整體耗時等於**最慢那一條鏈**，不是全部相加；
+							結構上，每個單位都在自己的 worktree 裡——一個失敗，不會污染到別的。
+						</aside>
 					</section>
 
 					<section>
@@ -939,6 +1083,14 @@ return results.filter(r => r.verdict.ok)</code></pre>
 							<p class="mid" style="margin:0;line-height:1.7;"><strong class="c-flow">Hybrid (most realistic):</strong> a main-loop <span class="c-goal mono">/goal</span> drives the overall build/test/fix<br>and calls <span class="c-flow mono">/workflow</span> to fan out the independent units inside it</p>
 						</div>
 						<p class="xs c-faint" style="margin-top:0.4em;">Later we'll put this choice to the test on a real task</p>
+						<aside class="notes" data-slide="8/2">
+							它們不是對手，是看工作的**形狀**來選。
+							`/goal`：單一明確目標、回饋循環很緊、工作大致是線性的（build/測/修）。
+							`/workflow`：很多獨立單位、你想要平行加隔離、流程要可控。
+							最實際的答案其實是**混合**：用一個主迴圈 `/goal` 推進整體流程，
+							中間呼叫 `/workflow` 去把那些獨立單位平行展開。
+							這個取捨，等一下會用一個真實任務來實際驗證。
+						</aside>
 					</section>
 
 					<section>
@@ -955,6 +1107,20 @@ return results.filter(r => r.verdict.ok)</code></pre>
 							<span class="q-line">Thin coverage → the loop is blind, and you can't trust anything it ships</span>
 						</blockquote>
 						<p class="xs c-faint" style="margin-top:0.4em;">Anthropic's line: <em>if you can't verify it, don't ship it</em></p>
+						<aside class="notes" data-slide="8/3">
+							但這裡有一個前提，我要特別點出來，因為它很容易被忽略。
+							`/goal` 跟 `/workflow` 都是**自驗證**的工具——它們之所以能「一直跑到通過為止」，
+							是因為背後有一個裁判可以一直 A/B、一直打分。
+							**所以這兩個工具，永遠只跟你給它的那個裁判一樣可靠。**
+							這裡有個陷阱：**有些任務的裁判是免費送的**——
+							當「舊系統的正確答案」本來就存在，你就有一個現成的標準答案可以比對。
+							（等一下第三章的案例，就正好是這種任務。）
+							但你平常做的功能開發**沒有這種東西**——沒有現成的標準答案。
+							那裁判是什麼？就是你的**測試**。而且你得**自己先把它蓋出來**。
+							**驗證器要先蓋出來，這是第一步，不是最後一步。**
+							測試覆蓋不夠，這個迴圈就是瞎子在跑——它跑出來的東西你一個都不能信。
+							這也正好呼應 Anthropic 那句話：**「如果你沒辦法驗證它，就別讓它出貨。」**
+						</aside>
 					</section>
 				</section>
 
@@ -964,6 +1130,10 @@ return results.filter(r => r.verdict.ok)</code></pre>
 					<div class="ch-num">Chapter 03</div>
 					<h2>The case</h2>
 					<div class="ch-rule"></div>
+					<aside class="notes" data-slide="9">
+						講了方法，大家可能會想：這在「真的很難」的任務上撐得住嗎？
+						所以接下來用一個我**實際做完**的案例，讓大家感受難度。
+					</aside>
 				</section>
 
 
@@ -995,6 +1165,13 @@ return results.filter(r => r.verdict.ok)</code></pre>
 								</p>
 							</div>
 						</div>
+						<aside class="notes" data-slide="10/0">
+							先說清楚規模。這不是換個 driver 就好。
+							這是一個跑了很多年、至今還在線上的商用下載後端——**真實用戶每天都在用**——整套從 Microsoft SQL Server 搬到 PostgreSQL。
+							包含資料、schema、stored procedure，還有**埋在 Java/JSP 裡的方言 SQL**。
+							而且標準很硬：**每一支 API 在 PostgreSQL 上都要回傳正確的結果才算數。錯誤的答案會直接送到真實用戶手上。**
+							難度分兩個 Phase 疊上去——先是 **Phase A：搬 schema（結構 + 程式碼）**，再來是 **Phase B：搬資料**。
+						</aside>
 					</section>
 
 					<!-- scale inventory -->
@@ -1003,6 +1180,10 @@ return results.filter(r => r.verdict.ok)</code></pre>
 						<div class="card accent-flow" style="max-width:80%;">
 							<p class="mid" style="margin:0;text-align:center;line-height:1.7;"><strong class="c-flow">~390k rows</strong> across <strong class="c-flow">23 tables</strong> · <strong class="c-flow">48</strong> procs + <strong class="c-flow">4</strong> views · <strong class="c-flow">4</strong> databases</p>
 						</div>
+						<aside class="notes" data-slide="10/1">
+							先看規模。大約 **39 萬筆資料**、分散在 **23 張表**，加上 **48 支 procedure / function 和 4 個 view**，橫跨 **4 個資料庫**。
+							這夠大、讓人一眼看出「這不是三行 SQL 的活兒」，但重點不是讓你去記每個細節，而是看整個規模的信號。
+						</aside>
 					</section>
 
 					<!-- semantic gap problems → fixes -->
@@ -1034,6 +1215,16 @@ return results.filter(r => r.verdict.ok)</code></pre>
 							<span class="q-line">The hard part isn't "does it run"</span>
 							<span class="q-line">It's "is the answer <em>still correct</em>"</span>
 						</p>
+						<aside class="notes" data-slide="10/2">
+							這就是 **Phase A——搬 schema**，也就是語意落差的核心。我把它整理成**四種「對不上」**，每一種都解掉了——
+							細節你不用記，記住「是哪一類落差」就好。
+							第一，**工具自動化不了**：AWS 的 SCT 只有 GUI，但我要在無頭環境全自動跑——解法是改從它的 CLI 驅動，端到端無頭。（埋的細節：BatchExecutor、Corretto 17、用資料裡不會出現的控制碼當分隔符。）
+							第二，**SQL 是寫給另一個引擎的**：跨庫 join 跟方言只有 MSSQL 吃——但分析後發現程式其實只連同一個庫，所以這題可解。
+							第三，**stored procedure 對不上驅動**：轉出來的 proc 不符合 Java 驅動呼叫的形狀——全部改寫成 `RETURNS SETOF` 的 function。（細節：原本被轉成 refcursor。）
+							第四，**識別字大小寫折疊方式不同**：大小寫加方言（TOP、ISNULL、中括號）對不上——用「**一律小寫**」加 citext 統一。
+							重點是最下面這句：**難的從來不是「跑不跑得起來」，而是「答案還對不對」。**
+							這句話，就是後面那個「裁判」存在的理由。
+						</aside>
 					</section>
 
 					<!-- Phase B — data migration -->
@@ -1051,6 +1242,12 @@ return results.filter(r => r.verdict.ok)</code></pre>
 							</p>
 						</div>
 						<p class="mid c-muted" style="margin-top:0.5em;">One verifier covers both phases — no separate row-by-row data audit</p>
+						<aside class="notes" data-slide="10/3">
+							Phase A 搬的是 schema（結構 + 程式碼），Phase B 搬的是資料本身。
+							做法很直接：用 SCT BatchExecutor 從 MSSQL export，載入 PostgreSQL——39 萬筆橫跨 23 張表，搭配全小寫識別符和 citext。
+							關鍵是這句：**我們不直接驗資料有沒有搬對——而是把每一支 API 在新舊兩個資料庫上都打一次，比對回傳的答案。**
+							答案一致，資料跟轉換就都正確。一個裁判，涵蓋兩個 Phase。
+						</aside>
 					</section>
 
 				</section>
@@ -1061,6 +1258,11 @@ return results.filter(r => r.verdict.ok)</code></pre>
 					<div class="ch-num">Chapter 04</div>
 					<h2>The comparison</h2>
 					<div class="ch-rule"></div>
+					<aside class="notes" data-slide="11">
+						那麼——這套方法，到底值不值得採用？
+						我設計了一組比較、而且**真的跑完了**。等一下這頁的數字全部是實際結果。
+						先給大家一個預告：結果裡最反直覺的一點，是「通過率高」**不等於**「驗證強」。
+					</aside>
 				</section>
 
 
@@ -1087,6 +1289,19 @@ return results.filter(r => r.verdict.ok)</code></pre>
 							<button class="exp-btn arm-c1" onclick="lbOpen('goal',4)">C1 · /goal &nbsp;📷</button>
 							<button class="exp-btn arm-c2" onclick="lbOpen('workflow',7)">C2 · /workflow &nbsp;📷</button>
 						</div>
+						<aside class="notes" data-slide="12/0">
+							四個 run，**同一個任務**，差別只在「方法介入多少」。
+							A 組：一句話 prompt，repo 原封不動——就是前面那個陷阱。
+							B 組：完整的 Superpowers 流程——brainstorming、writing-plans、worktree、subagent TDD、除錯、review、驗證，全套。
+							C1 組：保留 brainstorming 產出規格，但執行端只用一個單純的 `/goal` 迴圈。
+							C2 組：一樣的前半段，但執行端改用 `/workflow` 平行展開。
+							這樣可以同時回答三件事：
+							A 對其他組——方法贏不贏一句話 prompt；
+							B 對 C——**全套**方法值不值得，還是 brainstorming 加一個驗證迴圈就夠了；
+							C1 對 C2——`/goal` 跟 `/workflow` 的取捨。
+							誠實地講：B 跟 C 差在一**整組**紀律，所以這是「全套 vs 精簡」的比較，不是單一變因。
+							每一組下面都有一個按鈕，點下去就能放大看那一組實際跑起來的截圖。
+						</aside>
 					</section>
 
 					<!-- verifier -->
@@ -1100,6 +1315,12 @@ return results.filter(r => r.verdict.ok)</code></pre>
 							<div class="step on-ok" style="border-left-color:var(--ok);"><span class="t c-ok">per-endpoint, per-row A/B</span></div>
 						</div>
 						<p class="mid c-muted" style="margin-top:0.6em;">Without a machine-checkable verifier, "loop until goal" means nothing — shared by B / C1 / C2.</p>
+						<aside class="notes" data-slide="12/1">
+							這頁是讓「完成」變客觀的關鍵。
+							裁判就是：把 PostgreSQL 的回應，跟黃金 MSSQL 的回應，**逐 endpoint、逐列做 A/B 比對**。
+							沒有這個機器可檢查的裁判，「循環到目標達成」根本沒有意義。
+							這是 B、C1、C2 共用、設計上的同一把尺——至於各組實際做到什麼程度，等一下看數據就知道了。
+						</aside>
 					</section>
 
 					<!-- 4 metrics -->
@@ -1112,6 +1333,14 @@ return results.filter(r => r.verdict.ok)</code></pre>
 							<div class="cell"><div class="k c-skill" style="font-size:0.6em;">Code quality</div><div class="s">scored by a separate review agent</div></div>
 						</div>
 						<p class="mid c-muted" style="margin-top:0.6em;">Anchor: I did this kind of migration <strong class="c-text">by hand once</strong>, with weaker LLMs — about <strong class="c-goal">a month</strong></p>
+						<aside class="notes" data-slide="12/2">
+							四個指標：
+							**正確性**——裁判的通過率；
+							**成本**——一個加權的 token 總量（cache、output 各有權重）；先提醒一下，這欄不是每組都完整，C1 因為 harness 沒回報、是 NOT FOUND，C2 只算了 output；
+							**完成時間**——從丟出任務到拿到可信結果的牆鐘時間；
+							**程式碼品質**——最後另外開一個 review agent 來打分。
+							給大家一個錨點:這類遷移我**以前手動做過一次**、用比較弱的模型，大概花了**一個月**。
+						</aside>
 					</section>
 
 					<!-- Results -->
@@ -1150,6 +1379,19 @@ return results.filter(r => r.verdict.ok)</code></pre>
 								</tr>
 							</tbody>
 						</table>
+						<aside class="notes" data-slide="12/3">
+							結果就在這張表，四個 run 乘四個指標——剛剛在方法那頁看到的截圖，就是這四個 run 跑出來的。
+							我挑三個重點講。
+							第一，**正確性要小心讀**：A、C1、C2 都寫 47/47，但那是 HTTP 2xx；A 更是 0 assertion、自己宣稱的。
+							反而 B 誠實寫 41/47——那 6 個是外部 website-backend 的 placeholder，不是遷移本身的 regression，
+							而且 B 是**唯一**附上 row-level 證據（326/326 表）跟真實 newman 報告的一組。
+							第二，**成本與時間**：C1 的 `/goal` 最快、約 94 分鐘就收斂；B 全套最慢、約 15 小時，但品質也最高。
+							C2 的時間有 96.5% 卡在 AWS SCT 那一階段，不是方法本身慢。
+							第三，**程式碼品質**：SQL 轉換的手藝四組都拿 5 分——連 naive 的 A 都把 TOP、ISNULL、refcursor、跨庫那些硬題解掉了。
+							真正拉開差距的不是轉換對不對，而是**驗證的嚴謹度、commit 紀律、可重現性**——
+							測試分數 A=1、C2=1、C1=2，只有 B 拿到 4。
+							一句話收尾：**方法的價值不在讓它「做得到」，在讓品質不再靠運氣。**
+						</aside>
 					</section>
 
 					<!-- when NOT to automate -->
@@ -1166,6 +1408,13 @@ return results.filter(r => r.verdict.ok)</code></pre>
 									<span class="fl-line">Review the evidence, not every diff line</span>
 							</p>
 						</div>
+						<aside class="notes" data-slide="12/4">
+							最後這頁同樣重要：知道什麼時候**不該**直接交給 agent。
+							三種情況：沒有機器可檢查的裁判；有不可逆的副作用——刪資料、呼叫外部 API、動到錢；
+							還有，需要的領域知識根本不在 repo 裡。
+							另外提醒一句:人的瓶頸從「寫程式」變成「review PR」——
+							所以要強迫 agent 切成**自帶 A/B 證據的小 PR**，讓人看證據，而不是逐行看 diff。
+						</aside>
 					</section>
 
 				</section>
@@ -1176,6 +1425,9 @@ return results.filter(r => r.verdict.ok)</code></pre>
 					<div class="ch-num">Chapter 05</div>
 					<h2>Pre-flight checklist</h2>
 					<div class="ch-rule"></div>
+					<aside class="notes" data-slide="13">
+						最後，給大家一張可以帶回家的清單。
+					</aside>
 				</section>
 
 
@@ -1191,6 +1443,15 @@ return results.filter(r => r.verdict.ok)</code></pre>
 						<li><div><div class="h">Legibility</div><div class="q">Can the agent understand the code? Missing a map → <strong class="c-text">add it first</strong></div></div></li>
 						<li><div><div class="h">Stage</div><div class="q">Do you want it to <strong class="c-text">think, compare, decide, or do</strong> right now?</div></div></li>
 					</ol>
+					<aside class="notes" data-slide="14">
+						在你打 `/goal` 或 `/workflow` 之前，先問自己五件事：
+						一，**完成的定義**——有沒有機器可檢查的「完成」？沒有裁判，就**先把測試補出來再跑**。
+						二，**目標**——你要的是一個交付物加一個決定，還是只是描述了一個動作？
+						三，**邊界**——什麼是禁區？先把不可逆的副作用圍起來。
+						四，**可讀性**——agent 看得懂這份程式碼嗎？缺一張地圖，就先補上。
+						五，**階段**——你現在是要它思考、比較、決定、還是動手？
+						任何一題你答「不知道」，那就是你該先處理的事。
+					</aside>
 				</section>
 
 
@@ -1216,6 +1477,14 @@ return results.filter(r => r.verdict.ok)</code></pre>
 						Those two the agent can't replace —<br>
 						and every bit compounds as it gets stronger</p>
 					<div class="sig fragment">RD Camp · 2026</div>
+					<aside class="notes" data-slide="15">
+						收在這張圖：一套可以複製的工作流——
+						**brainstorm → 規格加 DoD → `/goal` 或 `/workflow` → 用裁判驗證**，明天就能用。
+						真正值得做的轉變是:從一個「執行者」，
+						變成那個**定義任務、並且讓程式碼變得可讀**的人。
+						這兩件事是 agent 取代不了的，而且你每投資一分，都會隨著模型變強而**複利**。
+						謝謝大家，這部分如果有問題我們可以一起討論。
+					</aside>
 				</section>
 
 			</div>
@@ -1240,6 +1509,7 @@ return results.filter(r => r.verdict.ok)</code></pre>
 
 		<script src="../../dist/reveal.js"></script>
 		<script src="../../dist/plugin/highlight.js"></script>
+		<script src="../../dist/plugin/notes.js"></script>
 		<script>
 			// ── lightbox logic ──
 			var _lbPrefix = 'exp/exp_naive_', _lbTotal = 0, _lbIdx = 1;
@@ -1295,7 +1565,7 @@ return results.filter(r => r.verdict.ok)</code></pre>
 				// disable reveal's auto "scroll view" so narrow viewports scale
 				// (letterbox) the stage instead of reflowing slides into a column.
 				scrollActivationWidth: null,
-				plugins: [RevealHighlight],
+				plugins: [RevealHighlight, RevealNotes],
 			});
 
 			// ── framing slide #/2: emphasize one question at a time ──

@@ -1,11 +1,11 @@
 # AGENTS.md — "Claude Code in Production" talk
 
-Guidance for editing this specific deck (`index.html`) and its speaker script (`script-zh.md`).
+Guidance for editing this specific deck (`index.html`), including its embedded Mandarin speaker notes.
 
 ## Files
 
 - `index.html` — the reveal.js deck. Each `<section>` is a slide; nested `<section>`s are vertical sub-slides addressed as `#/<h>/<v>` (e.g. `#/8/2`).
-- `script-zh.md` — the Mandarin speaker script. Headings are keyed to slide indices (`### Slide 8/2 — …`). **Every edit to a slide's content must be mirrored in its script section, and vice versa.**
+  - **Speaker notes live inside the deck.** Each leaf slide carries an `<aside class="notes" data-slide="<h>/<v>">` holding its Mandarin speaker script. The `RevealNotes` plugin is registered (`dist/plugin/notes.js` is loaded), so pressing **`s`** opens the speaker window. There is no separate script file — the `<aside>` is the single source of truth. When a slide's content/wording changes, update that slide's own `<aside class="notes">` in the same pass.
 - `exp/experiment-report.html` — the source of truth for all experiment numbers. When a results figure changes, reconcile against this file, not from memory.
 
 ## Narrative order — do NOT spoil ahead of introduction
@@ -41,7 +41,7 @@ Use these rules for readability fixes:
 3. **Do not shrink whole slides to hide problems.** Reduce only the narrow component that is failing, and keep body copy comfortably readable. Avoid global font-size changes unless the entire deck is being rebalanced.
 4. **For horizontal process rows, preserve the row when the relationship is the point.** Widen the flow container, reduce arrow padding/gaps, or trim card padding so nodes such as `A vs B = result` remain on one visual line.
 5. **Always break long body text into per-meaning lines — never leave it as a paragraph that wraps on its own.** Any multi-clause footer/takeaway/note longer than roughly one line must be split into explicit line blocks (one beat per line) using a `display:block` line class such as `.q-line` or `.flush-note .fl-line`, with comfortable `line-height` (~1.5) and a small vertical gap between lines. Center the block and let each line break where the meaning breaks, not where the box edge happens to fall. A long connected paragraph forced into two ugly wrapped lines is the failure mode this rule exists to prevent — three clear beats always read better.
-6. **Keep slide text and script in sync only for content edits.** Pure layout fixes that do not change wording do not require `script-zh.md` changes. If wording changes, update the matching script section in the same pass.
+6. **Keep slide text and its speaker note in sync only for content edits.** Pure layout fixes that do not change wording do not require touching the slide's `<aside class="notes">`. If wording changes, update the matching `<aside class="notes">` in the same pass.
 7. **Verify the exact cited slides after every layout patch.** Check the real rendered URL/hash, not only the source. Confirm the problematic text is no longer wrapped or crowded.
 
 Recent examples to preserve:
