@@ -636,39 +636,32 @@
 				<!-- ════════ 3. FRAMING — the one idea ════════ -->
 				<section>
 					<!-- <p class="mid c-faint" style="margin:0 0 0.3em;">Behind all six chapters, one idea runs through everything</p> -->
-					<h3 style="font-size:1.3em;margin-bottom:0.5em;">Ask yourself</h3>
-					<div class="flow" style="margin-top:0.4em;">
-						<div id="framing-left" class="step on-warn frame-q" style="max-width:340px;">
-							<span class="t c-warn">&ldquo;Can the agent do it?&rdquo;</span>
-							<span class="d">Tune the prompts</span>
-							<span class="d">Switch to a better model</span>
+					<h3 style="font-size:1.3em;margin-bottom:0.5em;">Where do you put your energy?</h3>
+					<div class="flow vert" style="margin-top:0.4em;">
+						<div id="framing-left" class="step on-warn frame-q" style="max-width:520px;">
+							<span class="t c-warn">Stop asking &mdash; &ldquo;Can the agent do it?&rdquo;</span>
+							<span class="d">Tune the prompts &middot; switch to a better model &middot; hit a ceiling</span>
 						</div>
-						<div class="arr">vs</div>
-						<div id="framing-right" class="step on-goal frame-q dim" style="max-width:390px;">
-							<span class="t c-goal">&ldquo;Have I defined the task<br><em>and the environment</em><br>well enough that it can?&rdquo;</span>
-							<span class="d">The leverage is the spec</span>
-							<span class="d">The definition of done</span>
-							<span class="d">The workspace you hand it</span>
+						<div id="framing-arrow" class="arr frame-q dim" style="font-size:1.5em;">&darr;</div>
+						<div id="framing-right" class="step on-goal frame-q dim" style="max-width:720px;">
+							<span class="t c-goal">Start asking &mdash; &ldquo;Have I defined it <em>well enough that it can?</em>&rdquo;</span>
+							<span class="d">The task, the definition of done, the workspace you hand it</span>
 						</div>
 					</div>
 					<span class="fragment" data-fragment-index="1" data-frame="framing-shift"></span>
-					<p class="mid c-muted" style="margin-top:0.9em;">Everything in this talk helps you get there</p>
 					<aside class="notes" data-slide="2">
-						現在的model跟去年比已經強很多了，基本上可以執行任何事情
-						
-						所以我們不應該繼續問「這個 agent 做得到嗎？」這個問題
-						*換頁*
-						而是要問自己「我有沒有把任務跟環境，定義到它做得到的程度？」
+						現在的model跟去年比已經強很多了，基本上可以執行任何事情。
+						所以問題不是「這個 agent 夠不夠強」，而是「你把力氣花在哪裡」。
 						整場分享其實只有一個核心想法，就在這頁。
 
-						（第一下：左邊亮）
-						大多數人面對 agent 會問左邊這個問題：**「這個 agent 做得到嗎？」**
-						這個問題的麻煩是——它會卡住。再怎麼調整prompt都還是有天花板，調到最後就是在等下一個更強的模型。
+						（第一下：上面那個問題亮）
+						大多數人把力氣花在上面這件事——**「這個 agent 做得到嗎？」**
+						於是就一直調 prompt、換更好的模型。這條路的麻煩是——它會撞到天花板，調到最後就是在等下一個更強的模型。
 
-						（第二下：右邊亮、左邊暗）
-						我想請大家換成右邊這個問題：**「我有沒有把任務跟環境，定義到它做得到的程度？」**
-						使用AI開發真正的槓桿不在 prompt 的措辭，而在**規格、完成的定義、還有你交給它的工作環境**。
-						今天所有的內容，都是在幫你做到這件事。
+						*換頁*（箭頭往下、下面那個問題亮、上面暗）
+						我想請大家把焦點往下移，改問——**「我有沒有把它定義到它做得到的程度？」**
+						真正的槓桿不在模型，也不在 prompt 的措辭，而在**任務本身、完成的定義、還有你交給它的工作環境**。
+						今天所有的內容，都是在幫你把力氣移到這裡。
 					</aside>
 				</section>
 
@@ -1583,15 +1576,18 @@ return results.filter(r => r.verdict.ok)</code></pre>
 			function _framingUpdate(forward) {
 				var left  = document.getElementById('framing-left');
 				var right = document.getElementById('framing-right');
+				var arrow = document.getElementById('framing-arrow');
 				if (!left || !right) return;
 				if (forward) {
-					// fragment 1 shown: dim left, emphasize right
+					// fragment 1 shown: focus shifts down — dim the old question, light up the arrow + new question
 					left.classList.add('dim');
 					right.classList.remove('dim');
+					if (arrow) arrow.classList.remove('dim');
 				} else {
-					// fragment hidden (going back): emphasize left, dim right
+					// fragment hidden (going back): light the old question, dim arrow + new question
 					left.classList.remove('dim');
 					right.classList.add('dim');
+					if (arrow) arrow.classList.add('dim');
 				}
 			}
 			Reveal.on('fragmentshown', function(event) {
