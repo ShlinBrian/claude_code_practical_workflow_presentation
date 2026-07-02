@@ -376,6 +376,8 @@
 					width: 64px; height: 3px; background: var(--flow);
 					border-radius: 2px; margin: 0.8em auto 0; opacity: 0.7;
 				}
+				/* mini "you are here" road on chapter dividers — echoes the three-layer map (#/2) */
+				.divider .ch-map { display: block; width: 520px; max-width: 60%; height: auto; margin: 1.3em auto 0; }
 
 				/* ── agenda ── */
 				.agenda { list-style: none; padding: 0; max-width: 720px; margin: 0.6em auto 0; text-align: left; }
@@ -761,6 +763,34 @@
 					<div class="ch-num">Chapter 01</div>
 					<h2>Everyday hygiene</h2>
 					<div class="ch-rule"></div>
+					<!-- you-are-here: ch01 paves the prompt → harness stretch of the road from #/2 -->
+					<svg class="ch-map" viewBox="0 0 640 62" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+						<defs>
+							<!-- userSpaceOnUse: bbox gradients are void on zero-height (horizontal) lines -->
+							<linearGradient id="ch1-pave" gradientUnits="userSpaceOnUse" x1="100" y1="0" x2="320" y2="0">
+								<stop offset="0" stop-color="#cf5c5c"/>
+								<stop offset="1" stop-color="#e3b341"/>
+							</linearGradient>
+						</defs>
+						<!-- the same road, dimmed -->
+						<line x1="70" y1="28" x2="540" y2="28" stroke="#3a4653" stroke-width="2.5" stroke-linecap="round"/>
+						<!-- this chapter's stretch: prompt → harness, paved solid (soft underlay glow + bright core) -->
+						<line x1="100" y1="28" x2="320" y2="28" stroke="url(#ch1-pave)" stroke-width="13" stroke-opacity="0.22" stroke-linecap="round"/>
+						<line x1="100" y1="28" x2="320" y2="28" stroke="url(#ch1-pave)" stroke-width="7" stroke-linecap="round"/>
+						<!-- faint continuation toward the autopilot horizon (kept — the road doesn't end here) -->
+						<line x1="540" y1="28" x2="582" y2="28" stroke="#4ec9c0" stroke-width="1.4" stroke-opacity="0.5" stroke-dasharray="3 5"/>
+						<path d="M578,24 L586,28 L578,32" fill="none" stroke="#4ec9c0" stroke-width="1.4" stroke-opacity="0.5" stroke-linejoin="round"/>
+						<!-- stage dots -->
+						<circle cx="100" cy="28" r="6" fill="#cf5c5c"/>
+						<circle cx="320" cy="28" r="5.5" fill="#e3b341" fill-opacity="0.9"/>
+						<circle cx="540" cy="28" r="4.5" fill="#4ec9c0" fill-opacity="0.55"/>
+						<!-- caption over the paved stretch -->
+						<text x="210" y="12" fill="#e3b341" font-size="12" font-family="'JetBrains Mono',monospace" text-anchor="middle" letter-spacing="1">◆ paving starts here</text>
+						<!-- stage labels -->
+						<text x="100" y="54" fill="#8593a3" font-size="14" font-family="'JetBrains Mono',monospace" text-anchor="middle">Prompt</text>
+						<text x="320" y="54" fill="#8593a3" font-size="14" font-family="'JetBrains Mono',monospace" text-anchor="middle">Harness</text>
+						<text x="540" y="54" fill="#4ec9c0" fill-opacity="0.55" font-size="14" font-family="'JetBrains Mono',monospace" text-anchor="middle">Autopilot</text>
+					</svg>
 					<aside class="notes" data-slide="4">
 						接下來這些是**今天回去馬上就能用或改善**的小習慣。
 						因為這些方法門檻最低、回報最即時。
@@ -920,7 +950,31 @@
 					<div class="ch-num">Chapter 02</div>
 					<h2>The method</h2>
 					<div class="ch-rule"></div>
+					<!-- you-are-here: ch02 arrives at the harness stretch — where today lives -->
+					<svg class="ch-map" viewBox="0 0 640 62" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+						<defs>
+							<linearGradient id="ch2-pave" gradientUnits="userSpaceOnUse" x1="100" y1="0" x2="430" y2="0">
+								<stop offset="0" stop-color="#cf5c5c"/>
+								<stop offset="0.45" stop-color="#e3b341"/>
+								<stop offset="1" stop-color="#e3b341"/>
+							</linearGradient>
+						</defs>
+						<line x1="70" y1="28" x2="540" y2="28" stroke="#3a4653" stroke-width="2.5" stroke-linecap="round"/>
+						<!-- traveled + current stretch: through the harness -->
+						<line x1="100" y1="28" x2="430" y2="28" stroke="url(#ch2-pave)" stroke-width="13" stroke-opacity="0.22" stroke-linecap="round"/>
+						<line x1="100" y1="28" x2="430" y2="28" stroke="url(#ch2-pave)" stroke-width="7" stroke-linecap="round"/>
+						<line x1="540" y1="28" x2="582" y2="28" stroke="#4ec9c0" stroke-width="1.4" stroke-opacity="0.5" stroke-dasharray="3 5"/>
+						<path d="M578,24 L586,28 L578,32" fill="none" stroke="#4ec9c0" stroke-width="1.4" stroke-opacity="0.5" stroke-linejoin="round"/>
+						<circle cx="100" cy="28" r="5" fill="#cf5c5c" fill-opacity="0.85"/>
+						<circle cx="320" cy="28" r="8" fill="#e3b341"/>
+						<circle cx="540" cy="28" r="4.5" fill="#4ec9c0" fill-opacity="0.55"/>
+						<text x="320" y="12" fill="#e3b341" font-size="12" font-family="'JetBrains Mono',monospace" text-anchor="middle" letter-spacing="1">◆ where today lives</text>
+						<text x="100" y="54" fill="#8593a3" font-size="14" font-family="'JetBrains Mono',monospace" text-anchor="middle">Prompt</text>
+						<text x="320" y="54" fill="#e3b341" font-size="14" font-family="'JetBrains Mono',monospace" text-anchor="middle" font-weight="700">Harness</text>
+						<text x="540" y="54" fill="#4ec9c0" fill-opacity="0.55" font-size="14" font-family="'JetBrains Mono',monospace" text-anchor="middle">Autopilot</text>
+					</svg>
 					<aside class="notes" data-slide="6">
+						地圖上，我們正式走進 harness 這一段——今天的重心。
 						接下來是今天的核心：方法。但在講方法之前，先看看**不用方法**會怎樣——
 						我們其實很想要非常簡單的丟一句話給 agent，然後期待它生出可以上線的東西。
 						我會先示範這種 naive 做法留下的三個洞，再講三個工具怎麼把洞補起來。
@@ -1528,7 +1582,32 @@ return results.filter(r => r.verdict.ok)</code></pre>
 					<div class="ch-num">Chapter 05</div>
 					<h2>Pre-flight checklist</h2>
 					<div class="ch-rule"></div>
+					<!-- you-are-here: the harness road is fully paved — next stop autopilot -->
+					<svg class="ch-map" viewBox="0 0 640 62" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+						<defs>
+							<linearGradient id="ch5-pave" gradientUnits="userSpaceOnUse" x1="100" y1="0" x2="540" y2="0">
+								<stop offset="0" stop-color="#cf5c5c"/>
+								<stop offset="0.5" stop-color="#e3b341"/>
+								<stop offset="1" stop-color="#4ec9c0"/>
+							</linearGradient>
+						</defs>
+						<line x1="70" y1="28" x2="540" y2="28" stroke="#3a4653" stroke-width="2.5" stroke-linecap="round"/>
+						<!-- the whole road, traveled -->
+						<line x1="100" y1="28" x2="540" y2="28" stroke="url(#ch5-pave)" stroke-width="13" stroke-opacity="0.22" stroke-linecap="round"/>
+						<line x1="100" y1="28" x2="540" y2="28" stroke="url(#ch5-pave)" stroke-width="7" stroke-linecap="round"/>
+						<!-- the last stretch lights up: onward to autopilot -->
+						<line x1="540" y1="28" x2="582" y2="28" stroke="#4ec9c0" stroke-width="2" stroke-opacity="0.9" stroke-dasharray="3 5"/>
+						<path d="M578,24 L586,28 L578,32" fill="none" stroke="#4ec9c0" stroke-width="2" stroke-opacity="0.9" stroke-linejoin="round"/>
+						<circle cx="100" cy="28" r="5" fill="#cf5c5c" fill-opacity="0.85"/>
+						<circle cx="320" cy="28" r="5.5" fill="#e3b341" fill-opacity="0.9"/>
+						<circle cx="540" cy="28" r="7" fill="#4ec9c0"/>
+						<text x="540" y="12" fill="#4ec9c0" font-size="12" font-family="'JetBrains Mono',monospace" text-anchor="middle" letter-spacing="1">◆ next stop</text>
+						<text x="100" y="54" fill="#8593a3" font-size="14" font-family="'JetBrains Mono',monospace" text-anchor="middle">Prompt</text>
+						<text x="320" y="54" fill="#8593a3" font-size="14" font-family="'JetBrains Mono',monospace" text-anchor="middle">Harness</text>
+						<text x="540" y="54" fill="#4ec9c0" font-size="14" font-family="'JetBrains Mono',monospace" text-anchor="middle" font-weight="700">Autopilot</text>
+					</svg>
 					<aside class="notes" data-slide="14">
+						地圖上，harness 這段路已經走完，剩下的就是通往自動駕駛的最後一段。
 						最後，給大家一張可以帶回家的清單。
 					</aside>
 				</section>
