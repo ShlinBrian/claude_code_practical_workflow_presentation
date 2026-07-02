@@ -592,7 +592,7 @@
 			.reveal .frame-q { transition: opacity 0.3s, filter 0.3s; }
 			.reveal .frame-q.dim { opacity: 0.28; filter: grayscale(0.4); }
 
-			/* ── three-layer maturity slide (prompt / harness / loop) ── */
+			/* ── three-layer maturity slide (prompt / harness / autopilot) ── */
 			.tl-wrap { max-width: 1000px; margin: 0.3em auto 0; }
 			.tl-curve { display: block; width: 100%; height: auto; }
 			.tl-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px;
@@ -610,7 +610,7 @@
 			.tl-cards .step.tl-focus .pop { color: var(--goal); }
 			.tl-future { color: var(--flow); }
 
-			/* ── closing vision: the autonomous loop (horizontal run + return arc) ── */
+			/* ── closing vision: autopilot (horizontal run + return arc) ── */
 			.loopv { max-width: 1040px; margin: 0.8em auto 0; }
 			.loopv-row { display: flex; align-items: stretch; justify-content: center; gap: 0; flex-wrap: nowrap; }
 			.loopv-row .step { background: var(--surface); border: 1px solid var(--border);
@@ -639,7 +639,8 @@
 					</p>
 					<aside class="notes" data-slide="0">
 						大家好，我是 RD-CL.com 的 Brian
-						今天要分享 一套實際可用的 RD 工作流
+						今天主要根據我使用claude code的經驗，想分享給大家 一套實際可用的 RD 工作流
+						如果大家覺得有哪些小技巧不錯，不妨可以回去試試看，或是也歡迎大家在會後跟我交流，分享你們的使用心得
 					</aside>
 				</section>
 
@@ -655,12 +656,12 @@
 						<li><span class="n">05</span><div><div class="t">Pre-flight checklist</div><div class="s">Five questions</div></div></li>
 					</ol>
 					<aside class="notes" data-slide="1">
-						這是今天的流程：
-						1. 每日習慣
-						2. 定義任務的方法
-						3. 真實案例
-						4. 四種方法比較
-						5. Takeaway checklist
+						這是我今天分享的流程：
+						1. 每日小習慣
+						2. 幫助我們定義/完成任務的方法
+						3. 我們使用資料庫遷移的真實案例
+						4. 四種方法的比較
+						5. 以及最後會有 Pre-flight checklist
 					</aside>
 				</section>
 
@@ -669,20 +670,20 @@
 				<section>
 					<h3 style="font-size:1.3em;margin-bottom:0.15em;">Three layers of engineering an agent</h3>
 					<div class="tl-wrap">
-						<!-- the path: a left→right progression prompt → harness → loop (not a distribution) -->
+						<!-- the path: a left→right progression prompt → harness → autopilot (not a distribution) -->
 						<svg class="tl-curve" viewBox="0 0 1000 70" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
 							<!-- one continuous road so all three stages sit on the same line -->
 							<line x1="110" y1="34" x2="840" y2="34" stroke="#3a4653" stroke-width="3" stroke-linecap="round"/>
 							<!-- today's segment (harness) — brighter, thicker, marks where the talk lives -->
 							<line x1="360" y1="34" x2="640" y2="34" stroke="#e3b341" stroke-width="7" stroke-linecap="round"/>
-							<!-- faint continuation toward the loop horizon -->
+							<!-- faint continuation toward the autopilot horizon -->
 							<line x1="840" y1="34" x2="905" y2="34" stroke="#4ec9c0" stroke-width="1.6" stroke-opacity="0.55" stroke-dasharray="3 5"/>
 							<path d="M900,29 L910,34 L900,39" fill="none" stroke="#4ec9c0" stroke-width="1.6" stroke-opacity="0.55" stroke-linejoin="round"/>
 							<!-- stage dots, sitting on the road -->
 							<circle cx="160" cy="34" r="6" fill="#cf5c5c"/>
 							<circle cx="500" cy="34" r="10" fill="#e3b341"/>
 							<circle cx="840" cy="34" r="6" fill="#4ec9c0" fill-opacity="0.65"/>
-							<!-- labels: today's focus (harness) emphasized; loop is the faint horizon -->
+							<!-- labels: today's focus (harness) emphasized; autopilot is the faint horizon -->
 							<text x="160" y="60" fill="#8593a3" font-size="12" font-family="'JetBrains Mono',monospace" text-anchor="middle">where we start</text>
 							<text x="500" y="60" fill="#e3b341" font-size="12" font-family="'JetBrains Mono',monospace" text-anchor="middle" font-weight="700">◆ where today lives</text>
 							<text x="866" y="60" fill="#4ec9c0" fill-opacity="0.6" font-size="11" font-family="'JetBrains Mono',monospace" text-anchor="middle">next ▸</text>
@@ -697,26 +698,29 @@
 								<span class="pop">◆ today</span>
 							</div>
 							<div class="step on-flow">
-								<span class="t c-flow">Loop</span>
+								<span class="t c-flow">Autopilot</span>
 								<span class="pop">the destination</span>
 							</div>
 						</div>
 					</div>
-					<p class="mid c-muted" style="margin-top:0.7em;">Today is all about the <span class="c-goal">harness</span> — because it is what earns you the <span class="tl-future">loop</span> that comes next</p>
+					<p class="mid c-muted" style="margin-top:0.7em;">Today is all about the <span class="c-goal">harness</span> — because it is what earns you the <span class="tl-future">autopilot</span> that comes next</p>
 					<aside class="notes" data-slide="2">
-						在進到今天的主軸之前，先給大家一張地圖，也講清楚今天最終要把大家帶到哪。
+						在進到今天的主軸之前，先給大家一個overview，也講清楚今天最終要把大家帶到哪。
 						跟 AI 一起開發，其實是一條路，三個階段，一階比一階更自主：
 
-						**第一階 Prompt Engineering**：為單次互動寫出精準指令，把「這一次」的輸出做對。大多數人都是從這裡開始的。
+						**第一階 Prompt**：為單次互動寫出精準指令，把「這一次」的輸出做對。
 
-						**第二階 Harness Engineering**：不只是下指令，而是打造 agent 運行的**環境跟護欄**——它能存取什麼、能用哪些工具、邊界在哪、規格跟完成的定義是什麼。今天大部分人的重心落在這裡，**今天整場的方法、案例、實驗，也都是在教這一階怎麼做好**。
+						**第二階 Harness**：不只是下指令，
+						讓任務、完成的定義、工作環境都被定義得夠清楚、agent 能自我驗證
+						我們都知道，這就是最麻煩的地方，所以我們可以透過一些簡單好用的工具來幫我們
+						今天我們的重心會放在這裡
 
-						**第三階 Loop Engineering，這才是這條路的終點**：把前面這些包成一個**定時、自主運作**的系統。
-						想像一個不用你盯著的 agent——它**自己去 pull** 看有沒有新任務、**收到後跟你來回把「完成」確認清楚**、**自己走完整個開發週期**（規劃、實作、測試、驗證）、**把任務交付出去**，然後**回頭再拿下一個**，一直轉下去。這就是 loop。
+						**第三階 Autopilot 也就是這條路的終點**：
+						把前面這些包成一個 自主運作 的系統，就可以讓 agent 進入 自動駕駛。
+						自己去 pull 新任務、來回把「任務」確認清楚、自己走完整個開發週期、把任務交付出去，
+						然後回頭再拿下一個任務，就這樣一直loop下去。
 
-						（指這條由左到右的路，跟中間發亮的那一段）這是一條路：從 prompt，走到 harness，再走到 loop。**中間發亮那段就是 harness——今天整場要教的，就是這一段。** 右邊的 loop 我畫得比較淡、只用一個箭頭標了「next」，因為它是**下一步**、是方向，不是今天的操作內容。
-						這裡我要講一個關鍵：**你不可能跳過 harness 直接做 loop。** 一個能自己跑、你又敢信任的自主迴圈，前提就是任務、完成的定義、工作環境都被定義得夠清楚、agent 能自我驗證——而那正是 harness engineering。
-						所以今天我們把力氣花在 harness，**不是因為它是終點，而是因為它是通往 loop 的地基**——把它做好，才有資格談右邊那個 loop。
+						我們把力氣花在 harness，為的就是有一天 我們真的可以通往 Autopilot。
 					</aside>
 				</section>
 
@@ -724,34 +728,30 @@
 				<!-- ════════ 3. FRAMING — the one idea ════════ -->
 				<section>
 					<!-- <p class="mid c-faint" style="margin:0 0 0.3em;">Behind all six chapters, one idea runs through everything</p> -->
-					<h3 style="font-size:1.3em;margin-bottom:0.5em;">Where do you put your energy?</h3>
-					<div class="flow vert" style="margin-top:0.4em;">
-						<div id="framing-left" class="step on-warn frame-q" style="max-width:520px;">
+					<!-- <h3 style="font-size:1.3em;margin-bottom:0.5em;">Where do you put your energy?</h3> -->
+					<div class="flow vert" style="margin-top:0.4em;font-size:1.35em;">
+						<div id="framing-left" class="step on-warn frame-q" style="max-width:700px;">
 							<span class="t c-warn">Stop asking &mdash; &ldquo;Can the agent do it?&rdquo;</span>
 							<span class="d">Tune the prompts &middot; switch to a better model &middot; hit a ceiling</span>
 						</div>
 						<div id="framing-arrow" class="arr frame-q dim" style="font-size:1.5em;">&darr;</div>
-						<div id="framing-right" class="step on-goal frame-q dim" style="max-width:720px;">
+						<div id="framing-right" class="step on-goal frame-q dim" style="max-width:970px;">
 							<span class="t c-goal">Start asking &mdash; &ldquo;Have I defined it <em>well enough that it can?</em>&rdquo;</span>
 							<span class="d">The task, the definition of done, the workspace you hand it</span>
 						</div>
 					</div>
 					<span class="fragment" data-fragment-index="1" data-frame="framing-shift"></span>
-					<p class="mid c-muted fragment" data-fragment-index="1" style="margin-top:0.9em;">Define it that well and the agent can run it <span class="tl-future">on its own</span> — that's the loop</p>
+					<p class="mid c-muted fragment" data-fragment-index="1" style="margin-top:0.9em;">Define it that well and the agent can run it <span class="tl-future">on its own</span> — that's the autopilot</p>
 					<aside class="notes" data-slide="3">
-						現在的model跟去年比已經強很多了，基本上可以執行任何事情。
-						所以問題不是「這個 agent 夠不夠強」，而是「你把力氣花在哪裡」。
-						整場分享其實只有一個核心想法，就在這頁。
+						
+						
 
-						（第一下：上面那個問題亮）
-						大多數人把力氣花在上面這件事——**「這個 agent 做得到嗎？」**
-						於是就一直調 prompt、換更好的模型。這條路的麻煩是——它會撞到天花板，調到最後就是在等下一個更強的模型。
+						我們現在最前沿的 model 基本上強到可以執行任何事情。
+						所以我們其實不用再去想 「這個 agent 做得到嗎？」
 
-						*換頁*（箭頭往下、下面那個問題亮、上面暗）
-						我想請大家把焦點往下移，改問——**「我有沒有把它定義到它做得到的程度？」**
-						真正的槓桿不在模型，也不在 prompt 的措辭，而在**任務本身、完成的定義、還有你交給它的工作環境**。
-						而且這裡還有更深一層：**當你把任務定義到這個程度，agent 就能自己把它跑完——那就是我們要走向的 loop。**
-						今天所有的內容，都是在幫你把力氣移到這裡、打好通往 loop 的地基。
+						我們應該在意的是「我有沒有把它定義到，讓它做得到的程度？」
+						包含 任務本身、完成的定義、還有你交給它的工作環境
+						整場分享其實就只有一個這個核心想法。
 					</aside>
 				</section>
 
@@ -764,6 +764,7 @@
 					<aside class="notes" data-slide="4">
 						接下來這些是**今天回去馬上就能用或改善**的小習慣。
 						因為這些方法門檻最低、回報最即時。
+						但別小看它們——context 收得乾淨、任務交接得清楚，正是之後 agent 能**自己接手、自己跑**的地基。地圖上那條路，就是從這些小習慣開始鋪的。
 					</aside>
 				</section>
 
@@ -1490,6 +1491,7 @@ return results.filter(r => r.verdict.ok)</code></pre>
 							真正拉開差距的不是轉換對不對，而是**驗證的嚴謹度、commit 紀律、可重現性**——
 							測試分數 A=1、C2=1、C1=2，只有 B 拿到 4。
 							一句話收尾：**方法的價值不在讓它「做得到」，在讓品質不再靠運氣。**
+							而品質不靠運氣，正是你之後**敢把任務交給它自動駕駛**的前提——這張表就是在量「哪一種做法，才夠格走向地圖的右邊」。
 						</aside>
 					</section>
 
@@ -1513,6 +1515,8 @@ return results.filter(r => r.verdict.ok)</code></pre>
 							還有，需要的領域知識根本不在 repo 裡。
 							另外提醒一句:人的瓶頸從「寫程式」變成「review PR」——
 							所以要強迫 agent 切成**自帶 A/B 證據的小 PR**，讓人看證據，而不是逐行看 diff。
+							反過來看，這三關——裁判、邊界、寫進 repo 的領域知識——**補齊的那一天，就是你敢放手讓它自動駕駛的那一天。**
+
 						</aside>
 					</section>
 
@@ -1550,6 +1554,7 @@ return results.filter(r => r.verdict.ok)</code></pre>
 						四，**可讀性**——agent 看得懂這份程式碼嗎？缺一張地圖，就先補上。
 						五，**階段**——你現在是要它思考、比較、決定、還是動手？
 						任何一題你答「不知道」，那就是你該先處理的事。
+						其實這五題，就是在量你的任務**離「能自動駕駛」還差幾步**——五題都答得出來的任務，已經是可以放手的形狀了。
 					</aside>
 				</section>
 
@@ -1590,7 +1595,7 @@ return results.filter(r => r.verdict.ok)</code></pre>
 				</section>
 
 
-				<!-- ════════ CLOSING VISION — the autonomous loop (callback) ════════ -->
+				<!-- ════════ CLOSING VISION — autopilot (callback) ════════ -->
 				<section class="closing">
 					<div class="eyebrow" style="color:var(--faint);letter-spacing:0.14em;">Where it all goes</div>
 					<h3 style="font-size:1.35em;margin:0.1em 0 0.1em;">An agent that runs itself</h3>
@@ -1629,16 +1634,16 @@ return results.filter(r => r.verdict.ok)</code></pre>
 							<text x="520" y="58" fill="#4ec9c0" font-size="13" font-family="'JetBrains Mono',monospace" text-anchor="middle">then reach for the next one — no one watching</text>
 						</svg>
 					</div>
-					<p class="mid c-muted fragment" style="margin-top:0.6em;">Everything today was about earning the right to run this <span class="tl-future">loop</span></p>
+					<p class="mid c-muted fragment" style="margin-top:0.6em;">Everything today was about earning the right to run <span class="tl-future">on autopilot</span></p>
 					<div class="sig fragment">RD Camp · 2026</div>
 					<aside class="notes" data-slide="17">
 						這就是這一切通往的地方——一個**不用你盯著**的 agent：
 						它**自己去 pull** 看有沒有新任務、**收到後跟你來回把「完成」確認清楚**、
 						**自己走完整個開發週期**（規劃、實作、測試、驗證）、**把任務交付出去**，
-						然後**回頭再拿下一個**，一直轉下去。這就是 loop。
+						然後**回頭再拿下一個**，一直轉下去。這就是開場那張地圖的終點——自動駕駛。
 
-						而今天整場，其實都是在幫你**取得執行這個 loop 的資格**——
-						因為一個你敢放手讓它自己跑的迴圈，前提就是任務、完成的定義、工作環境都被你定義得夠清楚。
+						而今天整場，其實都是在幫你**取得讓它自動駕駛的資格**——
+						因為一個你敢放手讓它自己跑的系統，前提就是任務、完成的定義、工作環境都被你定義得夠清楚。
 						你今天在 harness 上投資的每一分，都會隨著模型變強而**複利**。
 						謝謝大家，有問題我們可以一起討論。
 					</aside>

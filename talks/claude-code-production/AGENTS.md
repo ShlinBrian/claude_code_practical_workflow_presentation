@@ -10,16 +10,21 @@ The talk is **"A Practical RD Workflow"** for Claude Code in production. It is n
 
 1. **Prompt engineering** — precise instructions for a single interaction. Where most people start.
 2. **Harness engineering** — the environment and guardrails one agent runs in: access, tools, boundaries, spec, definition-of-done, workspace. **This is where today's talk does its teaching** — the whole method / case / experiment lives here.
-3. **Loop engineering** — wrapping the harness into a scheduled, autonomous system where **the agent picks up a task, runs the full development cycle, and finishes it on its own.**
+3. **Autopilot engineering** — wrapping the harness into a scheduled, autonomous system where **the agent picks up a task, runs the full development cycle, and finishes it on its own.**
 
-**The destination is the loop.** The claim of the talk is that we are all heading toward loop-based, autonomous agents that own a task end-to-end. **Harness engineering is the necessary road to get there** — you cannot run a trustworthy autonomous loop without first defining the task, the DoD, and the workspace well enough that an agent can self-verify. So today invests in the harness *because* it is the foundation the loop stands on, not as an end in itself.
+**The destination is the autopilot.** The claim of the talk is that we are all heading toward autonomous agents that own a task end-to-end. **Harness engineering is the necessary road to get there** — you cannot let an agent run on autopilot, and trust it, without first defining the task, the DoD, and the workspace well enough that it can self-verify. So today invests in the harness *because* it is the foundation the autopilot stands on, not as an end in itself.
+
+**Naming rule — two concepts, two words, never swap them:**
+
+- **"Autopilot"** (spoken Mandarin: 自動駕駛) is the vision layer / destination. Never call it "loop" — the deck used to, and it collided with the meaning below.
+- **"Loop"** is reserved for `/goal`'s build→test→fix feedback mechanism ("loop until the goal is met", "loop against a verifier", 循環到目標達成). This usage stays.
 
 **Implications for every edit — content, wording, and speaker notes must all obey this:**
 
-- Frame the three layers as an **ascending path toward loop** (prompt → harness → **loop = where this is going**), never as three equal parallel options or as "harness is the final answer."
-- The visual/emotional gravity of any layer diagram should **point right, toward loop as the goal.** Harness may be highlighted as *"where today stands / the road we build,"* but must not read as the terminus.
-- Everything the deck teaches about spec / DoD / verifier / isolation is, ultimately, **what makes an autonomous loop safe** — connect it to that end when a slide's framing or note allows it, especially in framing and closing slides.
-- `/goal` and `/workflow` are steps on the road to the loop, not the summit.
+- Frame the three layers as an **ascending path toward autopilot** (prompt → harness → **autopilot = where this is going**), never as three equal parallel options or as "harness is the final answer."
+- The visual/emotional gravity of any layer diagram should **point right, toward autopilot as the goal.** Harness may be highlighted as *"where today stands / the road we build,"* but must not read as the terminus.
+- Everything the deck teaches about spec / DoD / verifier / isolation is, ultimately, **what makes autopilot safe** — connect it to that end when a slide's framing or note allows it. The deck deliberately plants callbacks at: the agenda footer, the Ch01 divider note, the Ch04 results + when-not-to-automate notes, and the Ch05 checklist note. Keep them; don't add one to every slide.
+- `/goal` and `/workflow` are steps on the road to the autopilot, not the summit.
 
 ## Files
 
