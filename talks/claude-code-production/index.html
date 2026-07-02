@@ -696,9 +696,9 @@
 							<div class="vs">→</div>
 							<div id="hygiene-right" class="after frame-q dim">
 								<div class="lbl">The fix</div>
-								<strong>Steer the live context</strong> while you work<br>
-								<strong>Hand state off</strong> before context runs out<br>
-								<span style="display:block;font-size:1.25em;margin-top:0.35em;line-height:1.4;">⇒ You <strong class="c-ok">steer</strong>, not restart</span>
+								- Shape the live context<br>
+								- Hand state off before context/usage running out<br>
+								<span style="display:block;font-size:1.25em;margin-top:0.35em;line-height:1.4;">⇒ <strong class="c-ok">Steer it</strong>, don't restart it</span>
 							</div>
 						</div>
 						<span class="fragment" data-fragment-index="1" data-frame="hygiene-shift"></span>
@@ -988,11 +988,16 @@
 							<span class="fl-line"><strong class="c-text">That gate is the point</strong></span>
 						</p>
 						<aside class="notes" data-slide="7/2">
-							這是我最常用、最關鍵的一個 skill。它的流程就是這個垂直的圖：
-							先探索專案脈絡 → 一次只問你一個問題 → 提兩三個方案讓你比較 →
-							分段呈現設計、一段一段讓你確認 → 最後**產出一份帶有「完成定義」的規格、commit 進去**。
-							最關鍵的一點：**在設計被你核可之前，它拒絕寫任何程式碼。**
-							這個「卡住不動」就是它的價值所在。
+							brainstorming 其實只有五步：
+							1. 先摸清專案脈絡
+							2. 一次問一個問題
+							3. 丟 2 到 3 個方案講清楚取捨
+							4. 把設計分段給你逐段確認
+							5. 最後 commit 一份帶 Definition of Done 的 spec。
+							但重點不是這五步，重點是最後那道關卡 — 設計沒被批准，它就拒絕寫任何 code。
+							聽起來很囉唆，可是它強迫的正是我們人類最愛跳過的那一步：先想清楚再動手。
+							前面多花十幾分鐘，後面省下的是重寫、debug、清爛攤子的好幾個小時。
+							這道 gate，才是它整個價值所在。
 						</aside>
 					</section>
 
