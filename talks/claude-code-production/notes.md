@@ -2,7 +2,7 @@
 
 ## Speaker Notes
 
-> Structure: Title → Agenda → Framing → [Chapter dividers before each chapter] → Everyday hygiene → The naive way (arm A) → The method (skills, then /goal & /workflow) → The real case (why it's hard) → The experiment (A/B/C1/C2) → Checklist → Close.
+> Structure: Title → Agenda → Three layers (prompt / harness / autopilot) → Framing → [Chapter dividers before each chapter] → Everyday hygiene → The method (opens with the naive way, then skills, /goal & /workflow) → The case (why it's hard) → The comparison (A/B/C1/C2, with real results) → Checklist → Close → Autopilot vision.
 
 ---
 
@@ -14,13 +14,13 @@ Cover slide: title, "A Practical RD Workflow", presenter (BrianSH Lin, RD-CL.com
 
 ### Agenda
 
-Six chapters: Everyday hygiene · The naive way · The method · The case · The experiment · Pre-flight checklist. Walk it in one breath so the audience has the map. Each chapter opens with its own divider slide, so they always know where they are.
+Five chapters: Everyday hygiene · The method (opens with the naive way) · The case · The comparison · Pre-flight checklist. Walk it in one breath so the audience has the map. Each chapter opens with its own divider slide, so they always know where they are.
 
 ---
 
 ### Framing — two questions, very different leverage
 
-The single most important idea, framed neutrally (not as a scolding). Open with the bridge line — "behind all six chapters, one idea runs through everything" — so it doesn't feel like a jump from the agenda. Two questions side by side: "Can the agent do it?" — which plateaus and leaves you waiting for a better model — versus "Have I defined the task **and the environment** well enough that it can?" The leverage is the spec, the definition of done, and the workspace you hand it. Everything in the talk is one of those two levers. Let the two-node visual carry it.
+The single most important idea, framed neutrally (not as a scolding). Open with the bridge line — "behind all five chapters, one idea runs through everything" — so it doesn't feel like a jump from the agenda. Two questions side by side: "Can the agent do it?" — which plateaus and leaves you waiting for a better model — versus "Have I defined the task **and the environment** well enough that it can?" The leverage is the spec, the definition of done, and the workspace you hand it. Everything in the talk is one of those two levers. Let the two-node visual carry it.
 
 ---
 
@@ -118,7 +118,7 @@ The closing beat of the method chapter, and a correction to an assumption the au
 
 ### The case — why this migration is genuinely hard (real facts)
 
-This is the credibility anchor: real, completed work. Stated as fact — only the *method-comparison results* later are TBD.
+This is the credibility anchor: real, completed work, stated as fact.
 
 #### Not a "swap the JDBC driver" job
 
@@ -147,9 +147,9 @@ Once the structure runs, move the data: export from MSSQL (SCT BatchExecutor, `0
 
 ---
 
-### The experiment — A / B / C1 / C2 (designed, not yet run)
+### The comparison — A / B / C1 / C2 (four runs, executed)
 
-This is the proof that the workflow is worth adopting. Four runs on the **same** task, each changing how much of the method drives execution. Results are TBD; the *design* is the point today.
+This is the proof that the workflow is worth adopting. Four runs on the **same** task, each changing how much of the method drives execution. The runs have been executed — all numbers on the results slide are real (source of truth: `exp/experiment-report.html`).
 
 #### The four arms
 
@@ -171,9 +171,9 @@ Per-endpoint, per-row A/B comparison of the PostgreSQL response vs a golden MSSQ
 - **Completion time** — wall-clock from task to trustworthy result. Anchor: I did a migration like this **by hand once**, with weaker LLMs — about **a month**.
 - **Code quality** — scored at the end by a **separate review agent** (this also demonstrates the workflow's own review step in action).
 
-#### Results — TBD — fill after run
+#### Results — real numbers
 
-The A/B/C1/C2 × 4-metric table and the A/B comparison-report screenshot are all **TBD — fill after run.** Be explicit that the experiment is designed but not yet executed.
+The A/B/C1/C2 × 4-metric table is filled with actual run data (reconcile any change against `exp/experiment-report.html`). Three beats when presenting: (1) read correctness carefully — 47/47 on A/C1/C2 is HTTP-2xx only, A had 0 assertions; B's honest 41/47 comes with row-level evidence (326/326) and a real newman report. (2) Cost/time — C1 fastest (~94 min), B slowest (~15 h) but highest quality; C2's time is dominated by the AWS SCT stage. (3) Code quality — SQL conversion scores 5 across all arms; what separates them is verification rigor, commit discipline, reproducibility (only B scores 4 on tests).
 
 #### When NOT to automate directly
 
