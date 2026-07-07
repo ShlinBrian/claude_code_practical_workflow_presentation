@@ -640,8 +640,8 @@
 						<span class="mono" style="font-size:0.82em;color:var(--faint);">RD-CL.com</span>
 					</p>
 					<aside class="notes" data-slide="0">
-						大家好，我是 RD-CL.com 的 Brian
-						今天主要根據我使用claude code的經驗，想分享給大家 一套實際可用的 RD 工作流
+						大家好，我是 RD-CL.com 的 Brian。
+						今天主要我一直以來使用claude code的經驗，想分享給大家 一套實際可用的 RD 工作流。
 						如果大家覺得有哪些小技巧不錯，不妨可以回去試試看，或是也歡迎大家在會後跟我交流，分享你們的使用心得
 					</aside>
 				</section>
@@ -659,6 +659,7 @@
 					</ol>
 					<aside class="notes" data-slide="1">
 						這是我今天分享的流程：
+						會從
 						1. 每日小習慣
 						2. 幫助我們定義/完成任務的方法
 						3. 我們使用資料庫遷移的真實案例
@@ -710,19 +711,18 @@
 						在進到今天的主軸之前，先給大家一個overview，也講清楚今天最終要把大家帶到哪。
 						跟 AI 一起開發，其實是一條路，三個階段，一階比一階更自主：
 
-						**第一階 Prompt**：為單次互動寫出精準指令，把「這一次」的輸出做對。
+						<br>**第一階 Prompt**：我們用單次互動寫出精準指令，把「這一次」的結果做對。
 
-						**第二階 Harness**：不只是下指令，
-						讓任務、完成的定義、工作環境都被定義得夠清楚、agent 能自我驗證
-						我們都知道，這就是最麻煩的地方，所以我們可以透過一些簡單好用的工具來幫我們
-						今天我們的重心會放在這裡
+						<br>**第二階 Harness**：不只是下指令，
+						讓任務、完成的定義、工作環境都被定義得夠清楚，讓agent能 *自我驗證*。
+						我們都知道，這就是最麻煩的地方，所以我們今天會介紹有哪些簡單好用的工具或指令來幫我們。
 
-						**第三階 Autopilot 也就是這條路的終點**：
-						把前面這些包成一個 自主運作 的系統，就可以讓 agent 進入 自動駕駛。
-						自己去 pull 新任務、來回把「任務」確認清楚、自己走完整個開發週期、把任務交付出去，
-						然後回頭再拿下一個任務，就這樣一直loop下去。
+						<br>**第三階 Autopilot 也就是這條路的終點，也就是最近常聽到的loop engineering**：
+						把前面這些包成一個 *自主運作* 的系統，就可以讓 agent 進入 全自動駕駛。
+						自己去 pull 新任務、來回把「任務」確認清楚、自己走完整個開發週期、再把任務交付出去之後，
+						然後回頭處理下一個任務，就這樣一直loop下去。
 
-						我們把力氣花在 harness，為的就是有一天 我們真的可以通往 Autopilot。
+						<br>而我們今天，把力氣花在 harness，為的就是有一天我們能把 loop 建立起來，真正的通往 Autopilot。
 					</aside>
 				</section>
 
@@ -745,15 +745,13 @@
 					<span class="fragment" data-fragment-index="1" data-frame="framing-shift"></span>
 					<p class="mid c-muted fragment" data-fragment-index="1" style="margin-top:0.9em;">Define it that well and the agent can run it <span class="tl-future">on its own</span> — that's the autopilot</p>
 					<aside class="notes" data-slide="3">
-						
-						
-
-						我們現在最前沿的 model 基本上強到可以執行任何事情。
+						(上面亮)
+						<br>我們現在最前沿的 model 基本上強到可以執行任何事情。
 						所以我們其實不用再去想 「這個 agent 做得到嗎？」
-
-						我們應該在意的是「我有沒有把它定義到，讓它做得到的程度？」
+						<br>(下面亮)
+						<br>我們應該在意的是「我有沒有把它定義到，讓它做得到的程度？」
 						包含 任務本身、完成的定義、還有你交給它的工作環境
-						整場分享其實就只有一個這個核心想法。
+						<br><br>這就是我們身為稍微懂一點程式的人類，現在應該要做的事情。
 					</aside>
 				</section>
 
@@ -816,7 +814,7 @@
 							<div class="vs">→</div>
 							<div id="hygiene-right" class="after frame-q dim">
 								<div class="lbl">The fix</div>
-								- Shape the live context<br>
+								- Shape the live context (rewind, /btw, subagent)<br>
 								- Hand state off before context/usage runs out<br>
 								<span style="display:block;font-size:1.25em;margin-top:0.35em;line-height:1.4;">⇒ <strong class="c-ok">Steer it</strong>, don't restart it</span>
 							</div>
@@ -825,12 +823,13 @@
 						<!-- <p class="mid c-muted" style="margin-top:0.7em;">Three moves, by <em>when</em> you reach for them — <strong>during the run · at the end · when context fills</strong></p> -->
 						<aside class="notes" data-slide="5/0">
 							（左邊亮）
-							大家應該都遇過：跑到一半 context 快滿了、usage 快用完了，或是 agent 忘記你前面講過的決定。
-							結果就是把整個任務從頭再解釋一遍，而且每次都這樣。
-							（第二下：右邊亮、左邊暗）
-							解法有兩個方向：一是在執行過程中主動控制 context，等一下的 /rewind、/btw、subagent 就是在做這件事；二是在 context 用完之前，先把狀態交接出去。
-							這樣你是在指揮它，而不是每次都重來。
-							接下來三頁就是三個時機：執行中、對話收尾前、還有 context 滿了的時候。
+							<br>大家應該都遇過：跑到一半 context 快滿了、usage 快用完了，或是 agent 開始變笨忘記你前面講過的決定。
+							結果就是把整個任務從頭再解釋一遍。
+							<br>（第二下：右邊亮、左邊暗）
+							<br>解法有兩個方向：
+							<br>1. 是在執行過程中主動控制 context，等一下的 /rewind、/btw、subagent 就是在做這件事
+							<br>2. 是在 context 用完之前，先把狀態交接出去。
+							<br>這樣你是在指揮它，而不是每次都重來。
 						</aside>
 					</section>
 
@@ -844,14 +843,53 @@
 							<!-- <span class="cm"># in a dismissable overlay, context stays the same size</span><br> -->
 							<span class="pr">/btw</span> what does this driver error mean?<br><br>
 							<span class="cm"># offload a noisy task to a fresh context — only the result returns</span><br>
-							<span class="pr">create a subagent to scan all modules and return only the ones that fail</span>
+							<span class="pr">create a subagent to test the modified modules and return only the fail ones</span>
 						</div>
 						<p class="mid c-muted" style="margin-top:0.5em;"><span class="c-goal mono">/rewind</span> back out · <span class="c-goal mono">/btw</span> look up without growing context · <span class="c-goal mono">subagent</span> type an instruction to spin one up</p>
 						<aside class="notes" data-slide="5/1">
 							這三個都是在執行過程中用的。
-							/rewind：發現它走錯方向，直接倒回出錯前的那個檢查點，不用重新解釋。
-							/btw：跑到一半想查個小問題，又不想讓它進到對話紀錄——答案會顯示在一個可以關掉的視窗裡，context 不會變大。
-							subagent：把吵雜的任務丟給一個新的 context，像是「掃描所有模組、只回傳失敗的那些」。token 讓 subagent 去消耗，回到主對話的只有結果。
+							<br>/rewind：發現它走錯方向，直接 context rollback 到出錯前的那個檢查點，不用重新解釋。
+							<br>/btw：跑到一半想查個小問題，又不想讓它進到對話紀錄——答案會顯示在一個可以關掉的視窗裡，context 不會變大。
+							<br>subagent：把支線的任務丟給一個新的 context，像是「測試那些剛修改完的模組、只回傳失敗的」。
+							<br>token 讓 subagent 去消耗，回到主對話的只有結果。
+							<br>這樣我們就可以保持對話都是有意義的資訊
+						</aside>
+					</section>
+
+					<!-- context-full handover: /clear + handoff.md beats /compact -->
+					<section>
+						<h3 style="margin-bottom:0.4em;">Context full / Usage out / Switch model or agent 
+							<br>→ <span class="mono">handoff.md</span> + <span class="mono">/clear</span></h3>
+
+						<!-- the prompt: you ask for the handoff instead of letting /compact guess -->
+						<div class="term" style="font-size:0.46em;width:80%;">
+							<span class="pr">write a handoff.md: what's done, what's next, key decisions</span>
+							<!-- what the handoff actually looks like -->
+							<span class="ag">
+								Wrote handoff.md:<br>
+								<blockquote>
+									## Done: data layer ported, 30/48 modules migrated<br>
+									## Next: finish the remaining 18 modules, run the verifier<br>
+									## Decisions: all-lowercase identifiers; work in worktree
+								</blockquote>
+							</span>
+						</div>
+
+						<!-- the flow: write → clear → fresh agent resumes -->
+						<div class="hsteps" style="margin-top:0.5em;width:80%;margin-left:auto;margin-right:auto;">
+							<div class="hstep on-goal"><span class="t">1 · Write <span class="mono">handoff.md</span></span><span class="d">done · next ·<br>key decisions</span></div>
+							<div class="harr">→</div>
+							<div class="hstep"><span class="t">2 · <span class="mono">/clear</span></span><span class="d">bloated context gone;<br>cost resets</span></div>
+							<div class="harr">→</div>
+							<div class="hstep on-flow"><span class="t">3 · Fresh agent reads it</span><span class="d">resumes —<br>no re-explaining</span></div>
+						</div>
+
+						<aside class="notes" data-slide="5/3">
+							再來這邊的使用情境就是當你 context 快要滿了的時候，或是Usage快用完、想換model、換成使用codex的時候。
+							<br>我們可以使用交接的方式
+							/compact 會讓模型自己摘要，但你控制不了哪些東西會被留下來。
+							比較好的做法是自己控制交接：請它寫一份 handoff.md——做完什麼、接下來做什麼、有哪些關鍵決定——然後 /clear，把臃腫的 context 清掉。新的 agent 讀完 handoff 就能接著做，不用你重新解釋。
+							下面就是一份範例，其實很短。
 						</aside>
 					</section>
 
@@ -890,41 +928,6 @@
 							看上面這段對話：我請它把按鈕間距加大，看了結果覺得不錯，就再講一句「把這個間距存成規則寫進 CLAUDE.md」，它就記下來了。下次它會直接用同樣的間距，不用再講一次。
 							下面兩個檔案的分工：memory.md 是 Claude Code 自動累積的這一輪事實，沒有 commit；CLAUDE.md 是 commit 進 repo 的，每個新 session 一開始就會讀到。
 							收尾時可以直接說「把值得記住的規則整理一下」，它會幫你挑重點。不過 CLAUDE.md 要保持精簡，人工看過、只留真的值得記的，不要把整個 session 倒進去。
-						</aside>
-					</section>
-
-					<!-- context-full handover: /clear + handoff.md beats /compact -->
-					<section>
-						<h3 style="margin-bottom:0.4em;">Context full → <span class="mono">/clear</span> + <span class="mono">handoff.md</span>, not <span class="mono">/compact</span></h3>
-
-						<!-- the prompt: you ask for the handoff instead of letting /compact guess -->
-						<div class="term" style="font-size:0.46em;width:80%;">
-							<span class="cm"># context is full — don't let /compact guess what to keep</span><br>
-							<span class="pr">write a handoff.md: what's done, what's next, key decisions</span>
-							<span class="ag">Wrote handoff.md — /clear, and a fresh agent can resume from it</span>
-						</div>
-
-						<!-- the flow: write → clear → fresh agent resumes -->
-						<div class="hsteps" style="margin-top:0.5em;width:80%;margin-left:auto;margin-right:auto;">
-							<div class="hstep on-goal"><span class="t">1 · Write <span class="mono">handoff.md</span></span><span class="d">done · next ·<br>key decisions</span></div>
-							<div class="harr">→</div>
-							<div class="hstep"><span class="t">2 · <span class="mono">/clear</span></span><span class="d">bloated context gone;<br>cost resets</span></div>
-							<div class="harr">→</div>
-							<div class="hstep on-flow"><span class="t">3 · Fresh agent reads it</span><span class="d">resumes —<br>no re-explaining</span></div>
-						</div>
-
-						<!-- what the handoff actually looks like -->
-						<div class="term" style="font-size:0.44em;width:80%;margin-top:0.5em;">
-							<span class="cm"># handoff.md</span><br>
-							## Done: data layer ported, 30/48 modules migrated<br>
-							## Next: finish the remaining 18 modules, run the verifier<br>
-							## Decisions: all-lowercase identifiers; work in worktree
-						</div>
-						<aside class="notes" data-slide="5/3">
-							最後是 context 真的滿了的時候。
-							/compact 會讓模型自己摘要，但你控制不了哪些東西會被留下來。
-							比較好的做法是自己控制交接：請它寫一份 handoff.md——做完什麼、接下來做什麼、有哪些關鍵決定——然後 /clear，把臃腫的 context 清掉。新的 agent 讀完 handoff 就能接著做，不用你重新解釋。
-							下面就是一份範例，其實很短。
 						</aside>
 					</section>
 
