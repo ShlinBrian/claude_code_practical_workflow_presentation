@@ -640,9 +640,9 @@
 						<span class="mono" style="font-size:0.82em;color:var(--faint);">RD-CL.com</span>
 					</p>
 					<aside class="notes" data-slide="0">
-						大家好，我是 RD-CL.com 的 Brian。
-						今天主要我一直以來使用claude code的經驗，想分享給大家 一套實際可用的 RD 工作流。
-						如果大家覺得有哪些小技巧不錯，不妨可以回去試試看，或是也歡迎大家在會後跟我交流，分享你們的使用心得
+						大家好，我是 RD-CL.com 的 Brian。<br>
+						今天我想要根據我使用 Claude Code 的經驗，分享給大家一套實際可用的 RD 工作流。<br>
+						如果大家覺得有哪些小技巧或工具不錯，不妨可以回去試試看。
 					</aside>
 				</section>
 
@@ -658,13 +658,13 @@
 						<li><span class="n">05</span><div><div class="t">Pre-flight checklist</div><div class="s">Five fields</div></div></li>
 					</ol>
 					<aside class="notes" data-slide="1">
-						這是我今天分享的流程：
-						會從
-						1. 每日小習慣
-						2. 幫助我們定義/完成任務的方法
-						3. 我們使用資料庫遷移的真實案例
-						4. 四種方法的比較
-						5. 以及最後會有 Pre-flight checklist
+						首先，這是我今天想分享的流程： <br>
+						會從<br>
+						1. 每日小習慣<br>
+						2. 幫助我們定義任務/完成任務的方法<br>
+						3. 介紹我們實際使用的真實案例，將一個原本使用 MSSQL 資料庫的 Java 專案轉換成使用 PostgreSQL，以便更好的使用AWS維護<br>
+						4. 四種方法的比較<br>
+						5. 以及最後會有可以帶走的 checklist 和 takeaway<br>
 					</aside>
 				</section>
 
@@ -708,21 +708,25 @@
 					</div>
 					<p class="mid c-muted" style="margin-top:0.7em;">Today is all about the <span class="c-goal">harness</span> — because it is what earns you the <span class="tl-future">autopilot</span> that comes next</p>
 					<aside class="notes" data-slide="2">
-						在進到今天的主軸之前，先給大家一個overview，也講清楚今天最終要把大家帶到哪。
-						跟 AI 一起開發，其實是一條路，三個階段，一階比一階更自主：
+						先給大家一個overview來了解我們今天的主軸。<br>
+						跟 AI 一起開發，其實是一條路，三個階段，一階比一階更自主：<br>
 
-						<br>**第一階 Prompt**：我們用單次互動寫出精準指令，把「這一次」的結果做對。
+						**第一階 Prompt**：我們用單次互動寫出精準指令，把「這一次」的結果做對。<br>
 
-						<br>**第二階 Harness**：不只是下指令，
-						讓任務、完成的定義、工作環境都被定義得夠清楚，讓agent能 *自我驗證*。
-						我們都知道，這就是最麻煩的地方，所以我們今天會介紹有哪些簡單好用的工具或指令來幫我們。
+						**第二階 Harness**：不只是下指令，<br>
+						讓任務、完成的定義、工作環境都被定義得夠清楚，讓agent能 *自我驗證*。<br>
+						我們都知道，這就是最麻煩的地方，所以我們今天會介紹有哪些簡單好用的工具或指令來幫我們。<br>
 
-						<br>**第三階 Autopilot 也就是這條路的終點，也就是最近常聽到的loop engineering**：
-						把前面這些包成一個 *自主運作* 的系統，就可以讓 agent 進入 全自動駕駛。
-						自己去 pull 新任務、來回把「任務」確認清楚、自己走完整個開發週期、再把任務交付出去之後，
-						然後回頭處理下一個任務，就這樣一直loop下去。
+						**第三階 Autopilot 也就是這條路的終點，也就是最近常聽到的loop engineering**：<br>
+						把前面這些包成一個 *自主運作* 的系統，就可以讓 agent 進入 全自動駕駛。<br>
+						Agent可以：<br>
+						1. 拿新任務<br>
+						2. 定義任務<br>
+						3. 處理任務<br>
+						4. 交付任務<br>
+						就這樣一直loop下去。<br>
 
-						<br>而我們今天，把力氣花在 harness，為的就是有一天我們能把 loop 建立起來，真正的通往 Autopilot。
+						而我們今天，把力氣花在 harness，為的就是有一天我們能把 loop 建立起來，真正的通往 Autopilot。
 					</aside>
 				</section>
 
@@ -814,7 +818,7 @@
 							<div class="vs">→</div>
 							<div id="hygiene-right" class="after frame-q dim">
 								<div class="lbl">The fix</div>
-								- Shape the live context (rewind, /btw, subagent)<br>
+								- Shape the live context (/rewind, /btw, subagent)<br>
 								- Hand state off before context/usage runs out<br>
 								<span style="display:block;font-size:1.25em;margin-top:0.35em;line-height:1.4;">⇒ <strong class="c-ok">Steer it</strong>, don't restart it</span>
 							</div>
@@ -848,7 +852,7 @@
 						<p class="mid c-muted" style="margin-top:0.5em;"><span class="c-goal mono">/rewind</span> back out · <span class="c-goal mono">/btw</span> look up without growing context · <span class="c-goal mono">subagent</span> type an instruction to spin one up</p>
 						<aside class="notes" data-slide="5/1">
 							這三個都是在執行過程中用的。
-							<br>/rewind：發現它走錯方向，直接 context rollback 到出錯前的那個檢查點，不用重新解釋。
+							<br>/rewind：當你發現 agent 開始走錯方向，或是你後悔剛剛你下的prompt，直接 context rollback 到出錯前的那個檢查點，不用重新解釋。
 							<br>/btw：跑到一半想查個小問題，又不想讓它進到對話紀錄——答案會顯示在一個可以關掉的視窗裡，context 不會變大。
 							<br>subagent：把支線的任務丟給一個新的 context，像是「測試那些剛修改完的模組、只回傳失敗的」。
 							<br>token 讓 subagent 去消耗，回到主對話的只有結果。
