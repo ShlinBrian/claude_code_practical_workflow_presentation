@@ -297,7 +297,7 @@
 			.checklist { counter-reset: chk; list-style: none; padding: 0; max-width: 82%; margin: 0 auto; }
 			.checklist li {
 				counter-increment: chk; display: grid; grid-template-columns: 36px 1fr;
-				gap: 8px; align-items: start; padding: 14px 0; border-bottom: 1px solid var(--border); font-size: 0.65em;
+				gap: 8px; align-items: start; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 0.65em;
 			}
 			.checklist li:last-child { border-bottom: none; }
 			.checklist li::before {
@@ -655,7 +655,7 @@
 						<li><span class="n">02</span><div><div class="t">The method</div><div class="s">3 gaps → 3 tools</div></div></li>
 						<li><span class="n">03</span><div><div class="t">The case</div><div class="s">MSSQL → PostgreSQL</div></div></li>
 						<li><span class="n">04</span><div><div class="t">The comparison</div><div class="s">Four runs, one task</div></div></li>
-						<li><span class="n">05</span><div><div class="t">Pre-flight checklist</div><div class="s">Five questions</div></div></li>
+						<li><span class="n">05</span><div><div class="t">Pre-flight checklist</div><div class="s">Five fields</div></div></li>
 					</ol>
 					<aside class="notes" data-slide="1">
 						這是我今天分享的流程：
@@ -1553,22 +1553,25 @@ return results.filter(r => r.verdict.ok)</code></pre>
 				     CHECKLIST
 				     ════════════════════════════════════════════════════════════ -->
 				<section>
-					<h3 style="margin-bottom:0.3em;">Pre-flight checklist</h3>
+					<h3 style="margin-bottom:0.1em;">Pre-flight checklist</h3>
+					<p class="c-muted" style="font-size:0.6em;margin:0 0 0.5em;">Re-brief the task in five fields</p>
 					<ol class="checklist" style="max-width:88%;">
-						<li><div><div class="h">Definition of done</div><div class="q flush-note"><span class="fl-line">Is there a <strong class="c-text">machine-checkable</strong> "done"?</span><span class="fl-line">No verifier → <strong class="c-text">build the tests first</strong>, then run</span></div></div></li>
-						<li><div><div class="h">Goal</div><div class="q">Do you want a <strong class="c-text">deliverable and a decision</strong>, or did you just describe one action?</div></div></li>
-						<li><div><div class="h">Boundaries</div><div class="q flush-note"><span class="fl-line">What's off-limits?</span><span class="fl-line">Fence irreversible side effects first</span></div></div></li>
-						<li><div><div class="h">Legibility</div><div class="q">Can the agent understand the code? Missing a map → <strong class="c-text">add it first</strong></div></div></li>
-						<li><div><div class="h">Stage</div><div class="q">Do you want it to <strong class="c-text">think, compare, decide, or do</strong> right now?</div></div></li>
+						<li><div><div class="h">Goal</div><div class="q"><strong class="c-text">Deliverable + decision</strong>, not an action</div></div></li>
+						<li><div><div class="h">Context</div><div class="q">What would <strong class="c-text">someone new</strong> need to know?</div></div></li>
+						<li><div><div class="h">Materials</div><div class="q">Give the sources — <strong class="c-text">don't make things up</strong></div></div></li>
+						<li><div><div class="h">Boundaries</div><div class="q">Wall off anything <strong class="c-text">you can't undo</strong></div></div></li>
+						<li><div><div class="h">Definition of done</div><div class="q">No verifier → <strong class="c-text">build it first</strong></div></div></li>
 					</ol>
+					<p class="mid c-muted" style="margin-top:0.4em;">1–3 write the <strong class="c-text">spec</strong> · 4 is <strong class="c-text">isolation</strong> · 5 is the <strong class="c-text">verifier</strong> — the filled-in brief <strong class="c-goal">is your prompt</strong></p>
 					<aside class="notes" data-slide="15">
-						在打 /goal 或 /workflow 之前，先問自己五件事。
-						一，完成的定義：有沒有機器可檢查的「完成」？沒有，就先把測試補起來再跑。
-						二，目標：你要的是一個交付物加一個決定，還是只描述了一個動作？
-						三，邊界：什麼不能碰？先把不可逆的副作用圍起來。
-						四，可讀性：agent 看得懂這份程式碼嗎？缺一張地圖就先補上。
-						五，階段：你現在是要它思考、比較、決定，還是動手？
-						哪一題答不出來，就先處理哪一題。這五題也是在量你的任務離「能自動駕駛」還有多遠。
+						在打 /goal 或 /workflow 之前，用五個欄位把任務重新交辦一遍。
+						一，目標：你要的是成品加一個決定，還是只描述了一個動作？先想清楚：這份東西出現在眼前之後，你要拿它來幹嘛。
+						二，背景：想像一個聰明、但對這個 repo 完全不熟的同事來接手——他需要知道什麼才不會走錯方向？缺一張地圖，就先補 CLAUDE.md。
+						三，素材：指給它看能用的材料——程式碼、文件、baseline。找不到的就留白，不要編造。
+						四，邊界：前三欄給的是方向，這一欄給牆。想一下：它做出什麼，你會說「這不是我要的」？先寫下來，把不可逆的副作用圍起來、工作區隔離好。
+						五，完成定義：什麼東西出現在眼前，你就可以收工？把它變成機器可檢查的——沒有 verifier 就先建 verifier 再跑。
+						這五欄剛好把第二章的三個洞補滿：前三欄就是規格，邊界就是隔離，完成定義就是 verifier。
+						五欄寫完，它就是你的 prompt，沒有花俏的技巧——拿著它交給 /goal 或 /workflow 執行。這五欄也是在量你的任務離「能自動駕駛」還有多遠。
 					</aside>
 				</section>
 

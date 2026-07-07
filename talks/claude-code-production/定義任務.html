@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>定義任務 — 用五個欄位重新交辦一遍</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#161616;
+    --panel:#232323;
+    --panel-2:#2a2a2a;
+    --line:rgba(255,255,255,.08);
+    --text:#ededed;
+    --dim:#8f8f8f;
+    --dimmer:#5f5f5f;
+    --orange:#f5a623;
+    --blue:#4c8de0;
+    --green:#3ddc84;
+    --red:#e5484d;
+    --purple:#a855f7;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    background:#0d0d0d;
+    color:var(--text);
+    font-family:"Noto Sans TC",system-ui,-apple-system,"PingFang TC","Microsoft JhengHei",sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow:hidden;
+  }
+  code,.mono{font-family:"JetBrains Mono","Noto Sans TC",monospace}
+
+  /* ---- deck frame ---- */
+  #deck{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+  .slide{
+    position:absolute;inset:0;
+    display:none;
+    align-items:center;justify-content:center;
+    padding:5.5vh 6vw;
+    background:radial-gradient(ellipse at 50% 0%, #1d1d1d 0%, var(--bg) 55%, #101010 100%);
+  }
+  .slide.active{display:flex;animation:fade .35s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .stage{width:100%;max-width:960px}
+
+  /* ---- shared type ---- */
+  h1.title{font-size:clamp(24px,3.4vw,40px);font-weight:900;text-align:center;letter-spacing:-.01em;line-height:1.25}
+  .sub{color:var(--dim);text-align:center;font-size:clamp(13px,1.5vw,17px);margin-top:.6em}
+  .dim{color:var(--dim)}
+  .dimmer{color:var(--dimmer)}
+  .o{color:var(--orange)} .b{color:var(--blue)} .g{color:var(--green)} .r{color:var(--red)} .p{color:var(--purple)}
+  b,strong{font-weight:700}
+
+  /* ---- section marker (N/5 + name) ---- */
+  .marker{display:flex;align-items:center;gap:clamp(18px,3vw,40px)}
+  .marker .num{border-left:6px solid var(--accent);padding-left:18px}
+  .marker .num .n{font-size:clamp(30px,5vw,58px);font-weight:900;color:var(--accent);line-height:1}
+  .marker .num .n small{font-size:.42em;color:var(--dim);font-weight:700}
+  .marker .num .name{font-size:clamp(30px,5vw,58px);font-weight:900;color:var(--accent);line-height:1.05;margin-top:.15em}
+  .marker .body{flex:1;min-width:0}
+
+  /* ---- example card (colored left border) ---- */
+  .card{background:var(--panel);border-radius:14px;padding:26px 30px;border:1px solid var(--line)}
+  .card.accent{border-left:5px solid var(--accent)}
+  .card .lbl{color:var(--accent);font-weight:700;font-size:14px;margin-bottom:14px}
+  .card p{font-size:clamp(15px,1.7vw,20px);line-height:1.75;margin:.35em 0}
+
+  /* speech-ish dark bubble */
+  .bubble{background:#2c2c2c;border-radius:12px;padding:16px 20px;display:inline-block}
+  .bubble .tag{color:var(--dim);font-weight:700;font-size:13px;display:block;margin-bottom:4px}
+  .bubble .big{font-size:clamp(18px,2.2vw,26px);font-weight:700}
+
+  /* pills / tags */
+  .pill{display:inline-block;border:1px solid var(--line);background:var(--panel-2);border-radius:999px;padding:7px 16px;font-size:14px;font-weight:500}
+  .pill.o{border-color:rgba(245,166,35,.5);color:var(--orange)}
+  .pill.b{border-color:rgba(76,141,224,.5);color:var(--blue)}
+  .pill.g{border-color:rgba(61,220,132,.5);color:var(--green)}
+  .pill.r{border-color:rgba(229,72,77,.5);color:var(--red)}
+  .pill.p{border-color:rgba(168,85,247,.5);color:var(--purple)}
+  .pill.gray{color:var(--dim)}
+  .tag{border-radius:8px;padding:4px 12px;font-size:13px;font-weight:700}
+  .tag.o{border:1px solid rgba(245,166,35,.6);color:var(--orange)}
+  .tag.g{border:1px solid rgba(61,220,132,.6);color:var(--green)}
+
+  /* brief summary box (colored bar rows) */
+  .brief{background:#1f1f1f;border:1px solid var(--line);border-radius:16px;padding:16px}
+  .brow{display:flex;align-items:center;gap:16px;background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:14px 18px;margin:10px 0}
+  .brow .bar{width:5px;align-self:stretch;border-radius:3px;background:var(--c)}
+  .brow .fname{font-weight:700;min-width:96px}
+  .brow .fval{color:var(--text)}
+  .brow.empty{opacity:.4}
+  .brow.empty .fname{color:var(--dim)}
+
+  /* two-column compare */
+  .cmp{display:grid;grid-template-columns:1fr auto 1fr;gap:clamp(16px,3vw,40px);align-items:start}
+  .cmp .vs{align-self:center;color:var(--dim);font-weight:700;font-size:14px;border:1px solid var(--line);border-radius:999px;padding:4px 10px}
+  .col h3{font-size:clamp(16px,1.9vw,22px);font-weight:700;margin-bottom:14px}
+  .col ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+  .col li{font-size:clamp(13px,1.5vw,16px);color:var(--dim);padding-left:16px;position:relative}
+  .col li::before{content:"•";position:absolute;left:0;color:var(--dimmer)}
+  .col.on li{color:#d8d8d8}
+
+  /* flow chips with arrows */
+  .flow{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .chip{background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:10px 16px;font-size:clamp(13px,1.5vw,16px)}
+  .arrow{color:var(--dimmer);font-size:18px}
+  .flowlbl{font-weight:700;font-size:15px;margin:6px 0}
+
+  /* misc layout helpers */
+  .stack{display:flex;flex-direction:column;gap:clamp(14px,2.4vh,26px)}
+  .center{text-align:center}
+  .row{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .rowc{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap}
+  .big-accent{font-size:clamp(30px,5vw,56px);font-weight:900;text-align:center}
+
+  /* boundary "wall" diagram */
+  .wall{display:grid;grid-template-columns:auto 1fr;gap:14px 20px;align-items:center}
+  .wall .tag2{background:var(--panel-2);border-radius:8px;padding:8px 14px;font-weight:700;text-align:center}
+  .wall .line{position:relative;height:26px}
+  .wall .line::after{content:"";position:absolute;left:0;right:60px;top:50%;height:3px;background:var(--green)}
+  .wall .line::before{content:"→";position:absolute;right:44px;top:50%;transform:translateY(-50%);color:var(--green);font-weight:700}
+  .wallbar{position:absolute;right:34px;top:-34px;bottom:-34px;width:0;border-left:3px dashed var(--red)}
+
+  /* DoD consensus row */
+  .consensus{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
+  .node{background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:12px 22px;font-weight:700}
+  .link{color:var(--purple);font-weight:700;font-size:14px;border:1px solid rgba(168,85,247,.5);border-radius:999px;padding:5px 14px}
+  .dblarrow{color:var(--purple);font-size:20px;font-weight:700}
+
+  /* ---- chrome: nav + counter ---- */
+  #bar{position:fixed;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;gap:22px;padding:14px;z-index:20}
+  .nav{background:var(--panel);border:1px solid var(--line);color:var(--text);width:40px;height:40px;border-radius:10px;font-size:18px;cursor:pointer;transition:.15s}
+  .nav:hover{background:var(--panel-2);border-color:rgba(255,255,255,.2)}
+  #count{color:var(--dim);font-size:14px;font-variant-numeric:tabular-nums;min-width:66px;text-align:center;font-family:"JetBrains Mono",monospace}
+  #prog{position:fixed;left:0;top:0;height:3px;background:linear-gradient(90deg,var(--orange),var(--blue),var(--green),var(--red),var(--purple));z-index:20;transition:width .3s}
+  .hint{position:fixed;right:16px;top:14px;color:var(--dimmer);font-size:12px;z-index:20}
+  @media (max-width:640px){.hint{display:none}}
+</style>
+</head>
+<body>
+<div id="prog"></div>
+<div class="hint">← → 或空白鍵翻頁　·　F 全螢幕</div>
+<div id="deck">
+
+  <!-- 0 · cover -->
+  <section class="slide" data-accent="orange">
+    <div class="stage stack">
+      <h1 class="title">用<span class="o">五個欄位</span>,重新交辦一遍</h1>
+      <div class="brief">
+        <div class="brow"><span class="bar" style="--c:var(--orange)"></span><span class="fname o">目標</span></div>
+        <div class="brow"><span class="bar" style="--c:var(--blue)"></span><span class="fname b">背景</span></div>
+        <div class="brow"><span class="bar" style="--c:var(--green)"></span><span class="fname g">素材</span></div>
+        <div class="brow"><span class="bar" style="--c:var(--red)"></span><span class="fname r">邊界</span></div>
+        <div class="brow"><span class="bar" style="--c:var(--purple)"></span><span class="fname p">完成定義</span></div>
+      </div>
+      <p class="sub">同一個任務,重新交辦完,跑出來完全不一樣</p>
+    </div>
+  </section>
+
+  <!-- 1 · 目標 intro -->
+  <section class="slide" data-accent="orange" style="--accent:var(--orange)">
+    <div class="stage marker">
+      <div class="num"><div class="n">1<small>/5</small></div><div class="name">目標</div></div>
+      <div class="body stack">
+        <p style="font-size:clamp(18px,2.2vw,26px)">不是 <b>動作</b> <span class="r">✗</span></p>
+        <p style="font-size:clamp(18px,2.2vw,26px)">是 <b>成品</b> <span class="g">✓</span>　<b>決定</b> <span class="g">✓</span></p>
+        <div class="row">
+          <span class="bubble"><span class="tag">爛版 prompt</span><span class="big">幫我做一份競品分析</span></span>
+          <span class="tag o">這是一個動作</span>
+        </div>
+        <p class="dim">AI 看到動作 → 用很 <b>average</b> 的方式做給你</p>
+        <p class="dim">它預設你要的,就只是「一般的競品分析」</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 · 目標 example card -->
+  <section class="slide" data-accent="orange" style="--accent:var(--orange)">
+    <div class="stage">
+      <div class="card accent">
+        <div class="lbl">目標</div>
+        <p>我們下季要做一個產品方向的決策</p>
+        <p>這份競品分析,要幫我<span class="o">支撐這個決策</span></p>
+        <p>我們的 USP 該往<br>「<span class="o">更容易用</span>」還是「<span class="o">更便宜</span>」偏?</p>
+        <p>最後給我明確的<span class="o">建議方向</span>,附上判斷理由</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 · versions -->
+  <section class="slide" data-accent="orange">
+    <div class="stage stack center">
+      <h1 class="title">你看出差別了嗎?</h1>
+      <div class="rowc"><span class="pill gray">版本 1</span><span class="dim">我要你做這件事</span></div>
+      <div class="rowc"><span class="pill o">版本 2</span><span class="o"><b>我要它支撐什麼決策、解什麼問題、拿到什麼成品</b></span></div>
+    </div>
+  </section>
+
+  <!-- 4 · action vs product -->
+  <section class="slide" data-accent="orange">
+    <div class="stage stack">
+      <h1 class="title">同樣是「分析五家競品」</h1>
+      <div>
+        <p class="flowlbl dim">動作 prompt</p>
+        <div class="flow"><span class="chip">按教科書展開</span><span class="arrow">→</span><span class="chip">feature、定價、優缺點羅列</span><span class="arrow">→</span><span class="chip">很完整,但沒辦法做任何決策</span></div>
+      </div>
+      <div>
+        <p class="flowlbl o">成品 prompt</p>
+        <div class="flow"><span class="chip">自動聚焦「易用性 vs 定價」</span><span class="arrow">→</span><span class="chip">因為它知道你要做的決定</span><span class="arrow">→</span><span class="chip">直接對準二選一</span><span class="tag o">能拿來用</span></div>
+      </div>
+      <div class="card accent" style="max-width:640px"><div class="lbl">目標</div><p>這份東西出現在我眼前之後,我要拿它來幹嘛?</p></div>
+    </div>
+  </section>
+
+  <!-- 5 · 背景 intro -->
+  <section class="slide" data-accent="blue" style="--accent:var(--blue)">
+    <div class="stage marker">
+      <div class="num"><div class="n">2<small>/5</small></div><div class="name">背景</div></div>
+      <div class="body stack">
+        <span class="bubble"><span class="tag">想像</span><span style="font-size:clamp(15px,1.8vw,20px)">一個聰明、但對你公司<span class="r">完全不熟</span>的同事,接了這個案子</span></span>
+        <p style="font-size:clamp(17px,2vw,24px);font-weight:700">他需要知道什麼,才不會搞錯方向?</p>
+        <p class="b" style="font-size:clamp(15px,1.8vw,20px)">= 你要給 AI 的背景</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 · 背景 example card -->
+  <section class="slide" data-accent="blue" style="--accent:var(--blue)">
+    <div class="stage">
+      <div class="card accent">
+        <div class="lbl">背景</div>
+        <p>我們年營收 <b>200 萬美金</b></p>
+        <p>focus 在中小企業行銷自動化的 SaaS 工具<br>客戶以 <b>50 人以下</b>的公司為主</p>
+        <p class="b">他們常嫌我們複雜、嫌我們貴</p>
+        <p><span class="b">去年動過一次價格</span>,<span class="o">市場反應不好</span></p>
+        <p>這段歷史,分析時要納進去考慮</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 · with/without background -->
+  <section class="slide" data-accent="blue">
+    <div class="stage stack">
+      <h1 class="title">同一個任務,兩種角度</h1>
+      <div class="cmp">
+        <div class="col on">
+          <h3 class="b">有背景:它知道你的處境</h3>
+          <ul><li>不會輕率丟出「降價搶市場」</li><li>自動把「簡化使用流程」放進選項</li><li>自動找體量類似的競品對比</li></ul>
+        </div>
+        <div class="vs">VS</div>
+        <div class="col">
+          <h3 class="dim">沒背景:用最一般的方式</h3>
+          <ul><li>假設你的客戶是大企業</li><li>假設你隨時可以動價格</li><li>假設你跟所有同類產品硬拼</li></ul>
+        </div>
+      </div>
+      <p class="center"><span class="pill b"><b>背景 = 決定 AI 用什麼角度看任務</b></span></p>
+    </div>
+  </section>
+
+  <!-- 8 · two fields already win -->
+  <section class="slide" data-accent="blue">
+    <div class="stage stack">
+      <h1 class="title o">光這兩欄,已經贏過大部分人</h1>
+      <p class="sub">大部分人連這兩個都沒給,隨手一句就丟出去</p>
+      <div class="brief">
+        <div class="brow"><span class="bar" style="--c:var(--orange)"></span><span class="fname o">目標</span><span class="fval">支撐下季決策</span></div>
+        <div class="brow"><span class="bar" style="--c:var(--blue)"></span><span class="fname b">背景</span><span class="fval">200 萬美金 SaaS,踩過價格雷</span></div>
+        <div class="brow empty"><span class="bar" style="--c:var(--green)"></span><span class="fname">素材</span></div>
+        <div class="brow empty"><span class="bar" style="--c:var(--red)"></span><span class="fname">邊界</span></div>
+        <div class="brow empty"><span class="bar" style="--c:var(--purple)"></span><span class="fname">完成定義</span></div>
+      </div>
+      <p class="center b"><b>接下來三欄,才是產出能「直接拿來用」的關鍵</b></p>
+    </div>
+  </section>
+
+  <!-- 9 · 素材 intro -->
+  <section class="slide" data-accent="green" style="--accent:var(--green)">
+    <div class="stage marker">
+      <div class="num"><div class="n">3<small>/5</small></div><div class="name">素材</div></div>
+      <div class="body stack">
+        <p style="font-size:clamp(17px,2vw,24px);font-weight:700">告訴 AI:它能用的<span class="g">材料範圍</span></p>
+        <div class="row"><span class="pill g">主要來源</span><span class="pill gray">次要來源</span><span class="pill r">不能碰的</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 · 素材 example card -->
+  <section class="slide" data-accent="green" style="--accent:var(--green)">
+    <div class="stage">
+      <div class="card accent">
+        <div class="lbl">素材</div>
+        <p>主要素材:這三家競品的<span class="g">官網</span><br>+ <span class="g">產品文檔</span>(連結在下面)</p>
+        <p>次要素材:這份我整理好的<span class="g">用戶評論</span></p>
+        <p>不要使用網路上那些二手評論文章</p>
+        <p class="r">找不到某個資訊 → 直接留白,不要編造</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11 · key actions -->
+  <section class="slide" data-accent="green">
+    <div class="stage stack center">
+      <h1 class="title">這裡有幾個關鍵動作</h1>
+      <div class="rowc">
+        <span class="chip" style="border-color:rgba(61,220,132,.4)"><span class="dim" style="font-size:12px;display:block">競品</span><b class="g" style="font-size:26px">A</b></span>
+        <span class="chip" style="border-color:rgba(61,220,132,.4)"><span class="dim" style="font-size:12px;display:block">競品</span><b class="g" style="font-size:26px">C</b></span>
+        <span class="chip" style="border-color:rgba(61,220,132,.4)"><span class="dim" style="font-size:12px;display:block">競品</span><b class="g" style="font-size:26px">E</b></span>
+      </div>
+      <p class="dim">跟客群真正重疊的三家深挖</p>
+      <p class="g"><b>收斂本身,就是定義任務的一部分</b></p>
+      <div style="text-align:left;max-width:640px;margin:0 auto">
+        <p style="margin:8px 0"><span class="g">▪</span> 明確指定什麼不要用 — SEO 偽分析會污染整份報告的可信度</p>
+        <p style="margin:8px 0" class="o">▪ 找不到就留白,不要編造(這條超重要)</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12 · 邊界 intro -->
+  <section class="slide" data-accent="red" style="--accent:var(--red)">
+    <div class="stage marker">
+      <div class="num"><div class="n">4<small>/5</small></div><div class="name">邊界</div></div>
+      <div class="body stack">
+        <p style="font-size:clamp(17px,2vw,24px);font-weight:700">大多數人<span class="o">最容易忽略</span>的一欄</p>
+        <div class="row"><span class="pill r">不要做</span><span class="pill r">不要碰</span><span class="pill r">不能假設</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 13 · 邊界 example card -->
+  <section class="slide" data-accent="red" style="--accent:var(--red)">
+    <div class="stage">
+      <div class="card accent">
+        <div class="lbl">邊界</div>
+        <p><span class="r">✗ 不要編造</span> ARR、user count、growth rate<br>— 沒資料就直說沒資料</p>
+        <p><span class="r">✗ 不要建議改</span>付費等級架構<br>— tier 是公司政策,沒得商量(定價定位可以討論)</p>
+        <p><span class="r">✗ 不要</span> buzzword 滿天飛、只有形容詞沒有取捨</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 14 · direction vs wall -->
+  <section class="slide" data-accent="red">
+    <div class="stage stack">
+      <h1 class="title">多數人:只給方向,<span class="r">不給牆</span></h1>
+      <div class="wall">
+        <span class="tag2 o">目標</span><span class="line"></span>
+        <span class="tag2 b">背景</span><span class="line"><span class="wallbar"></span></span>
+        <span class="tag2 g">素材</span><span class="line"></span>
+      </div>
+      <p class="center">目標、背景、素材 = <span class="g"><b>你給的方向</b></span>　　邊界 = <span class="r"><b>你給的牆</b></span></p>
+      <p class="center dim">自由發揮空間超大 → 做出你<b>完全沒想到</b>的方向</p>
+      <div class="card accent" style="max-width:640px;margin:0 auto"><div class="lbl">邊界</div><p>AI 做出什麼,我會說「這不是我要的」?<br>把它們先寫下來</p></div>
+    </div>
+  </section>
+
+  <!-- 15 · 完成定義 intro -->
+  <section class="slide" data-accent="purple" style="--accent:var(--purple)">
+    <div class="stage marker">
+      <div class="num"><div class="n">5<small>/5</small></div><div class="name">完成<br>定義</div></div>
+      <div class="body stack">
+        <p style="font-size:clamp(16px,1.9vw,23px);font-weight:700">什麼樣的產出<span class="p">算結束</span>、什麼時候<span class="p">停</span></p>
+        <span class="bubble"><span class="tag">軟體開發</span><span class="big p">Definition of Done</span></span>
+        <div class="consensus"><span class="node">PM</span><span class="dblarrow">←</span><span class="link">什麼算做完</span><span class="dblarrow">→</span><span class="node">工程師</span></div>
+        <p class="center dim" style="margin-top:-6px">達成共識 <span class="g">✓</span></p>
+        <p class="dim">跟 AI 協作也一樣:<span class="p">先定義什麼叫完成</span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 16 · 完成定義 example card -->
+  <section class="slide" data-accent="purple" style="--accent:var(--purple)">
+    <div class="stage">
+      <div class="card accent">
+        <div class="lbl">完成定義</div>
+        <p>先給我一份 outline:<br>三家的關鍵差異、建議聚焦的 USP 方向、背後的判斷邏輯</p>
+        <p><span class="p">不要直接寫完整報告 — 先給一版框架</span>,我審過後再進下一步</p>
+        <p>框架用 markdown,每段搭配 3 到 4 個 bullet points</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 17 · how vs what -->
+  <section class="slide" data-accent="purple">
+    <div class="stage stack">
+      <div class="cmp">
+        <div class="col">
+          <h3 class="r">How — 過程</h3>
+          <ul><li>手把手規定它每一步怎麼操作</li><li>「打開 Excel,在 A1 輸入…」</li><li>= 實習生模式,該砍掉的</li></ul>
+        </div>
+        <div class="vs">VS</div>
+        <div class="col on">
+          <h3 class="p">What — 成品規格</h3>
+          <ul><li>成品長什麼樣,本來就該由你來定</li><li>markdown、3-4 bullets = 規格</li><li>= 完成定義,該留下的</li></ul>
+        </div>
+      </div>
+      <p class="center"><span class="pill p"><b>你拿掉的是 how,不是 what</b></span></p>
+    </div>
+  </section>
+
+  <!-- 18 · checkpoint -->
+  <section class="slide" data-accent="purple">
+    <div class="stage stack">
+      <h1 class="title">最值錢的一條:「先給框架,不要直接寫完整報告」</h1>
+      <div>
+        <p class="flowlbl g">有 checkpoint</p>
+        <div class="flow"><span class="chip">先給一版框架</span><span class="arrow">→</span><span class="chip">你審方向,不對直接調</span><span class="arrow">→</span><span class="chip">再往下展開</span><span class="tag g">高效</span></div>
+      </div>
+      <div>
+        <p class="flowlbl r">沒有 checkpoint</p>
+        <div class="flow"><span class="chip">直接寫完 30 頁報告</span><span class="arrow">→</span><span class="chip">才發現方向不對</span><span class="arrow">→</span><span class="chip">整份重來</span></div>
+        <p class="r" style="font-size:13px;margin-top:8px">改動成本太高,也浪費 token</p>
+      </div>
+      <p class="center"><span class="pill p" style="font-size:clamp(15px,1.8vw,20px)"><b>完成定義不是官僚流程,是仁慈</b></span></p>
+      <p class="center dim">告訴 AI 該在哪裡停,<span class="o">也放你自己一馬</span></p>
+    </div>
+  </section>
+
+  <!-- 19 · pair up -->
+  <section class="slide" data-accent="purple">
+    <div class="stage stack">
+      <div class="center"><span class="bubble" style="max-width:640px"><span class="tag p">完成定義</span><span class="big">什麼東西出現在我眼前,我就可以收工?</span></span></div>
+      <div class="cmp" style="grid-template-columns:1fr auto 1fr;margin-top:10px">
+        <div class="card" style="border-left:5px solid var(--red);text-align:right"><div class="lbl r">邊界</div><p style="font-weight:700">不要做什麼</p></div>
+        <div class="vs" style="border:none">一起幫 AI<br><span class="p" style="font-size:22px;font-weight:900">劃清範圍</span></div>
+        <div class="card" style="border-left:5px solid var(--purple)"><div class="lbl p">完成定義</div><p style="font-weight:700">做到哪裡就停</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 20 · full brief -->
+  <section class="slide" data-accent="orange">
+    <div class="stage stack">
+      <h1 class="title">現在,把<span class="o">五段</span>串起來</h1>
+      <p class="sub">你手上這份 brief,長這樣</p>
+      <div class="brief">
+        <div class="brow"><span class="bar" style="--c:var(--orange)"></span><span class="fname o">目標</span><span class="fval">1 個要支撐的決策</span></div>
+        <div class="brow"><span class="bar" style="--c:var(--blue)"></span><span class="fname b">背景</span><span class="fval">2 行公司背景</span></div>
+        <div class="brow"><span class="bar" style="--c:var(--green)"></span><span class="fname g">素材</span><span class="fval">3 條素材來源</span></div>
+        <div class="brow"><span class="bar" style="--c:var(--red)"></span><span class="fname r">邊界</span><span class="fval">3 個不要</span></div>
+        <div class="brow"><span class="bar" style="--c:var(--purple)"></span><span class="fname p">完成定義</span><span class="fval">1 個停損點:先框架,再展開</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 21 · it is your prompt -->
+  <section class="slide" data-accent="orange">
+    <div class="stage stack center">
+      <h1 class="title">現在,把<span class="o">五段</span>串起來</h1>
+      <p class="sub">你手上這份 brief,長這樣</p>
+      <p class="big-accent o" style="margin:.4em 0">它就是你的 prompt</p>
+      <p class="dim">沒有任何花俏的技巧</p>
+      <div class="brief" style="max-width:360px;margin:12px auto 0;transform:scale(.85);opacity:.7">
+        <div class="brow" style="padding:8px 12px;margin:6px 0"><span class="bar" style="--c:var(--orange)"></span><span class="fname o" style="min-width:56px;font-size:13px">目標</span><span class="fval" style="font-size:12px">支撐決策</span></div>
+        <div class="brow" style="padding:8px 12px;margin:6px 0"><span class="bar" style="--c:var(--blue)"></span><span class="fname b" style="min-width:56px;font-size:13px">背景</span><span class="fval" style="font-size:12px">2 行背景</span></div>
+        <div class="brow" style="padding:8px 12px;margin:6px 0"><span class="bar" style="--c:var(--green)"></span><span class="fname g" style="min-width:56px;font-size:13px">素材</span><span class="fval" style="font-size:12px">3 條來源</span></div>
+        <div class="brow" style="padding:8px 12px;margin:6px 0"><span class="bar" style="--c:var(--red)"></span><span class="fname r" style="min-width:56px;font-size:13px">邊界</span><span class="fval" style="font-size:12px">3 個不要</span></div>
+        <div class="brow" style="padding:8px 12px;margin:6px 0"><span class="bar" style="--c:var(--purple)"></span><span class="fname p" style="min-width:56px;font-size:13px">完成定義</span><span class="fval" style="font-size:12px">1 個停損點</span></div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div id="bar">
+  <button class="nav" id="prev" aria-label="上一頁">‹</button>
+  <span id="count">01 / 22</span>
+  <button class="nav" id="next" aria-label="下一頁">›</button>
+</div>
+
+<script>
+  const slides=[...document.querySelectorAll('.slide')];
+  const total=slides.length;
+  let i=0;
+  const count=document.getElementById('count');
+  const prog=document.getElementById('prog');
+  function show(n){
+    i=Math.max(0,Math.min(total-1,n));
+    slides.forEach((s,k)=>s.classList.toggle('active',k===i));
+    count.textContent=String(i+1).padStart(2,'0')+' / '+total;
+    prog.style.width=((i+1)/total*100)+'%';
+  }
+  document.getElementById('next').onclick=()=>show(i+1);
+  document.getElementById('prev').onclick=()=>show(i-1);
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();show(i+1)}
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();show(i-1)}
+    else if(e.key==='Home'){show(0)} else if(e.key==='End'){show(total-1)}
+    else if(e.key==='f'||e.key==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}
+  });
+  // swipe on touch
+  let sx=null;
+  document.addEventListener('touchstart',e=>sx=e.touches[0].clientX,{passive:true});
+  document.addEventListener('touchend',e=>{if(sx===null)return;const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>50)show(i+(dx<0?1:-1));sx=null;},{passive:true});
+  show(0);
+</script>
+</body>
+</html>
