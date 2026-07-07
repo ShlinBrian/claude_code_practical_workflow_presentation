@@ -1,0 +1,498 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MSSQL → PostgreSQL migration — five-arm experiment report</title>
+<style>
+  :root{
+    --bg:#0f1115; --panel:#171a21; --panel2:#1e222b; --ink:#e7ecf3; --dim:#9aa4b2;
+    --line:#2a2f3a; --accent:#6ea8fe; --good:#4ade80; --warn:#fbbf24; --bad:#f87171;
+    --mono:"SF Mono",ui-monospace,"JetBrains Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  @media (prefers-color-scheme: light){
+    :root{--bg:#f6f7f9;--panel:#fff;--panel2:#f0f2f6;--ink:#161a20;--dim:#5b6472;--line:#e2e6ec;--accent:#2563eb;--good:#16a34a;--warn:#b45309;--bad:#dc2626;}
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.55;font-size:15px}
+  .wrap{max-width:1180px;margin:0 auto;padding:40px 22px 90px}
+  h1{font-size:30px;line-height:1.15;margin:0 0 6px;letter-spacing:-.02em}
+  h2{font-size:22px;margin:52px 0 8px;letter-spacing:-.01em;border-bottom:1px solid var(--line);padding-bottom:8px}
+  h3{font-size:17px;margin:26px 0 6px}
+  h4{font-size:14px;margin:18px 0 4px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em}
+  p{margin:8px 0}
+  .sub{color:var(--dim)}
+  a{color:var(--accent)}
+  code{font-family:var(--mono);font-size:.86em;background:var(--panel2);padding:1px 5px;border-radius:4px}
+  pre{background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:13px 15px;overflow-x:auto;margin:8px 0}
+  pre code{background:none;padding:0;font-size:12.5px;line-height:1.5;white-space:pre}
+  .lead{font-size:16px;color:var(--dim);max-width:80ch}
+  .tag{display:inline-block;font-family:var(--mono);font-size:11px;padding:2px 8px;border-radius:20px;border:1px solid var(--line);background:var(--panel2);color:var(--dim);margin-right:6px}
+  .pill{display:inline-block;font-size:11px;font-weight:600;padding:2px 9px;border-radius:20px}
+  .p-good{background:rgba(74,222,128,.15);color:var(--good)}
+  .p-warn{background:rgba(251,191,36,.15);color:var(--warn)}
+  .p-bad{background:rgba(248,113,113,.15);color:var(--bad)}
+  .p-nf{background:var(--panel2);color:var(--dim);border:1px dashed var(--line)}
+  .callout{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:9px;padding:14px 18px;margin:18px 0}
+  .callout.warn{border-left-color:var(--warn)}
+  .callout.bad{border-left-color:var(--bad)}
+  table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.5px}
+  .scroll{overflow-x:auto}
+  th,td{border:1px solid var(--line);padding:9px 11px;text-align:left;vertical-align:top}
+  th{background:var(--panel2);font-weight:600}
+  td.arm{white-space:nowrap;font-weight:700}
+  .muted{color:var(--dim);font-size:12px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:820px){.grid2{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:16px 18px;margin:16px 0}
+  .scores{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+  .score{font-family:var(--mono);font-size:12px;padding:5px 10px;border-radius:8px;background:var(--panel2);border:1px solid var(--line)}
+  .score b{color:var(--ink)}
+  .s5{border-color:var(--good)} .s4{border-color:var(--good)} .s3{border-color:var(--warn)} .s2{border-color:var(--bad)} .s1{border-color:var(--bad)}
+  .cap{font-family:var(--mono);font-size:11px;color:var(--dim);margin:2px 0 8px}
+  .num{font-variant-numeric:tabular-nums}
+  .legend{font-size:12px;color:var(--dim);margin-top:6px}
+  hr{border:none;border-top:1px solid var(--line);margin:30px 0}
+  .arm-A{color:#f0abfc}.arm-B{color:#6ee7b7}.arm-C1{color:#93c5fd}.arm-C2{color:#fcd34d}.arm-D{color:#fca5a5}
+</style>
+
+<div class="wrap">
+
+<h1>MSSQL → PostgreSQL migration: five ways to run the same job</h1>
+<p class="lead">One task — port the CyberLink product-download backend from SQL Server to PostgreSQL — executed five times, each under a different amount of workflow discipline. This report reconstructs each run from its committed artifacts (verifier output, telemetry, commit history, and the actual converted code) and scores them on the same rubric. Every quality claim below is backed by a real excerpt with a file path and line number, pulled read-only from the branch.</p>
+
+<p>
+<span class="tag">A · naive</span> one-line prompt, repo as-is &nbsp;
+<span class="tag">B · superpowers-end-to-end</span> full chain (brainstorm→plan→worktrees→TDD→debug→review→verify) &nbsp;
+<span class="tag">C1 · superpowers-goal</span> brainstorm + /goal loop &nbsp;
+<span class="tag">C2 · superpowers-workflow-2</span> brainstorm + /workflow fan-out &nbsp;
+<span class="tag">D · develop</span> real manual + AI-agent, ~1 month, no formal workflow
+</p>
+
+<div class="callout bad">
+<b>Read this before the scores.</b> The brief describes the job as “verified by a per-endpoint, per-row A/B comparison against a golden MSSQL response.” <b>That row-level verifier does not exist in any of the five branches.</b> Every committed Postman/newman run reports <code>"assertions": {"total": 0}</code> — i.e. the collections contain <b>zero</b> <code>pm.test()</code> assertions and pass/fail was judged externally by HTTP status code. The only content-level check anywhere is arm B’s table-level <code>COUNT(*)</code> parity (row <i>counts</i>, not row <i>values</i>). So “correctness” below means, at best, “endpoint returns 2xx” + (for B) “row counts match” — not field-by-field A/B equivalence. This is the single most important caveat in the whole comparison, and it is true across <i>all</i> arms including the disciplined ones.
+</div>
+
+<h2>Results at a glance</h2>
+<div class="scroll">
+<table>
+<thead>
+<tr>
+  <th style="width:15%">Arm</th>
+  <th style="width:22%">Correctness<div class="muted">verifier pass rate</div></th>
+  <th style="width:19%">Cost<div class="muted">weighted token-units¹</div></th>
+  <th style="width:22%">Completion time<div class="muted">continuous execution²</div></th>
+  <th style="width:22%">Code quality<div class="muted">composite of 4 dims /5</div></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td class="arm arm-A">A · naive</td>
+  <td><span class="pill p-warn">47/47 claimed</span><div class="muted">Self-reported in <code>MIGRATION_REPORT.html</code>. <b>No backing artifact</b> — the Postman collection has 0 assertions; no newman result file committed.</div></td>
+  <td class="num">≈26.7M<div class="muted">Only inside the HTML report; no separate telemetry file.</div></td>
+  <td class="num">≈104 min<div class="muted">“execution time, waits excluded” (self-reported). Raw commit span multi-day.</div></td>
+  <td><span class="pill p-bad">2.0 / 5</span><div class="muted">Sound conversions, <b>zero</b> test/review safety net, orphaned dead SQL.</div></td>
+</tr>
+<tr>
+  <td class="arm arm-B">B · end-to-end</td>
+  <td><span class="pill p-warn">41/47 2xx</span> + <span class="pill p-good">326/326 tables</span><div class="muted">6 “external” failures. Row-<i>count</i> parity in <code>data-verification.txt</code>. Report cites a <code>newman-verify.json</code> that isn’t committed.</div></td>
+  <td class="num">≈21.3M ⚠<div class="muted">Committed <code>telemetry-tokens.json</code>. Report/commit claim ~44.6M — the two disagree (see ¹).</div></td>
+  <td class="num">≈5.0 h<div class="muted">“real execution, excludes wait-for-reply” (per final telemetry commit).</div></td>
+  <td><span class="pill p-warn">3.1 / 5</span><div class="muted">Most rigorous process & docs; still no independent review or row-level verifier.</div></td>
+</tr>
+<tr>
+  <td class="arm arm-C1">C1 · /goal</td>
+  <td><span class="pill p-good">47/47 2xx</span><div class="muted">HTTP 200 for all 47 in <code>endpoint-results.json</code>. Row parity asserted inline in a script comment, not captured as data.</div></td>
+  <td class="num">≈30.0M<div class="muted">Transcript-verified recompute in <code>telemetry.md</code>.</div></td>
+  <td class="num">≈96.6 min<div class="muted">Single continuous <code>/goal</code> turn, 21:49→23:26, no idle.</div></td>
+  <td><span class="pill p-bad">2.25 / 5</span><div class="muted">Smallest, cleanest diff — but the migrated SQL never landed in the repo.</div></td>
+</tr>
+<tr>
+  <td class="arm arm-C2">C2 · /workflow</td>
+  <td><span class="pill p-good">40/40 DB-backed</span><div class="muted">iter1 34/40 → iter2 40/40; 7 endpoints excluded N/A. Status-code based (0 assertions).</div></td>
+  <td class="num"><b>≈5.5M</b><div class="muted">Cheapest by ~4×. Aggregated from 574 agent responses; embedded in the HTML report.</div></td>
+  <td class="num">≈131.5 min<div class="muted">Run 1 + Run 2 + resume, idle excluded (~16 h wall-clock not counted).</div></td>
+  <td><span class="pill p-warn">2.5 / 5</span><div class="muted">Best committed proc artifacts & cheapest run; leftover MSSQL in legacy Java.</div></td>
+</tr>
+<tr>
+  <td class="arm arm-D">D · develop</td>
+  <td><span class="pill p-warn">Prod-shipped</span><div class="muted">No formal artifact. Manual <code>postman/api.json</code>; one production incident (SQLSTATE 55006) found & fixed post-ship.</div></td>
+  <td><span class="pill p-nf">NOT FOUND</span><div class="muted">See ³ — not computable.</div></td>
+  <td><span class="pill p-nf">≈1 month (calendar)</span><div class="muted">See ⁴ — not comparable to the continuous-run times.</div></td>
+  <td><span class="pill p-warn">2.9 / 5</span><div class="muted">Production-hardened & best commit hygiene via a month of iteration; no automated tests, one shipped bug.</div></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<p class="legend">
+¹ <b>Weighted token-units</b> = <code>input×1 + cache_read×0.1 + cache_write×1.25 + output×5</code> (the formula every arm’s own report uses). B is inconsistent: the committed <code>migration/telemetry-tokens.json</code> totals <b>21,255,396.8</b> units, but the final-commit message and HTML report claim <b>~44.6M</b> units, and the agent count is given as 12 / 13 / 16 in three different places — reported as an internal inconsistency, not resolved.<br>
+² <b>Continuous execution</b> = each arm’s own “time with wait-for-user idle removed.” These are self-reported and not independently timed; treat as order-of-magnitude.<br>
+³ <b>D cost — NOT FOUND / not computable.</b> D is manual + AI-agent work spread across dozens of untracked interactive sessions over months. No session-boundary token log exists in the repo (confirmed: no telemetry/token/cost file in the <code>develop</code> tree). Any number would be fabricated.<br>
+⁴ <b>D time — calendar elapsed, not wall-clock.</b> Migration-tagged commits run 2025-11-24 → 2026-06-10. The core port lands between <code>ee7d009 “base postgres can run”</code> (2026-01-07) and <code>3081a9e “migrate mssql dao to postgres dao”</code> + <code>c539501 “add CLAUDE.md”</code> marking completion (2026-02-12) — roughly <b>5 weeks</b> of back-and-forth — with a production fix still landing on 2026-06-10. This is iterative calendar time, <b>not</b> a 1:1 comparison to the other arms’ continuous minutes/hours.
+</p>
+
+<div class="callout">
+<b>How to read the code-quality composite.</b> Each arm is scored 1–5 on four dimensions — <b>correctness robustness</b>, <b>tests</b>, <b>structure & readability</b>, <b>review trail</b> — and the composite is their mean. Ranking: <span class="arm-B">B 3.1</span> &gt; <span class="arm-D">D 2.9</span> &gt; <span class="arm-C2">C2 2.5</span> &gt; <span class="arm-C1">C1 2.25</span> &gt; <span class="arm-A">A 2.0</span>. The disciplined end-to-end run (B) tops it — but the unstructured month-long human+AI run (D) lands a very close second, and <b>tests + review are weak in every arm</b>. The workflow’s payoff shows up as documentation, root-cause rigor, and reproducibility, not as a magically better safety net.
+</div>
+
+<h2>Code-quality deep-dive</h2>
+<p class="sub">The centerpiece. Per arm: a verdict, per-dimension scores, and the real code that justifies them. Two hard cases every arm had to solve — <b>case-folding</b> and the <b>refcursor→function</b> rewrite — are compared side-by-side at the end.</p>
+
+<!-- ARM A -->
+<div class="card">
+<h3><span class="arm-A">A · naive</span> — sound conversions, no safety net &nbsp;<span class="pill p-bad">composite 2.0</span></h3>
+<div class="scores">
+  <span class="score s3">robustness <b>3.5</b></span>
+  <span class="score s1">tests <b>1</b></span>
+  <span class="score s2">structure <b>2.5</b></span>
+  <span class="score s1">review <b>1</b></span>
+</div>
+<p><b>Verdict.</b> The actual conversions are more competent than the process around them: 66 PL/pgSQL functions, <code>ISNULL→COALESCE</code>, refcursor→<code>RETURNS TABLE/SETOF</code>, JDBC <code>{call}</code> rewritten to <code>SELECT&nbsp;*&nbsp;FROM&nbsp;fn(?)</code>, and case-folding handled cleanly via <code>citext</code> columns. But there is <b>no test, no review, and no artifact backing the “47/47” claim</b> — the committed Postman collection contains zero assertions — plus an orphaned dead SQL file. Quality here rests entirely on the model getting it right first time, with nothing to catch it if it didn’t.</p>
+
+<h4>Robustness — ISNULL→COALESCE, and case-folding via citext</h4>
+<pre><code>-- sql/postgres/proc_B.sql:113  (repeated at 125,169,180,191,204,218,228,238,250)
+AND COALESCE(d.ismac, 0) = p_ismac</code></pre>
+<pre><code>-- sql/postgres/Downloader_tables.sql (header)
+-- Target: PostgreSQL 16, schema public. citext + postgres_fdw assumed installed.
+-- Identifiers left unquoted (fold to lowercase). bit -> smallint, nvarchar/varchar/char -> citext,
+SR citext NOT NULL
+BuildNo citext NULL</code></pre>
+<p class="cap">No <code>ILIKE</code>/<code>LOWER()</code> anywhere — case-insensitivity is delegated to the <code>citext</code> column type. JDBC side adds <code>?stringtype=unspecified</code> in <code>config/*/db.properties</code>.</p>
+
+<h4>The one leftover: orphaned dead SQL</h4>
+<pre><code>-- sql/download_functions_converted.sql:5   (added by an OLDER commit 4adc621, not the naive run)
+-- Converts 13 functions from refcursor to RETURNS TABLE
+--   Insert these into Downloader_postgres_code_optimized.sql   <-- file does not exist in the tree</code></pre>
+<p class="cap">Dead/orphaned: it instructs inserting into a file that isn’t in the repo, and sits beside the real <code>sql/postgres/proc_*.sql</code> the run actually produced.</p>
+
+<h4>Tests & review — the gap</h4>
+<p>No JUnit/TestNG anywhere. The only “test” asset is <code>test_downloader_settings/postman/api.json</code>: 47 requests, and — checked item-by-item — <b>zero <code>pm.test()</code> scripts</b> (the single script present is a pre-request HMAC-auth header setter). The footer’s <code>“47/47 postman”</code> is therefore an unverifiable self-claim. <span class="pill p-nf">review trail: NOT FOUND</span> — no review artifact of any kind.</p>
+<p class="muted"><b>Structure:</b> <code>git diff exp_base..naive</code> = 42 files, +11,083/−119; two commits (one big-bang <code>feat</code> + one <code>docs</code> metric-correction). No leftover MSSQL syntax in executable code (all <code>TOP/ISNULL/GETDATE</code> hits are inside explanatory comments).</p>
+</div>
+
+<!-- ARM B -->
+<div class="card">
+<h3><span class="arm-B">B · superpowers-end-to-end</span> — most rigorous process; best documentation &nbsp;<span class="pill p-warn">composite 3.1</span></h3>
+<div class="scores">
+  <span class="score s4">robustness <b>4.5</b></span>
+  <span class="score s2">tests <b>2.5</b></span>
+  <span class="score s3">structure <b>3.5</b></span>
+  <span class="score s2">review <b>2</b></span>
+</div>
+<p><b>Verdict.</b> This is the run that <i>understood</i> the problem. It produced a grepped dialect inventory before touching code, and its Phase-6 fix file carries the single best root-cause write-up in the whole experiment — a precise explanation of why SCT’s refcursor procedures break the app’s JDBC calls. That rigor earns the top robustness score. It’s held back by the same structural gaps as everyone else — no independent review (only an author self-review), no row-level verifier — and by a bloated 232k-line diff and a case-folding choice (<code>LOWER()</code> everywhere) that’s functionally correct but harder on indexes than <code>citext</code>.</p>
+
+<h4>Root-cause rigor — the refcursor/pgjdbc impedance, in the code</h4>
+<pre><code>-- migration/phase6-fix-views-and-functions.sql:1  (header comment, verbatim)
+-- Root cause (introduced by Task 3.5 schema consolidation):
+--  * SCT converted the MSSQL result-set stored procedures into PG PROCEDUREs
+--    with INOUT refcursor params. The legacy Java JDBC code calls them as
+--    `{call Proc(?...)}` + executeQuery(). pgjdbc (default
+--    escapeSyntaxCallMode=select) rewrites `{call f(?)}` to
+--    `SELECT * FROM f(?)`, which requires a FUNCTION whose arg list matches
+--    the Java arg count (NO refcursor) and that returns rows.</code></pre>
+<p class="cap">No other arm articulates <i>why</i> the rewrite is necessary. This is the difference between fixing a symptom and understanding the system.</p>
+
+<h4>Dialect inventory before edits (grep-driven, then verified clean)</h4>
+<pre><code>-- docs/superpowers/sql-dialect-inventory.md — files needing edits, enumerated with line numbers:
+-- src/com/cyberlink/seo/dao/DownloadDAO.java — 76-78,113,146,1187-1189,1467,1563,1736-1738,1849-1854,2251
+-- After the run: grep 'TOP |ISNULL|GETDATE|dbo\.|\[' DownloadDAO.java  ->  no matches</code></pre>
+<p class="cap">Post-migration the DAOs are clean of MSSQL dialect — verified by re-grep. Contrast with C2, which left <code>TOP</code>/brackets in the same file.</p>
+
+<h4>Tests — count parity, not value parity</h4>
+<pre><code>// migration/data-verification.txt
+TOTAL TABLES: 326   PASS: 326   FAIL: 0
+Comparison: PostgreSQL live COUNT(*) vs MSSQL live exact COUNT(*) (authoritative).</code></pre>
+<pre><code>// migration/newman-report.json  ->  run.stats
+"assertions": { "total": 0, "pending": 0, "failed": 0 }   // status-code check only</code></pre>
+<p class="cap">Row-<i>count</i> parity across 326 tables is real and more than any other arm captured — but it is not field-by-field A/B comparison, and the endpoint side has no scripted assertions.</p>
+
+<h4>Review trail — self-review only</h4>
+<pre><code>// docs/superpowers/plans/2026-06-16-mssql-to-postgres-migration.md:527
+## Self-Review notes (author)
+- Spec coverage: Phase 0↔spec§6.0 ... Phase 7↔§6.7 (both report contents ✓)
+- Risk: identifier casing handled by lowercase strategy + runtime feedback loop
+- Telemetry completeness risk mitigated by cross-cutting Task 7.1</code></pre>
+<p class="cap"><span class="pill p-nf">independent review: NOT FOUND</span> — this is the author checking their own spec coverage, not a review agent with findings/score. Scored 2 (a self-review exists; no independent one does).</p>
+<p class="muted"><b>Structure:</b> 33 clean phase-based commits (<code>feat/fix/docs/chore</code>) + committed plan, spec, and inventory = strong hygiene. But <code>git diff exp_base..B</code> = 59 files, <b>+232,818</b> lines — inflated by committing the full AWS-SCT assessment CSVs and converted SQL dumps. Auditable, but heavy.</p>
+</div>
+
+<!-- ARM C1 -->
+<div class="card">
+<h3><span class="arm-C1">C1 · superpowers-goal</span> — cleanest diff, but the output isn’t in the repo &nbsp;<span class="pill p-bad">composite 2.25</span></h3>
+<div class="scores">
+  <span class="score s3">robustness <b>3</b></span>
+  <span class="score s2">tests <b>2</b></span>
+  <span class="score s3">structure <b>3</b></span>
+  <span class="score s1">review <b>1</b></span>
+</div>
+<p><b>Verdict.</b> The <code>/goal</code> loop produced the smallest, tidiest change set (+1,784 lines) and a genuinely clever converter that introspects each refcursor query to discover its output columns. The fatal flaw for reproducibility: <b>the 48 converted PL/pgSQL functions were generated live into the running database and never committed</b>. The repo holds the <i>converter script</i> and the MSSQL source, but not the migration’s actual output — you cannot rebuild the target schema from this branch. Fast and clean, but you can’t audit or redeploy what isn’t there.</p>
+
+<h4>The clever bit — column discovery by introspection</h4>
+<pre><code># docs/migration/convert_query_procs.py:1  (docstring, verbatim)
+"""Phase 3/6: convert SCT-generated refcursor PROCEDURES (query type) into
+table-returning FUNCTIONS so the app's `{call proc(?)}`+executeQuery() works
+(pgjdbc rewrites {call f(?)} -> SELECT * FROM f(?)). The app reads only the
+FIRST result set, so we wrap the FIRST `OPEN cur FOR <query>` as RETURN QUERY.
+Output columns are discovered by introspecting the query with params bound NULL."""</code></pre>
+
+<h4>The hole — converted SQL is a live-DB side effect, not a file</h4>
+<pre><code>-- git ls-tree superpowers-goal | grep '\.sql$'
+sql/*_mssql.sql              # original MSSQL source dumps (reference only)
+docs/migration/extra_functions.sql   # ONE hand-written function
+docs/migration/views.sql             # 4 views
+-- NOT FOUND: any committed CREATE FUNCTION ... RETURNS TABLE for the 48 procs</code></pre>
+<p class="cap">Everything the migration actually produced lives only in the Postgres instance the converter ran against. Reproducibility risk: high.</p>
+
+<h4>Case-folding — LOWER(), explicitly “no citext”</h4>
+<pre><code>-- migration-report.html risk table
+Case-insensitive compare  ->  Handled — procs use LOWER(); no citext needed.
+-- docs/migration/extra_functions.sql:16
+SELECT dow.productid, LOWER(dow2.countrycodeiso2), count(*), ...</code></pre>
+<p class="muted"><b>Tests:</b> <code>endpoint-results.json</code> = 47/47 HTTP 200, computed by <code>build_report.py</code> counting codes in [200,300); the <code>postman/api.json</code> it ran against isn’t committed either. Row parity asserted only as a Python comment (<code>“= PG counts; exact parity verified”</code>), not captured as data. <span class="pill p-nf">review trail: NOT FOUND</span>. <b>Structure:</b> +1,784 lines (smallest) — clean, but incomplete.</p>
+</div>
+
+<!-- ARM C2 -->
+<div class="card">
+<h3><span class="arm-C2">C2 · superpowers-workflow-2</span> — best committed artifacts, cheapest run, one real leak &nbsp;<span class="pill p-warn">composite 2.5</span></h3>
+<div class="scores">
+  <span class="score s3">robustness <b>3.5</b></span>
+  <span class="score s2">tests <b>2.5</b></span>
+  <span class="score s3">structure <b>3</b></span>
+  <span class="score s1">review <b>1</b></span>
+</div>
+<p><b>Verdict.</b> The <code>/workflow</code> fan-out did two things no other arm did: it committed every stored proc <b>as a side-by-side MSSQL→PG pair</b> (49 each) so the rewrite is fully auditable, and it did the whole job for <b>~5.5M units — roughly a quarter of the others’ cost</b>. Its case-folding uses <code>citext</code> with explicit <code>::citext</code> parameter casts (the most correct of the LOWER-vs-citext camp), and it showed a real iter1→iter2 improvement (34→40 passing). The blemish: it left live MSSQL dialect — <code>SELECT TOP (1)</code> and <code>[PMS].[dbo].[…]</code> brackets — in the legacy <code>DownloadDAO.java</code>, a latent defect if that path is still wired in.</p>
+
+<h4>The auditable win — MSSQL and PG side by side, both committed</h4>
+<div class="grid2">
+<div>
+<p class="cap">mssql_procs/Downloader_U_Report_Daily.sql</p>
+<pre><code>DELETE FROM [dbo].[Downloader_U_Report]
+  WHERE [date]=CONVERT(VARCHAR(10),
+    DATEADD(day,-1,GETDATE()),111)
+...
+SELECT DOW.ProductId, count(*),
+  CONVERT(VARCHAR(10),DATEADD(day,-1,GETDATE()),111)
+FROM Downloader_v2 AS DOW (nolock)
+WHERE DOW.status='Complete'
+  AND ISNULL(new_download,1)=1</code></pre>
+</div>
+<div>
+<p class="cap">pg_procs/downloader_u_report_daily.sql</p>
+<pre><code>v_yesterday timestamp := date_trunc('day',now())
+                         - interval '1 day';
+...
+DELETE FROM downloader_u_report
+  WHERE date = v_yesterday;
+INSERT INTO downloader_u_report (...)
+SELECT dow.productid, count(*), v_yesterday
+FROM downloader_v2 dow
+WHERE dow.status='Complete'
+  AND COALESCE(dow.new_download,1)=1;</code></pre>
+</div>
+</div>
+<p class="cap">Idiomatic: <code>CONVERT/DATEADD/GETDATE</code> → <code>date_trunc('day',now())±interval</code> hoisted into variables; <code>(nolock)</code> dropped; <code>ISNULL→COALESCE</code>. Clean rewrite, and you can verify it because both halves are in the repo.</p>
+
+<h4>Case-folding — citext with explicit param casts (the correct form)</h4>
+<pre><code>-- pg_procs/cse_querysidinfobysid.sql:6,21
+sid citext,
+WHERE v.sid = p_sid::citext;
+-- pg_procs/downloader_querybytokenid.sql:14
+WHERE d.tokenid = p_tokenid::citext;</code></pre>
+
+<h4 style="color:var(--bad)">The leak — MSSQL dialect left live in Java</h4>
+<pre><code>// src/com/cyberlink/seo/dao/DownloadDAO.java:1294   (and :1392)
+pstmt = con.prepareStatement(" SELECT TOP (1) * FROM Download where nLangId=? ... ");
+// src/com/cyberlink/seo/dao/DownloadDAO.java:113
+.prepareStatement(" SELECT [Platform] FROM [PMS].[dbo].[ProductVersionType] WHERE ... ");</code></pre>
+<p class="cap"><code>TOP (1)</code> and bracketed 3-part names are invalid PostgreSQL. B grepped these out of the same file; C2 did not. Real defect if the legacy DAO is on a live path (it may be superseded by <code>dao/jdbctemplate/</code>, as it is on <code>develop</code>) — flagged, not assumed dead.</p>
+<p class="muted"><b>Cost:</b> ~5.5M weighted units, aggregated from 574 agent responses incl. 6 aborted on session limits — the cheapest arm by ~4×. <b>Tests:</b> newman 34/40→40/40, 0 assertions (status-based). <span class="pill p-nf">review trail: NOT FOUND</span>. <b>Structure:</b> +357,626 lines (biggest — the full proc pairs), but a <b>single squashed commit</b> — poor commit hygiene despite excellent artifact hygiene.</p>
+</div>
+
+<!-- ARM D -->
+<div class="card">
+<h3><span class="arm-D">D · develop</span> — production-hardened by a month of iteration; no automated net &nbsp;<span class="pill p-warn">composite 2.9</span></h3>
+<div class="scores">
+  <span class="score s4">robustness <b>4</b></span>
+  <span class="score s1">tests <b>1.5</b></span>
+  <span class="score s4">structure <b>4</b></span>
+  <span class="score s2">review <b>2</b></span>
+</div>
+<p><b>Verdict.</b> The unstructured, human-driven baseline — and, on the two dimensions that survive contact with production, the strongest of the five. It’s the only arm that enabled the <code>citext</code> extension and typed columns <code>CITEXT</code> at scale (the cleanest case-folding solution), the only one with a real cross-DB story via foreign schemas, and by far the best commit hygiene: 54 incremental commits with JIRA/ticket references, each endpoint migrated in its own commit. It also carries the scars of real use: a production incident (SQLSTATE 55006) that no test caught, fixed a month after “complete.” D shows that a month of human+AI iteration plus real traffic can reach production robustness the one-shot runs didn’t — while confirming the thesis’ weak spot: without a workflow, there’s still no automated test or formal review, so a bug shipped.</p>
+
+<h4>Case-folding — done right, at the type level</h4>
+<pre><code>-- sql/Downloader_postgres_storage.sql:2
+CREATE EXTENSION IF NOT EXISTS citext;
+-- Downloader_postgres_storage.sql:290,307,327
+sr CITEXT NOT NULL,
+buildno CITEXT,
+clbuildlinkmd5 CITEXT NOT NULL DEFAULT '',
+-- Cyberlink_postgres_storage.sql: 1096 CITEXT column declarations</code></pre>
+<p class="cap">No <code>ILIKE</code>/<code>COLLATE</code> hacks needed; case-insensitivity is a property of the type. Java occasionally reinforces it: <code>DownloaderDAOPostgres.java:221 rs.getString("Region").toLowerCase()</code>.</p>
+
+<h4>Cross-DB — foreign schemas, not linked-server hacks</h4>
+<pre><code>-- sql/Downloader_postgres_storage.sql:621
+FROM pc_dbo.cse_configuration AS cse
+INNER JOIN cyberlink_dbo.cyberlink_product AS clp ...
+-- no OPENQUERY / dblink anywhere; 4 DBs consolidated into foreign schemas</code></pre>
+
+<h4>The production incident — caught by traffic, not by a test</h4>
+<pre><code>commit 1671b1e (2026-06-10)  Fix ... (SQLSTATE 55006)
+"The repo definition was a stale refcursor + temp-table version: it built a TEMP table,
+ OPENed a cursor over it, then DROP TABLE'd the temp table while the returned cursor still
+ referenced it -> SQLSTATE 55006. This made /api/.../query-front-patch-product-list return HTTP 500.
+ The stage DB was already converted to a RETURNS TABLE version using an inline VALUES CTE..."</code></pre>
+<pre><code>-- the fix (sql/Downloader_postgres_code_optimized.sql), refcursor+temp-table -> RETURNS TABLE + VALUES CTE
+CREATE OR REPLACE FUNCTION public.productcategory_getallproductfordownload_front_v2(...)
+RETURNS TABLE(productid integer, pachdsorder integer) LANGUAGE plpgsql STABLE AS $function$
+BEGIN
+  WITH product_list AS (SELECT * FROM (VALUES (1,0),(4,100),(211,200),...) AS t(productid,pachdsorder))
+  SELECT DISTINCT d.productid, p.pachdsorder FROM download d INNER JOIN product_list p ...</code></pre>
+<p class="cap">A bug that shipped and was found in production — the clearest possible evidence that “build is green + manual Postman” is not a substitute for a real verifier.</p>
+
+<h4>Coverage is partial, and honest about it</h4>
+<pre><code>-- sql/Cyberlink_postgres_code_optimized.sql:1
+-- Optimization Summary:
+-- ✅ 78 functions optimized (refcursor → RETURNS TABLE)
+-- ⏭️  22 functions kept as-is
+-- 🔒 894 functions not in scope (too complex)</code></pre>
+<p class="cap">The hot-path functions (e.g. <code>download_front</code>, with its ProductId-260-uses-ProdVerId special case) were rewritten to <code>RETURNS TABLE</code>; the long tail stays refcursor. Pragmatic for shipping, incomplete as a migration.</p>
+<p class="muted"><b>Tests:</b> none automated — CI runs <code>mvn ... -Dmaven.test.skip=true</code>; <code>postman/api.json</code> is a manual dev-loop; <code>CLAUDE.md</code> even references a <code>newman/</code> dir that doesn’t exist. <b>Review:</b> <span class="pill p-nf">no formal review</span>, but SonarQube/SCA gating in CI + a real PR-merge flow (<code>fix/patch-product-list-55006</code>) partially stand in — scored 2. <b>Structure:</b> +62,733 lines across 54 well-scoped commits with ticket refs = best hygiene of any arm.</p>
+</div>
+
+<h2>Same hard case, five solutions — side by side</h2>
+
+<h3>Case-folding / case-insensitive comparison</h3>
+<p class="sub">MSSQL string comparison is case-insensitive by default; PostgreSQL is not. Two camps emerged: fix it at the <b>type</b> level (<code>citext</code>) or at every <b>predicate</b> (<code>LOWER()</code>). Type-level wins on correctness-by-default and index behavior.</p>
+<div class="scroll">
+<table>
+<thead><tr><th>Arm</th><th>Approach</th><th>Evidence</th></tr></thead>
+<tbody>
+<tr><td class="arm arm-A">A</td><td><span class="pill p-good">citext (columns)</span></td><td><code>SR citext NOT NULL</code> — <code>Downloader_tables.sql</code>; JDBC <code>?stringtype=unspecified</code></td></tr>
+<tr><td class="arm arm-B">B</td><td><span class="pill p-warn">LOWER() everywhere</span></td><td><code>WHERE LOWER(msrid)=LOWER(par_msrid) AND LOWER(sr)=LOWER(par_sr)</code> — <code>phase6-fix-extra-functions.sql</code></td></tr>
+<tr><td class="arm arm-C1">C1</td><td><span class="pill p-warn">LOWER() (“no citext needed”)</span></td><td><code>SELECT ... LOWER(dow2.countrycodeiso2)</code> — <code>extra_functions.sql:16</code></td></tr>
+<tr><td class="arm arm-C2">C2</td><td><span class="pill p-good">citext + ::citext casts</span></td><td><code>sid citext … WHERE v.sid = p_sid::citext</code> — <code>cse_querysidinfobysid.sql</code></td></tr>
+<tr><td class="arm arm-D">D</td><td><span class="pill p-good">CREATE EXTENSION citext + CITEXT columns</span></td><td><code>CREATE EXTENSION IF NOT EXISTS citext;</code> + 1000+ <code>CITEXT</code> columns — <code>*_postgres_storage.sql</code></td></tr>
+</tbody>
+</table>
+</div>
+<div class="grid2">
+<div>
+<p class="cap">B / C1 — predicate-level (LOWER on both sides)</p>
+<pre><code>IF EXISTS (SELECT 1 FROM public.generic_trial
+  WHERE LOWER(msrid)=LOWER(par_msrid)
+    AND LOWER(sr)=LOWER(par_sr)) THEN
+  UPDATE public.generic_trial SET productid=par_productid
+   WHERE LOWER(msrid)=LOWER(par_msrid)
+     AND LOWER(sr)=LOWER(par_sr);</code></pre>
+<p class="cap">Correct, but <code>LOWER(col)</code> defeats a plain b-tree index unless a matching expression index exists; and it must be applied at <i>every</i> comparison site — easy to miss one.</p>
+</div>
+<div>
+<p class="cap">A / C2 / D — type-level (citext)</p>
+<pre><code>-- column carries the semantics; comparisons are
+-- case-insensitive by default, indexes just work
+sr CITEXT NOT NULL,
+...
+WHERE d.tokenid = p_tokenid::citext;   -- C2
+CREATE EXTENSION IF NOT EXISTS citext; -- D enables it globally</code></pre>
+<p class="cap">Case-insensitivity becomes a property of the data, not a rule the author must remember at each query. This is why A/C2/D score higher on this specific case.</p>
+</div>
+</div>
+
+<h3>refcursor → function rewrite</h3>
+<p class="sub">AWS SCT converts MSSQL result-set procedures into PG <b>procedures with INOUT refcursor</b> params. But the legacy Java calls <code>{call proc(?)}</code> + <code>executeQuery()</code>, and pgjdbc (<code>escapeSyntaxCallMode=select</code>) rewrites that to <code>SELECT * FROM proc(?)</code> — which needs a <b>table-returning FUNCTION</b>, not a refcursor procedure. Every arm had to bridge this. They differ in how completely, how it’s documented, and whether the output is even in the repo.</p>
+<div class="scroll">
+<table>
+<thead><tr><th>Arm</th><th>Strategy</th><th>Documented root cause?</th><th>Output committed?</th></tr></thead>
+<tbody>
+<tr><td class="arm arm-A">A</td><td>refcursor → <code>RETURNS TABLE/SETOF</code> (66 fns)</td><td><span class="pill p-bad">no</span></td><td><span class="pill p-good">yes — sql/postgres/proc_*.sql</span></td></tr>
+<tr><td class="arm arm-B">B</td><td>SCT procs → hand-fixed <code>RETURNS TABLE</code> (Phase 6)</td><td><span class="pill p-good">yes — best in class</span></td><td><span class="pill p-good">yes — phase6-fix-*.sql</span></td></tr>
+<tr><td class="arm arm-C1">C1</td><td>python introspects query → <code>RETURN QUERY</code></td><td><span class="pill p-warn">in script docstring</span></td><td><span class="pill p-bad">no — live-DB only</span></td></tr>
+<tr><td class="arm arm-C2">C2</td><td><code>RETURNS SETOF/TABLE/void/integer</code> per proc type (no refcursor at all)</td><td><span class="pill p-warn">in report text</span></td><td><span class="pill p-good">yes — pg_procs/*.sql</span></td></tr>
+<tr><td class="arm arm-D">D</td><td>78 hot fns → <code>RETURNS TABLE</code>; 22 kept refcursor; 894 out of scope</td><td><span class="pill p-warn">in file header + fix commit</span></td><td><span class="pill p-good">yes — *_code_optimized.sql</span></td></tr>
+</tbody>
+</table>
+</div>
+<div class="grid2">
+<div>
+<p class="cap">B — the fix, with the reasoning committed next to it</p>
+<pre><code>DROP ROUTINE IF EXISTS
+  public.download_bydownloadidforfront(integer, refcursor);
+CREATE OR REPLACE FUNCTION
+  public.download_bydownloadidforfront(par_downloadid integer)
+RETURNS TABLE( downloadid integer, ... [69 cols] ...,
+               productname varchar, versionname varchar ) AS $BODY$
+BEGIN
+  RETURN QUERY
+    SELECT d.*, cp.productname, v.versionname
+      FROM public.download AS d
+      LEFT JOIN cyberlink.cyberlink_product AS cp ON ...
+     WHERE d.downloadid = par_downloadid;
+END;$BODY$ LANGUAGE plpgsql;</code></pre>
+</div>
+<div>
+<p class="cap">D — same shape, reached via a production bug-fix a month later</p>
+<pre><code>-- was: TEMP table + OPEN cursor + DROP TABLE  -> SQLSTATE 55006 in prod
+CREATE OR REPLACE FUNCTION
+  public.productcategory_getallproductfordownload_front_v2(...)
+RETURNS TABLE(productid integer, pachdsorder integer)
+LANGUAGE plpgsql STABLE AS $function$
+BEGIN
+  WITH product_list AS (
+    SELECT * FROM (VALUES (1,0),(4,100),(211,200),...)
+      AS t(productid,pachdsorder))
+  SELECT DISTINCT d.productid, p.pachdsorder
+    FROM download d INNER JOIN product_list p ON ...
+END;$function$;</code></pre>
+</div>
+</div>
+<p class="cap">B and D converge on the same correct pattern (<code>RETURNS TABLE</code> + set-based query, no temp-table/cursor). B got there by design and documented why; D got there by shipping the wrong version first and having production tell it. C1 produced the equivalent logic but only in a live database — not in the repo.</p>
+
+<h2>Where each arm’s evidence lives</h2>
+<div class="scroll">
+<table>
+<thead><tr><th>Arm</th><th>Correctness artifact</th><th>Cost artifact</th><th>Quality / process artifacts</th></tr></thead>
+<tbody>
+<tr>
+  <td class="arm arm-A">A · naive</td>
+  <td><code>MIGRATION_REPORT.html</code> (self-report; no data file)</td>
+  <td>inline in <code>MIGRATION_REPORT.html</code></td>
+  <td><code>sql/postgres/proc_*.sql</code> · <span class="pill p-nf">no tests</span> · <span class="pill p-nf">no review</span></td>
+</tr>
+<tr>
+  <td class="arm arm-B">B · end-to-end</td>
+  <td><code>migration/newman-report.json</code> · <code>migration/data-verification.txt</code> · <code>migration-report.html</code></td>
+  <td><code>migration/telemetry-tokens.json</code></td>
+  <td><code>docs/superpowers/plans/…</code> · <code>…/specs/…</code> · <code>sql-dialect-inventory.md</code> · <code>phase6-fix-*.sql</code></td>
+</tr>
+<tr>
+  <td class="arm arm-C1">C1 · /goal</td>
+  <td><code>docs/migration/endpoint-results.json</code> · <code>migration-report.html</code></td>
+  <td><code>docs/migration/telemetry.md</code></td>
+  <td><code>docs/migration/convert_*_procs.py</code> · <code>source-rowcounts.md</code> · <span class="pill p-warn">converted SQL uncommitted</span></td>
+</tr>
+<tr>
+  <td class="arm arm-C2">C2 · /workflow</td>
+  <td><code>docs/superpowers/migration-work/newman_run_iter{1,2}.json</code> · <code>migration-report.html</code></td>
+  <td>inline in <code>migration-report.html</code> (no separate file)</td>
+  <td><code>migration-work/{mssql_procs,pg_procs}/*.sql</code> (side-by-side pairs)</td>
+</tr>
+<tr>
+  <td class="arm arm-D">D · develop</td>
+  <td><span class="pill p-nf">NOT FOUND (formal)</span> — closest: <code>postman/api.json</code> (manual) + fix commit <code>1671b1e</code></td>
+  <td><span class="pill p-nf">NOT FOUND — not computable</span></td>
+  <td><code>sql/*_postgres_*.sql</code> · <code>CLAUDE.md</code> · CI SAST/SCA gating · <span class="pill p-nf">no formal review</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<h2>What the experiment actually shows</h2>
+<div class="callout">
+<p><b>1. The workflow’s payoff is understanding and reproducibility, not a magic safety net.</b> B (full chain) wins code quality because it inventoried the dialect before editing, documented the refcursor/pgjdbc root cause better than anyone, and committed a coherent plan→spec→fix trail. That is the thesis working. But no arm — not even B — built the row-level A/B verifier the brief assumes, and no arm has an independent review artifact. Discipline raised the <i>floor</i> on comprehension; it did not, in this dataset, produce a real automated correctness gate.</p>
+<p><b>2. A month of human+AI iteration is a strong baseline.</b> D, with no formal workflow, is second on quality and first on structure and case-folding — because real production traffic and 54 incremental commits did work that a single continuous run couldn’t. It also shipped a bug (SQLSTATE 55006) that only production caught, which is exactly the failure mode a verifier would have prevented. D is the “quality still depends on luck (and time-in-production)” control case.</p>
+<p><b>3. The cheap/fast arms trade completeness for speed.</b> C2 did the job for ~¼ the tokens with the most auditable artifacts, but leaked MSSQL syntax into legacy Java and squashed everything into one commit. C1 was the smallest, cleanest diff but never committed its own output. Fast and cheap, thinner safety.</p>
+<p><b>4. “Correctness” is softer than any report claims.</b> 47/47, 41/47, 40/40 — all are HTTP-status smoke tests (<code>assertions: 0</code>). The honest, uniform statement is: <i>every endpoint returns 2xx</i> (and for B, <i>row counts match across 326 tables</i>). Field-by-field A/B equivalence against golden MSSQL was not measured by any arm.</p>
+</div>
+
+<p class="muted" style="margin-top:30px">Generated read-only from branches <code>naive</code>, <code>superpowers-end-to-end</code>, <code>superpowers-goal</code>, <code>superpowers-workflow-2</code>, <code>develop</code> — no branch modified. Scores are the author’s judgment on the stated rubric; every score is anchored to a quoted excerpt with file path and line. Where a metric was missing or internally inconsistent it is marked NOT FOUND / flagged rather than estimated.</p>
+
+</div>

@@ -30,7 +30,7 @@ The talk is **"A Practical RD Workflow"** for Claude Code in production. It is n
 
 - `index.html` — the reveal.js deck. Each `<section>` is a slide; nested `<section>`s are vertical sub-slides addressed as `#/<h>/<v>` (e.g. `#/8/2`).
   - **Speaker notes live inside the deck.** Each leaf slide carries an `<aside class="notes" data-slide="<h>/<v>">` holding its Mandarin speaker script. The `RevealNotes` plugin is registered (`dist/plugin/notes.js` is loaded), so pressing **`s`** opens the speaker window. There is no separate script file — the `<aside>` is the single source of truth. When a slide's content/wording changes, update that slide's own `<aside class="notes">` in the same pass.
-- `exp/experiment-report.html` — the source of truth for all experiment numbers. When a results figure changes, reconcile against this file, not from memory.
+- `exp/experiment-report-2.html` — the source of truth for all experiment numbers (five arms: A / B / C1 / C2 / D, where D is the real month-long manual+AI migration used as the real-world control). When a results figure changes, reconcile against this file, not from memory. `exp/experiment-report.html` is the superseded four-arm report; do not source numbers from it.
 
 ## Narrative order — do NOT spoil ahead of introduction
 

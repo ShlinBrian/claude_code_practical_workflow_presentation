@@ -1358,15 +1358,16 @@ return results.filter(r => r.verdict.ok)</code></pre>
 					<div class="ch-rule"></div>
 					<aside class="notes" data-slide="12">
 						那這套方法到底值不值得用？我設計了一組比較，而且實際跑完了——等一下的數字都是真實結果。
+						這次還多做了一件事：把當年真的上線的那次遷移也挖出來，用同一把尺打分，當作現實的對照組。
 						先預告一個比較意外的發現：通過率高，不代表驗證做得好。
 					</aside>
 				</section>
 
 
-				<!-- ════════ THE EXPERIMENT — A / B / C1 / C2 ════════ -->
+				<!-- ════════ THE EXPERIMENT — A / B / C1 / C2 + real-world control D ════════ -->
 				<section>
 
-					<!-- 4 arms -->
+					<!-- 4 arms + control D -->
 					<section>
 						<h3 style="margin-bottom:0.2em;">How much method should drive it?</h3>
 						<div class="flow vert" style="max-width:820px;gap:0;">
@@ -1378,8 +1379,10 @@ return results.filter(r => r.verdict.ok)</code></pre>
 								<div class="step on-goal" style="min-width:210px;padding:11px 18px;border-left-color:var(--goal);"><span class="t"><span class="badge" style="color:var(--goal);border-color:var(--goal);">C1</span> &nbsp;Brainstorm + <span class="mono">/goal</span></span><span class="d">spec w/ DoD → raw /goal loop to verifier</span></div>
 								<div class="step on-flow" style="min-width:210px;padding:11px 18px;border-left-color:var(--flow);"><span class="t"><span class="badge" style="color:var(--flow);border-color:var(--flow);">C2</span> &nbsp;Brainstorm + <span class="mono">/workflow</span></span><span class="d">same front half → /workflow fan-out</span></div>
 							</div>
+							<div class="arr" style="font-size:0.62em;padding:5px 0;">+ &nbsp;one real-world control, scored on the same rubric</div>
+							<div class="step" style="padding:11px 18px;border-left-color:var(--muted);"><span class="t"><span class="badge" style="color:var(--muted);border-color:var(--muted);">D</span> &nbsp;The real migration</span><span class="d">manual + AI · ~1 month · shipped to production · no formal workflow</span></div>
 						</div>
-						<p class="xs c-faint" style="margin-top:0.4em;">A vs rest = method beats one-liner · B vs C = full vs lean · C1 vs C2 = /goal vs /workflow</p>
+						<p class="xs c-faint" style="margin-top:0.4em;">A vs rest = method beats one-liner · B vs C = full vs lean · C1 vs C2 = /goal vs /workflow · D = reality check</p>
 						<div class="exp-btns" style="margin-top:0.5em;">
 							<button class="exp-btn arm-a"  onclick="lbOpen('naive',15)">A · naive &nbsp;📷</button>
 							<button class="exp-btn arm-b"  onclick="lbOpen('superpowers',25)">B · superpowers &nbsp;📷</button>
@@ -1387,13 +1390,14 @@ return results.filter(r => r.verdict.ok)</code></pre>
 							<button class="exp-btn arm-c2" onclick="lbOpen('workflow',7)">C2 · /workflow &nbsp;📷</button>
 						</div>
 						<aside class="notes" data-slide="13/0">
-							四個 run，同一個任務，差別只在方法介入多少。
+							四個 agent run，同一個任務，差別只在方法介入多少；另外加一組真實世界的對照。
 							A：一句話 prompt，repo 原封不動，就是前面那個陷阱。
 							B：完整的 Superpowers 流程，從 brainstorming 一路到 review、驗證。
 							C1：保留 brainstorming 產出規格，執行端只用一個 /goal 迴圈。
 							C2：一樣的前半段，執行端改用 /workflow 平行展開。
-							這樣可以回答三件事：A 對其他組，方法贏不贏一句話 prompt；B 對 C，全套值不值得，還是 brainstorming 加一個驗證迴圈就夠；C1 對 C2，兩種執行方式的取捨。
-							先說清楚：B 和 C 差的是一整組紀律，所以這是「全套 vs 精簡」的比較，不是單一變因。
+							D 比較特別：這不是實驗，是當年真的上線的那次遷移——人加 AI，大概一個月，沒有任何正式工作流。這次我把它的 repo 挖出來，用同一把尺打分，當作現實的對照組。
+							這樣可以回答四件事：A 對其他組，方法贏不贏一句話 prompt；B 對 C，全套值不值得；C1 對 C2，兩種執行方式的取捨；然後所有 agent run 對 D——跟一個月的人工迭代比，到底差在哪。
+							先說清楚：B 和 C 差的是一整組紀律，所以這是「全套 vs 精簡」的比較，不是單一變因；D 更是完全不同的時間尺度，等一下讀數字要記得這件事。
 							每一組下面都有按鈕，可以放大看實際執行的截圖。
 						</aside>
 					</section>
@@ -1421,59 +1425,66 @@ return results.filter(r => r.verdict.ok)</code></pre>
 						<h3 style="margin-bottom:0.3em;">How they're compared</h3>
 						<div class="inv">
 							<div class="cell"><div class="k c-ok" style="font-size:0.6em;">Correctness</div><div class="s">verifier pass rate (endpoints A/B-faithful)</div></div>
-							<div class="cell"><div class="k c-goal" style="font-size:0.6em;">Cost</div><div class="s">one simple total (tokens or $)</div></div>
-							<div class="cell"><div class="k c-flow" style="font-size:0.6em;">Completion time</div><div class="s">wall-clock task → trustworthy result</div></div>
-							<div class="cell"><div class="k c-skill" style="font-size:0.6em;">Code quality</div><div class="s">scored by a separate review agent</div></div>
+							<div class="cell"><div class="k c-goal" style="font-size:0.6em;">Cost</div><div class="s">weighted token-units, one total</div></div>
+							<div class="cell"><div class="k c-flow" style="font-size:0.6em;">Completion time</div><div class="s">continuous execution — idle removed</div></div>
+							<div class="cell"><div class="k c-skill" style="font-size:0.6em;">Code quality</div><div class="s">4 dims by a review agent: robustness · tests · structure · review trail</div></div>
 						</div>
-						<p class="mid c-muted" style="margin-top:0.6em;">Anchor: I did this kind of migration <strong class="c-text">by hand once</strong>, with weaker LLMs — about <strong class="c-goal">a month</strong></p>
+						<p class="mid c-muted" style="margin-top:0.6em;">Baseline <strong class="c-text">D</strong> is that migration <strong class="c-text">done for real</strong> — manual + AI, about <strong class="c-goal">a month</strong> — scored on the same rubric</p>
 						<aside class="notes" data-slide="13/2">
-							四個指標：正確性，看裁判的通過率；成本，看 token 總量；完成時間，從丟出任務到拿到可信結果；程式碼品質，最後另外開一個 review agent 來打分。
-							給大家一個對照的錨點：這類遷移我以前手動做過一次，搭配比較弱的模型，大概花了一個月。
+							四個指標：正確性，看裁判的通過率；成本，統一換算成加權的 token 單位；完成時間，只算連續執行、把等人回覆的空檔扣掉；程式碼品質，另外開一個 review agent，從四個維度打分——轉換的穩健度、測試、結構、還有 review 的痕跡，取平均當總分。
+							對照組 D 就是我前面提過、真的做過一次的那場遷移——人加 AI，大概一個月。這次不只當故事講，它的 repo 也用同一把尺打了分，等一下會直接出現在表格裡。
 						</aside>
 					</section>
 
 					<!-- Results -->
 					<section>
 						<h3 style="margin-bottom:0.3em;">Results</h3>
-						<table class="cost-table" style="font-size:0.56em; width:98%;">
-							<thead><tr><th>run</th><th>correctness</th><th>cost</th><th>time</th><th>code quality</th></tr></thead>
+						<table class="cost-table" style="font-size:0.54em; width:98%;">
+							<thead><tr><th>run</th><th>correctness</th><th>cost</th><th>time (continuous)</th><th>code quality /5</th></tr></thead>
 							<tbody>
-								<tr class="dear">
+								<tr>
 									<td class="exp" style="color:var(--naive);">A · naive</td>
-									<td>47/47 &nbsp;<span class="warn-badge">⚠ self-asserted</span><br><span style="color:var(--warn);font-size:0.85em;">0 real assertions</span></td>
-									<td>27.03M units<br><span style="color:var(--faint);font-size:0.85em;">self-reported</span></td>
-									<td>136 min<br><span style="color:var(--faint);font-size:0.85em;">self-reported</span></td>
-									<td>Robust 5 · Tests 1 · Struct 3</td>
+									<td>47/47 claimed &nbsp;<span class="warn-badge">⚠ self-asserted</span><br><span style="color:var(--warn);font-size:0.85em;">0 assertions · no artifact</span></td>
+									<td>≈26.7M units<br><span style="color:var(--faint);font-size:0.85em;">self-reported</span></td>
+									<td>≈104 min<br><span style="color:var(--faint);font-size:0.85em;">self-reported</span></td>
+									<td><strong>2.0</strong><br><span style="color:var(--faint);font-size:0.85em;">robust 3.5 · tests 1<br>struct 2.5 · review 1</span></td>
 								</tr>
-								<tr class="cheap">
+								<tr>
 									<td class="exp" style="color:var(--skill);">B · full superpowers</td>
-									<td style="color:var(--ok);">41/47 HTTP 2xx<br><span style="font-size:0.85em;">+ 326/326 rows ✓</span></td>
-									<td>21.26M units<br><span style="color:var(--ok);font-size:0.85em;">from telemetry</span></td>
-									<td>~15.1 h</td>
-									<td>Robust 5 · Tests 4 · Struct 5</td>
+									<td style="color:var(--ok);">41/47 HTTP 2xx<br><span style="font-size:0.85em;">+ 326/326 row counts ✓</span></td>
+									<td>≈21.3M units<br><span style="color:var(--faint);font-size:0.85em;">telemetry<br>⚠ report claims 44.6M</span></td>
+									<td>≈5.0 h</td>
+									<td style="color:var(--ok);"><strong>3.1 — best</strong><br><span style="color:var(--faint);font-size:0.85em;">robust 4.5 · tests 2.5<br>struct 3.5 · review 2</span></td>
 								</tr>
 								<tr>
-									<td class="exp" style="color:var(--goal);">C1 · brainstorm + /goal</td>
+									<td class="exp" style="color:var(--goal);white-space:nowrap;">C1 · /goal</td>
 									<td>47/47 HTTP 2xx<br><span style="color:var(--faint);font-size:0.85em;">no row diff</span></td>
-									<td style="color:var(--faint);">NOT FOUND</td>
-									<td>~94 min</td>
-									<td>Robust 5 · Tests 2 · Struct 4</td>
+									<td>≈30.0M units</td>
+									<td style="color:var(--ok);">≈97 min — fastest</td>
+									<td><strong>2.25</strong><br><span style="color:var(--warn);font-size:0.85em;">output SQL never committed</span></td>
 								</tr>
 								<tr>
-									<td class="exp" style="color:var(--flow);">C2 · brainstorm + /workflow</td>
-									<td>47/47 HTTP 2xx<br><span style="color:var(--faint);font-size:0.85em;">6 rounds, no row diff</span></td>
-									<td>5.52M units<br><span style="color:var(--faint);font-size:0.85em;">output-only</span></td>
-									<td>~10.3 h</td>
-									<td>Robust 5 · Tests 1 · Struct 4</td>
+									<td class="exp" style="color:var(--flow);white-space:nowrap;">C2 · /workflow</td>
+									<td>40/40 HTTP 2xx<br><span style="color:var(--faint);font-size:0.85em;">iter 34→40 · 7 excluded N/A</span></td>
+									<td style="color:var(--ok);">≈5.5M units<br><span style="font-size:0.85em;">cheapest — ~¼ of the rest</span></td>
+									<td>≈132 min</td>
+									<td><strong>2.5</strong><br><span style="color:var(--warn);font-size:0.85em;">MSSQL left in legacy Java</span></td>
+								</tr>
+								<tr>
+									<td class="exp" style="color:var(--muted);">D · the real migration</td>
+									<td>shipped to prod<br><span style="color:var(--warn);font-size:0.85em;">1 incident found by traffic</span></td>
+									<td style="color:var(--faint);">NOT FOUND</td>
+									<td>~1 month<br><span style="color:var(--faint);font-size:0.85em;">calendar elapsed</span></td>
+									<td><strong>2.9 — 2nd</strong><br><span style="color:var(--faint);font-size:0.85em;">robust 4 · tests 1.5<br>struct 4 · review 2</span></td>
 								</tr>
 							</tbody>
 						</table>
 						<aside class="notes" data-slide="13/3">
 							結果都在這張表，我挑三個重點講。
-							第一，正確性要小心讀。A、C1、C2 都寫 47/47，但那只是 HTTP 2xx；A 甚至是 0 個 assertion、自己宣稱的。B 寫 41/47 反而最誠實——那 6 個是外部服務的 placeholder，不是遷移本身的問題，而且 B 是唯一附上逐列證據（326/326）和真實 newman 報告的一組。
-							第二，成本和時間。C1 最快，大概 94 分鐘收斂；B 最慢，約 15 小時，但品質也最高。C2 的時間大多卡在 AWS SCT 那一段，不是方法本身慢。
-							第三，程式碼品質。SQL 轉換的部分四組都拿 5 分，連 A 都把那些硬題解掉了。真正拉開差距的是驗證的嚴謹度、commit 紀律、可重現性——測試分數只有 B 拿到 4。
-							所以方法的價值不在讓它「做得到」，在讓品質不靠運氣。而品質不靠運氣，正是之後敢讓它自動駕駛的前提。
+							第一，正確性要小心讀。表上的通過率全部只是 HTTP 2xx——A 甚至是 0 個 assertion、自己宣稱的，連證據檔案都沒有。B 寫 41/47 反而最誠實：那 6 個是外部服務的問題，不是遷移本身，而且 B 是唯一附上資料面證據的一組——326 張表的筆數全部對上。但要老實說：連 B 都只比對到筆數，我們設計的那把「逐列比對」的尺，沒有任何一組真的做出來。通過率高，不代表驗證做得好，就是這個意思。
+							第二，成本和時間。C1 最快，97 分鐘收斂，但它有個致命傷：轉換出來的 SQL 只活在資料庫裡，根本沒 commit 進 repo，等於沒辦法重建、沒辦法稽核。C2 最便宜，大概是其他組的四分之一，而且是唯一把每支 stored proc 新舊對照都 commit 起來的一組——代價是舊的 Java 裡還留著沒轉乾淨的 MSSQL 語法。B 連續跑了約五個小時，換到最完整的理解和文件。
+							第三，程式碼品質。排名是 B 3.1、D 2.9、C2 2.5、C1 2.25、A 2.0。B 第一，靠的是動手前先盤點方言、把 root cause 寫進 repo。但注意 D——完全沒有正式工作流的一個月人工迭代——只差 0.2 分。它贏在 production 真的磨過：commit 紀律最好、citext 用得最乾淨。可是它也 ship 過一個 bug，靠線上流量才抓到，事後又花了快一個月才修掉。而且每一組的測試和 review 分數都很低——紀律墊高的是理解和可重現性，不是自動長出安全網。
+							所以方法的價值不在讓它「做得到」，在讓品質不靠運氣——不用靠一個月的線上流量幫你抓 bug。而品質不靠運氣，正是之後敢讓它自動駕駛的前提。
 						</aside>
 					</section>
 
@@ -1494,6 +1505,7 @@ return results.filter(r => r.verdict.ok)</code></pre>
 						<aside class="notes" data-slide="13/4">
 							也要知道什麼時候不該直接交給 agent。
 							三種情況：沒有機器可檢查的裁判；有不可逆的副作用，像刪資料、呼叫外部 API、動到錢；還有，需要的領域知識根本不在 repo 裡。
+							第一種情況，剛剛 D 那個 production 事故就是最好的例子——沒有裁判的時候，幫你抓 bug 的就是線上流量。
 							另外一個提醒：人的瓶頸會從寫程式變成 review。所以讓 agent 切成自帶驗證證據的小 PR，review 的時候看證據，不用逐行看 diff。
 							反過來說，這三件事補齊的時候，就是可以放心讓它自己跑的時候。
 						</aside>
