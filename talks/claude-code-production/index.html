@@ -179,6 +179,10 @@
 				.flow .arr { display: flex; align-items: center; justify-content: center;
 					color: var(--faint); font-size: 1.3em; padding: 0 14px; }
 				.flow.vert .arr { padding: 8px 0; }
+				/* two-branch fork inside a horizontal flow (closing workflow, mirrors slide 8/3) */
+				.flow .fork { display: flex; flex-direction: column; gap: 8px; align-self: center; }
+				.flow .fork .step { padding: 10px 16px; min-width: 150px; }
+				.flow .fork .step .t { font-size: 0.6em; }
 				/* three steps that must stay on one row */
 				.flow.three { flex-wrap: nowrap; }
 				.flow.three .step { padding: 12px 15px; min-width: 0; flex: 1; }
@@ -581,6 +585,38 @@
 			/* mini-terminal example embedded in a tool card */
 			.tool .tool-eg { width: 100%; margin: 12px 0 0; padding: 10px 12px; font-size: 0.42em; line-height: 1.55; }
 			.tool .tool-eg .pr { display: block; }
+			/* two roads to autopilot: Path A = SuperPowers full lifecycle (full-width card),
+			   Path B = /goal + /workflow loop tools, converging on ⇒ autopilot */
+			.tools3.two.spec-src { grid-template-columns: 26px 1fr 1fr;
+				grid-template-rows: auto auto auto auto; row-gap: 10px;
+				column-gap: 18px; align-items: stretch; }
+			.road-badge { align-self: center; justify-self: center; font-family: 'JetBrains Mono', monospace;
+				font-weight: 700; font-size: 0.5em; color: var(--faint); border: 1px solid var(--border);
+				border-radius: 6px; width: 26px; height: 26px; display: flex; align-items: center;
+				justify-content: center; }
+			.tools3.two .road-badge.ra { grid-column: 1; grid-row: 1; }
+			.tools3.two .road-badge.rb { grid-column: 1; grid-row: 3; }
+			.tools3.two .sp-flow-card { grid-column: 2 / -1; grid-row: 1; padding: 16px 22px; display: flex;
+				align-items: center; gap: 22px; text-align: left; }
+			.tools3.two .b-tag { grid-row: 2; }
+			.tools3.two .t-goal { grid-column: 2; grid-row: 3; }
+			.tools3.two .t-flow { grid-column: 3; grid-row: 3; }
+			.tools3.two .road-out { grid-row: 4; }
+			.sp-flow-card .lbl { font-family: 'JetBrains Mono', monospace; font-weight: 700;
+				font-size: 0.58em; color: var(--skill); white-space: nowrap; }
+			.sp-flow { display: flex; align-items: center; gap: 8px; flex-wrap: nowrap; }
+			.sp-flow .chip { font-family: 'JetBrains Mono', monospace; font-size: 0.42em;
+				color: var(--text); background: var(--surface); border: 1px solid var(--border);
+				border-radius: 6px; padding: 5px 11px; white-space: nowrap; }
+			.sp-flow .arr { color: var(--flow); font-size: 0.42em; }
+			.road-tag { margin-left: auto; font-size: 0.4em; color: var(--muted); white-space: nowrap; }
+			/* Path B tag sits above the two tool cards */
+			.tools3.two .b-tag { grid-column: 2 / -1; font-size: 0.42em; color: var(--muted);
+				margin: 0; }
+			/* convergence line — both roads point here */
+			.road-out { grid-column: 1 / -1; text-align: center; font-size: 0.6em; margin-top: 2px;
+				letter-spacing: 0.02em; }
+			.road-out .mono { font-family: 'JetBrains Mono', monospace; }
 
 			/* ── brainstorming 2×2 screenshot grid ── */
 			.bsgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 82%; margin: 0.4em auto 0; }
@@ -1139,7 +1175,7 @@
 					</section>
 
 					<section>
-						<h3 style="margin-bottom:0.15em;">"Keep everything working" → questioned into a spec <button class="exp-btn arm-c1" style="margin-left:0.4em;vertical-align:middle;font-size:0.4em;" onclick="event.stopPropagation();specOpen()">See the real spec &nbsp;📄</button></h3>
+						<h3 style="margin-bottom:0.15em;">"Keep everything working" → questioned into a spec <button class="exp-btn arm-c1" style="margin-left:0.4em;vertical-align:middle;font-size:0.4em;" onclick="event.stopPropagation();specOpen()">Spec &nbsp;📄</button></h3>
 						<div class="bsgrid">
 							<figure onclick="lbOpenOne('brainstorming/superpowers-brainstorming1.png')">
 								<img src="brainstorming/superpowers-brainstorming1.png" alt="the one-line prompt + project exploration">
@@ -1159,34 +1195,54 @@
 							</figure>
 						</div>
 						<aside class="notes" data-slide="8/2">
-							這是把剛剛那句「把服務從 MSSQL 搬到 PostgreSQL，保持一切正常」真的丟進 brainstorming 之後的實際畫面。
-							它不會直接開工，而是先摸清專案，然後一題一題反問：第一，「保持一切正常」的驗收標準是什麼、要怎麼證明搬對了？第二，PostgreSQL 的 schema 跟資料從哪來？第三，這次要涵蓋哪些範圍？
-							每回答一題，模糊的需求就被逼出一塊可測試的定義。四張串起來，就是一句話被逐題問成一份帶 DoD 的規格的過程。點任何一張可以放大看細節。
-							這份規格就是接下來 /goal 和 /workflow 要吃的輸入。
+							這邊截圖給大家看一下brainstorming 的實際畫面。
+							<br>我們把剛剛那句「把服務從 MSSQL 搬到 PostgreSQL，保持一切正常」真的丟進 brainstorming 之後。
+							<br>它不會直接開工，而是先摸清專案，然後一題一題反問：
+							<br>第一，「保持一切正常」的驗收標準是什麼、要怎麼證明搬對了？
+							<br>第二，PostgreSQL 的 schema 跟資料從哪來？
+							<br>第三，這次要涵蓋哪些範圍？
+							<br>每回答一題，模糊的需求就被逼出一塊可測試的定義。
+							<br>最後就會逐題被問成一份帶有 完成定義 的規格。
 						</aside>
 					</section>
 
 					<!-- two ways to execute the spec — loop toward autopilot -->
 					<section>
-						<h3 style="margin-bottom:0.3em;">The spec exists — two ways to <span class="tl-future">loop toward autopilot</span></h3>
-						<div class="tools3 two">
+						<h3 style="margin-bottom:0.3em;">Two roads to <span class="tl-future">autopilot</span></h3>
+						<div class="tools3 two spec-src">
+							<div class="road-badge ra">A</div>
+							<div class="tool t-sp sp-flow-card">
+								<div class="lbl">SuperPowers</div>
+								<div class="sp-flow">
+									<span class="chip">spec</span><span class="arr">→</span>
+									<span class="chip">plan</span><span class="arr">→</span>
+									<span class="chip">TDD</span><span class="arr">→</span>
+									<span class="chip">review</span><span class="arr">→</span>
+									<span class="chip">verify</span>
+								</div>
+								<div class="road-tag">runs the whole lifecycle itself</div>
+							</div>
+							<div class="road-badge rb">B</div>
+							<div class="b-tag">Take the spec — loop against a verifier</div>
 							<div class="tool t-goal">
 								<div class="nm">/goal</div>
 								<div class="role">Loop until the goal is met</div>
 								<div class="desc">Hand it a spec + a machine-checkable goal<br>It builds, tests, fixes until the verifier passes</div>
-								<div class="term tool-eg"><span class="pr">/goal Every test passes AND output matches the expected baseline. Spec: …design.md</span></div>
+								<div class="term tool-eg"><span class="pr">/goal Every test passes AND output matches the expected baseline. <br>Spec: docs/superpowers/spec.md</span></div>
 							</div>
 							<div class="tool t-flow">
 								<div class="nm">/workflow</div>
 								<div class="role">Fan out many agents</div>
 								<div class="desc">Orchestrate independent units in parallel<br>N conversions at once, each isolated</div>
-								<div class="term tool-eg"><span class="pr">/workflow process every independent unit in parallel, then verify each</span></div>
+								<div class="term tool-eg"><span class="pr">/workflow process every independent unit in parallel, then verify each. <br>Spec: docs/superpowers/spec.md</span></div>
 							</div>
 						</div>
 						<aside class="notes" data-slide="8/3">
-							規格定義好之後，就進到執行。/goal 和 /workflow 是拿著這份規格去跑的兩種方式——一個是循環到目標達成，一個是多個 agent 平行展開。
-							看卡片下面的範例：/goal 你給它一個機器可檢查的目標加上規格，它就一直 build → 測試 → 修，跑到裁判通過；/workflow 你用一句自然語言下指令，它會展開成很多平行的獨立單位，各自處理再各自驗證。
-							重點是——兩個吃的都是同一份規格，你只要用自然語言把要做的事講出來，剩下的它們來做。下一頁講這件事會通往哪裡。
+							規格定義好之後，通往 autopilot 有兩條路，兩條都是從 SuperPowers 出發。
+							<br>路 A：直接用 SuperPowers 把整條 lifecycle 走完——spec → plan → TDD → review → verify，讓它自己把任務從頭扛到尾。
+							<br>路 B：把 SuperPowers 產出的那份規格，餵給 /goal 或 /workflow 這類 loop 工具，讓它們拿著規格去迴圈——一個是循環到目標達成，一個是多個 agent 平行展開。
+							<br>看卡片下面的範例：/goal 你給它一個機器可檢查的目標加上規格，它就一直 build → 測試 → 修，跑到裁判通過；/workflow 你用一句自然語言下指令，它會展開成很多平行的獨立單位，各自處理再各自驗證。
+							<br>重點是——不管走哪一條，最後都通往同一個地方：autopilot。你只要用自然語言把要做的事講清楚，剩下的它們來做。下一頁講這件事會通往哪裡。
 						</aside>
 					</section>
 
@@ -1529,21 +1585,23 @@
 						<div class="arr">→</div>
 						<div class="step on-goal"><span class="t">spec + DoD</span></div>
 						<div class="arr">→</div>
-						<div class="step"><span class="t"><span class="mono">/goal</span> or <span class="mono">/workflow</span></span></div>
+						<div class="fork">
+							<div class="step on-skill"><span class="t"><span class="mono">SuperPowers</span> — run it all</span></div>
+							<div class="step on-flow"><span class="t"><span class="mono">/goal</span> or <span class="mono">/workflow</span></span></div>
+						</div>
 						<div class="arr">→</div>
 						<div class="step on-ok" style="border-left-color:var(--ok);"><span class="t c-ok">run the verifier</span></div>
 					</div>
-					<p class="mid c-muted fragment" style="margin-top:1.3em;max-width:680px;margin-left:auto;margin-right:auto;line-height:1.8;">
-						The shift worth making: from <strong class="c-text">executor</strong><br>
-						to the person who <strong class="c-goal">defines the task</strong><br>
-						and <strong class="c-flow">makes the code legible</strong><br>
-						Those two the agent can't replace —<br>
-						and they're exactly what lets it run <strong class="tl-future">on its own</strong></p>
-					<p class="mid fragment" style="margin-top:1.1em;max-width:720px;margin-left:auto;margin-right:auto;line-height:1.7;">
-						Build the <strong class="c-goal">harness</strong> well enough today,<br>
-						and this is where it all goes &hellip;</p>
+					<p class="mid c-muted fragment" style="margin-top:1.3em;max-width:640px;margin-left:auto;margin-right:auto;line-height:1.7;">
+						Stop being the <strong class="c-text">executor</strong><br>
+						<strong class="c-goal">defines the task</strong> and <strong class="c-flow">makes the code legible</strong><br>
+					</p>
+					<p class="mid c-muted fragment" style="margin-top:1.3em;max-width:640px;margin-left:auto;margin-right:auto;line-height:1.7;">
+						⇒ Lets it run <strong class="tl-future">on its own</strong></p>
+					<p class="mid fragment" style="margin-top:1.1em;max-width:640px;margin-left:auto;margin-right:auto;line-height:1.6;">
+						Build the <strong class="c-goal">harness</strong> well today</p>
 					<aside class="notes" data-slide="16">
-						收尾就是這條工作流：brainstorm → 規格加 DoD → /goal 或 /workflow → 用裁判驗證。明天就能開始用。
+						收尾就是這條工作流：brainstorm → 規格加 DoD，接著兩條路二選一——要嘛用 SuperPowers 把整條走完，要嘛把 spec 交給 /goal 或 /workflow 去 loop——最後都用裁判驗證。明天就能開始用。
 						值得做的轉變是：從執行者，變成定義任務、讓程式碼可讀的人。這兩件事 agent 取代不了，也正是讓它能自己跑起來的前提。
 						最後用一張圖，看這一切通往哪裡。
 						*換頁*
