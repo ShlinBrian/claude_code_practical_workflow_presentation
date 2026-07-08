@@ -559,6 +559,9 @@
 			.tool.t-flow .nm { color: var(--flow); }
 			.tool .role { font-size: 0.56em; color: var(--text); font-weight: 600; margin-top: 10px; }
 			.tool .desc { font-size: 0.5em; color: var(--muted); margin-top: 6px; line-height: 1.5; }
+			/* mini-terminal example embedded in a tool card */
+			.tool .tool-eg { width: 100%; margin: 12px 0 0; padding: 10px 12px; font-size: 0.42em; line-height: 1.55; }
+			.tool .tool-eg .pr { display: block; }
 
 			/* ── superpowers lifecycle bar ── */
 			.lifecycle { display: flex; align-items: stretch; justify-content: center; gap: 4px;
@@ -1130,109 +1133,52 @@
 								<div class="nm">/goal</div>
 								<div class="role">Loop until the goal is met</div>
 								<div class="desc">Hand it a spec + a machine-checkable goal<br>It builds, tests, fixes until the verifier passes</div>
+								<div class="term tool-eg"><span class="pr">/goal Every test passes AND output matches the expected baseline. Spec: …design.md</span></div>
 							</div>
 							<div class="tool t-flow">
 								<div class="nm">/workflow</div>
 								<div class="role">Fan out many agents</div>
 								<div class="desc">Orchestrate independent units in parallel<br>N conversions at once, each isolated</div>
+								<div class="term tool-eg"><span class="pr">/workflow process every independent unit in parallel, then verify each</span></div>
 							</div>
 						</div>
-						<p class="mid c-muted flush-note" style="margin-top:0.5em;">
-							<span class="fl-line">Once the spec is defined, <span class="c-goal mono">/goal</span> and <span class="c-flow mono">/workflow</span> take it and run</span>
-							<span class="fl-line">Define it well enough to run on its own — that's the <span class="tl-future">autopilot</span></span>
-						</p>
 						<aside class="notes" data-slide="8/3">
 							規格定義好之後，就進到執行。/goal 和 /workflow 是拿著這份規格去跑的兩種方式——一個是循環到目標達成，一個是多個 agent 平行展開。
-							它們共同的前提就是前面那份帶 DoD 的規格：定義得夠清楚、有機器可檢查的裁判，agent 才能一直自己跑下去。
-							而這正是自動駕駛的前置條件——規格好到它能自己驗證、自己收斂，你才敢放手讓它自動運行。下一章把這兩個工具拆開來看。
+							看卡片下面的範例：/goal 你給它一個機器可檢查的目標加上規格，它就一直 build → 測試 → 修，跑到裁判通過；/workflow 你用一句自然語言下指令，它會展開成很多平行的獨立單位，各自處理再各自驗證。
+							重點是——兩個吃的都是同一份規格，你只要用自然語言把要做的事講出來，剩下的它們來做。下一頁講這件事會通往哪裡。
 						</aside>
 					</section>
 
-				</section>
-
-
-				<!-- ════════ /goal & /workflow ════════ -->
-				<section>
-
+					<!-- the autopilot payoff — where the two tools lead -->
 					<section>
-						<h3 style="margin-bottom:0.3em;"><span class="c-goal mono">/goal</span> — loop until the goal is met</h3>
-						<div class="term" style="font-size:0.5em;">
-							<span class="cm"># hand it the spec + a machine-checkable goal:</span><br>
-							<span class="pr">/goal Every test passes AND output matches the<br>&nbsp;&nbsp;expected baseline. Spec: …design.md</span><br>
-							<span class="ag">build → test → check → fix → repeat until the verifier passes</span>
-						</div>
+						<h3 style="margin-bottom:0.5em;">Where this leads</h3>
 						<p class="mid c-muted flush-note" style="margin-top:0.5em;">
-							<span class="fl-line">Only works if the goal is <strong class="c-text">machine-checkable</strong></span>
-							<span class="fl-line">No verifier → it loops or stops on a vibe</span>
+							<span class="fl-line">Once the spec is defined, <br><span class="c-goal mono">/goal</span> and <span class="c-flow mono">/workflow</span> take it and run</span>
+							<span class="fl-line">Define it well enough to run on its own <br>⇒ <span class="tl-future">autopilot</span></span>
 						</p>
-						<aside class="notes" data-slide="9/0">
-							先講 /goal。給它規格，加上一個機器可檢查的目標，它就會一直跑 build → 測試 → 比對 → 修，直到通過為止。
-							限制也寫在投影片上：目標一定要機器可檢查。沒有這個裁判，它就會空轉，或是憑感覺停下來。
-							這也是為什麼 brainstorming 重要——它產出的規格裡，就帶著這個裁判。
+						<aside class="notes" data-slide="8/4">
+							把前一頁那兩個工具拉高一層來看：它們共同的前提，就是前面那份帶 DoD 的規格。
+							規格定義好，/goal 和 /workflow 就拿著它去跑；定義得夠清楚、有機器可檢查的裁判，agent 才能一直自己跑下去。
+							而這正是自動駕駛的前置條件——規格好到它能自己驗證、自己收斂，你才敢放手讓它自動運行。
 						</aside>
 					</section>
 
+					<!-- the one prerequisite: the verifier must exist first -->
 					<section>
-						<h3 style="margin-bottom:0.2em;"><span class="c-flow mono">/workflow</span> — multi-agent fan-out</h3>
-						<div class="term" style="font-size:0.5em;margin-bottom:0.4em;">
-							<span class="cm"># you invoke it in natural language — the agent authors &amp; runs the script:</span><br>
-							<span class="pr">/workflow process every independent unit in parallel, then verify each</span>
+						<h3 style="margin-bottom:0.5em;">But first — <span class="c-goal">build the verifier</span></h3>
+						<div class="flow" style="max-width:88%;">
+							<div class="step on-goal"><span class="t c-goal">Both tools are self-verifying</span><span class="d">they loop against a verifier — only as reliable as the verifier you give them</span></div>
+							<div class="step on-flow"><span class="t c-flow">No verifier yet? Build it first</span><span class="d">it's step one, not the last step — thin coverage means the loop runs blind</span></div>
 						</div>
-						<pre class="code"><code class="language-javascript">// process many independent units in parallel, then verify each
-const units = await agent('list the work items', {schema: ITEMS})
-const results = await pipeline(
-  units.list,
-  u => agent(`transform ${u}`, {phase: 'do',     isolation: 'worktree'}),
-  c => agent(`verify ${c.id}`, {phase: 'verify', schema: VERDICT})
-)
-return results.filter(r => r.verdict.ok)</code></pre>
-						<p class="mid c-muted flush-note" style="margin-top:0.3em;">
-							<span class="fl-line">You say it in words — <span class="mono">/workflow</span> writes the deterministic script above and runs it</span>
-							<span class="fl-line">Each unit flows do→verify independently</span>
-							<span class="fl-line">Wall-clock = slowest chain, not the sum</span>
-						</p>
-						<aside class="notes" data-slide="9/1">
-							/workflow 適合可以拆成很多獨立小單位、平行處理的工作。<br>
-							你用自然語言下指令，它會把指令編成上面這段確定性的腳本：先列出所有工作項目，每一個在自己的 worktree 裡處理，再各自驗證。<br>
-							兩個特性：時間上，整體耗時等於最慢的那一條，不是全部相加；結構上，每個單位互相隔離，一個失敗不會污染其他的。<br>
-						</aside>
-					</section>
-
-					<section>
-						<h3 style="margin-bottom:0.3em;">When each fits</h3>
-						<div class="flow">
-							<div class="step on-goal"><span class="t c-goal mono">/goal</span><span class="d">one coherent objective · tight feedback loop · mostly sequential (build/test/fix)</span></div>
-							<div class="step on-flow"><span class="t c-flow mono">/workflow</span><span class="d">many independent units · want parallelism + isolation · deterministic structure</span></div>
-						</div>
-						<aside class="notes" data-slide="9/2">
-							選哪個，看工作的形狀。<br>
-							/goal 適合單一明確目標、回饋循環很緊、大致線性的工作；<br>
-							/workflow 適合很多獨立單位、想要平行加隔離的工作。<br>
-						</aside>
-					</section>
-
-					<section>
-						<div class="eyebrow" style="color:var(--goal);">Evaluation · the most important part of the loop tooling</div>
-						<h3 style="margin-bottom:0.4em;">First build the verifier</h3>
-						<div class="flow" style="max-width:90%;">
-							<div class="step on-goal"><span class="t c-goal">Some tasks <em>come with</em> a verifier</span><span class="d">when a correct "old" answer already exists, you get an oracle for free to check against</span></div>
-							<div class="step on-flow"><span class="t c-flow">Normal feature work does <em>not</em></span><span class="d">no correct answer exists yet — the verifier is your <strong class="c-text">test suite</strong>, and you have to build it</span></div>
-						</div>
-						<blockquote class="verify-quote" style="margin-top:0.5em;">
-							<span class="q-line"><span class="c-goal mono">/goal</span> and <span class="c-flow mono">/workflow</span> are <strong class="c-text">self-verifying</strong> — they loop against a verifier</span>
-							<span class="q-line">So if the verifier doesn't exist yet, <strong class="c-text">build the verifier first</strong> — it's step one, not the last step</span>
-							<span class="q-line">Thin coverage → the loop is blind, and you can't trust anything it ships</span>
-						</blockquote>
-						<p class="xs c-faint" style="margin-top:0.4em;">Anthropic's line: <em>if you can't verify it, don't ship it</em></p>
-						<aside class="notes" data-slide="9/3">
-							這裡有一個前提要先講清楚。
+						<p class="mid c-faint" style="margin-top:0.7em;"><em>If you can't verify it, don't ship it</em></p>
+						<aside class="notes" data-slide="8/5">
+							在放手讓它自動跑之前，有一個前提要先講清楚。
 							/goal 和 /workflow 都是靠裁判在自我驗證，所以它們的可靠度，就等於你給它的那個裁判的可靠度。
-							有些任務的裁判是現成的——舊系統的正確答案本來就存在，拿來比對就好。等一下第三章的案例就是這種。
-							但平常的功能開發沒有現成答案，裁判就是你的測試，而且要自己先蓋出來。
-							所以驗證器是第一步，不是最後一步。測試覆蓋不夠，這個迴圈就是在盲跑，跑出來的東西你沒辦法信。
-							Anthropic 的說法是：驗證不了的東西，就不要出貨。
+							有些任務的裁判是現成的——舊系統的正確答案本來就存在，拿來比對就好，等一下第三章的案例就是這種；但平常的功能開發沒有現成答案，裁判就是你的測試，得自己先蓋出來。
+							所以驗證器是第一步，不是最後一步。覆蓋不夠，這個迴圈就是在盲跑，跑出來的東西你沒辦法信。Anthropic 的說法是：驗證不了的東西，就不要出貨。
 						</aside>
 					</section>
+
 				</section>
 
 
