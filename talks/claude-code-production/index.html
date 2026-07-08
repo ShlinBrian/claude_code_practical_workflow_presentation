@@ -820,6 +820,7 @@
 								<div class="lbl">The fix</div>
 								- Shape the live context (/rewind, /btw, subagent)<br>
 								- Hand state off before context/usage runs out<br>
+								- Flush clean, useful memory to CLAUDE.md<br>
 								<span style="display:block;font-size:1.25em;margin-top:0.35em;line-height:1.4;">⇒ <strong class="c-ok">Steer it</strong>, don't restart it</span>
 							</div>
 						</div>
@@ -830,9 +831,10 @@
 							<br>大家應該都遇過：跑到一半 context 快滿了、usage 快用完了，或是 agent 開始變笨忘記你前面講過的決定。
 							結果就是把整個任務從頭再解釋一遍。
 							<br>（第二下：右邊亮、左邊暗）
-							<br>解法有兩個方向：
+							<br>解法有三個方向：
 							<br>1. 是在執行過程中主動控制 context，等一下的 /rewind、/btw、subagent 就是在做這件事
 							<br>2. 是在 context 用完之前，先把狀態交接出去。
+							<br>3. 是收尾的時候，把值得留的決定寫進 CLAUDE.md，下個 session 一開始就知道。
 							<br>這樣你是在指揮它，而不是每次都重來。
 						</aside>
 					</section>
@@ -851,12 +853,11 @@
 						</div>
 						<p class="mid c-muted" style="margin-top:0.5em;"><span class="c-goal mono">/rewind</span> back out · <span class="c-goal mono">/btw</span> look up without growing context · <span class="c-goal mono">subagent</span> type an instruction to spin one up</p>
 						<aside class="notes" data-slide="5/1">
-							這三個都是在執行過程中用的。
-							<br>/rewind：當你發現 agent 開始走錯方向，或是你後悔剛剛你下的prompt，直接 context rollback 到出錯前的那個檢查點，不用重新解釋。
-							<br>/btw：跑到一半想查個小問題，又不想讓它進到對話紀錄——答案會顯示在一個可以關掉的視窗裡，context 不會變大。
-							<br>subagent：把支線的任務丟給一個新的 context，像是「測試那些剛修改完的模組、只回傳失敗的」。
-							<br>token 讓 subagent 去消耗，回到主對話的只有結果。
-							<br>這樣我們就可以保持對話都是有意義的資訊
+							在執行過程中：
+							<br>/rewind：當你發現 agent 開始走錯方向，或是你後悔剛剛你下的prompt，直接 /rewind，就可以 rollback 到你想要的 checkpoint。
+							<br>/btw：跑到一半想查個小問題，又不想讓它進到對話紀錄，可以使用 /btw，他會將答案顯示在一個可以關掉的視窗裡，不佔用你現在 session 的 context。
+							<br>subagent：我們可以呼叫建立一個 subagent，來去進行一些跟主任務比較不相關的工作，像是請他「測試那些剛修改完的 modules 然後只回傳失敗的」，這樣只有結果會被傳回 session 當中。
+							<br>透過這些方法，我們就可以保持這個 session 當中的對話，都是有意義的資訊
 						</aside>
 					</section>
 
@@ -888,12 +889,11 @@
 							<div class="hstep on-flow"><span class="t">3 · Fresh agent reads it</span><span class="d">resumes —<br>no re-explaining</span></div>
 						</div>
 
-						<aside class="notes" data-slide="5/3">
-							再來這邊的使用情境就是當你 context 快要滿了的時候，或是Usage快用完、想換model、換成使用codex的時候。
-							<br>我們可以使用交接的方式
-							/compact 會讓模型自己摘要，但你控制不了哪些東西會被留下來。
-							比較好的做法是自己控制交接：請它寫一份 handoff.md——做完什麼、接下來做什麼、有哪些關鍵決定——然後 /clear，把臃腫的 context 清掉。新的 agent 讀完 handoff 就能接著做，不用你重新解釋。
-							下面就是一份範例，其實很短。
+						<aside class="notes" data-slide="5/2">
+							再來這邊的使用情境就是當你 context 快要滿了的時候，或是Usage快用完、想換model、換成使用codex的時候。<br>
+							我們可以使用交接的方式來達成 延續任務<br>
+							請它寫一份 handoff.md，做完什麼、接下來做什麼、有哪些關鍵決定，使用 /clear 清掉現在的 context後。<br>
+							開啟新的 agent 讀完 handoff 就能接著做原先的任務，不用再重新解釋。
 						</aside>
 					</section>
 
@@ -904,7 +904,7 @@
 						<!-- a tiny dialogue, then one instruction that captures the durable fact -->
 						<div class="term" style="font-size:0.46em;width:80%;">
 							<span class="pr">the buttons look too close together — add more space</span>
-							<span class="ag">Done — I added more space between the buttons</span><br>
+							<span class="ag">Done — I added more space between the buttons</span>
 							<!-- <span class="cm"># you like it → ask it to remember this for next time</span><br> -->
 							<span class="pr">nice — save this spacing as the rule in CLAUDE.md</span>
 							<span class="ag">Saved to CLAUDE.md — next time I'll use the same spacing</span>
@@ -927,10 +927,11 @@
 							<span class="fl-line">At the end, just say <span class="mono c-goal">"keep the rules worth remembering"</span> and it tidies them up</span>
 							<span class="fl-line">Keep it short — <strong class="c-text">only what's worth keeping</strong></span>
 						</p>
-						<aside class="notes" data-slide="5/2">
-							再來是 session 收尾的時候，把值得留的東西存下來。
-							看上面這段對話：我請它把按鈕間距加大，看了結果覺得不錯，就再講一句「把這個間距存成規則寫進 CLAUDE.md」，它就記下來了。下次它會直接用同樣的間距，不用再講一次。
-							下面兩個檔案的分工：memory.md 是 Claude Code 自動累積的這一輪事實，沒有 commit；CLAUDE.md 是 commit 進 repo 的，每個新 session 一開始就會讀到。
+						<aside class="notes" data-slide="5/3">
+							再來是 session 收尾的時候，把值得留的東西存下來。<br>
+							像是UI或是程式風格的修改，如果改完你覺得不錯，就在完成的最後說「把剛剛這個設計存成規則寫進 CLAUDE.md」<br>
+							Claude就會幫你把他自己的 memory.md 內容，整理你要的規則，寫入CLAUDE.md。<br>
+							下次你再開啟新 agent 就會有這些 knowledge，這對舊有的 project 想要做長期 autopilot 來說，也是非常重要的習慣跟前置作業<br>
 							收尾時可以直接說「把值得記住的規則整理一下」，它會幫你挑重點。不過 CLAUDE.md 要保持精簡，人工看過、只留真的值得記的，不要把整個 session 倒進去。
 						</aside>
 					</section>
@@ -967,9 +968,7 @@
 						<text x="540" y="54" fill="#4ec9c0" fill-opacity="0.55" font-size="14" font-family="'JetBrains Mono',monospace" text-anchor="middle">Autopilot</text>
 					</svg>
 					<aside class="notes" data-slide="6">
-						接下來進到今天的重心：方法。
-						不過在講方法之前，先看看不用方法會怎樣——我們都很想直接丟一句話給 agent，然後拿到可以上線的東西。
-						先看這種做法會留下哪三個洞，再講三個工具怎麼補。
+						接下來進到今天的重心：定義任務的方法。
 					</aside>
 				</section>
 
@@ -987,8 +986,9 @@
 							<span class="fl-line">It is a trap</span>
 						</p>
 						<aside class="notes" data-slide="7/0">
-							這大概是多數人會打的 prompt：「把這個 Java 服務從 MSSQL 搬到 PostgreSQL，保持一切正常運作。」
-							看起來很合理，有任務、也有目標。
+							我們人其實天生就喜歡把事情簡單化，都很想直接丟一句話給 agent，然後拿到可以上線的東西。<br>
+							例如說：「把這個 Java 服務從 MSSQL 搬到 PostgreSQL，保持一切正常運作。」<br>
+							看起來很合理，有任務、也有目標，但你會得到什麼樣的結果？<br>
 						</aside>
 					</section>
 
@@ -1006,10 +1006,10 @@
 							<div class="step on-warn"><span class="t c-warn">No isolation</span><span class="d">it edited your working tree in place</span></div>
 						</div>
 						<aside class="notes" data-slide="7/1">
-							agent 會認真地改 SQL、換 driver，build 過了，然後說「完成了」。從它的角度看，它確實完成了。
+							agent 會認真地改 SQL、換 db driver，build 過了，然後說「完成了」。從它的角度看，它確實完成了。
 							但有三個東西不見了：
 							一，沒有規格——「保持一切正常」沒有定義。
-							二，沒有完成的定義——沒有任何東西在檢查答案還對不對。
+							二，沒有完成的定義——沒有任何東西在檢查答案對還不對。
 							三，沒有隔離——它直接改了你的工作目錄。
 							這三個洞，就是接下來的方法要補的。
 						</aside>
