@@ -541,6 +541,7 @@
 
 			/* ── three-tools overview ── */
 			.tools3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; max-width: 92%; margin: 0.5em auto; }
+			.tools3.two { grid-template-columns: repeat(2, 1fr); max-width: 68%; }
 			.tool { background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
 				padding: 24px 22px; text-align: left; border-top: 3px solid var(--border-2); }
 			.tool.t-sp   { border-top-color: var(--skill); }
@@ -1020,34 +1021,6 @@
 				<!-- ════════ SUPERPOWERS SKILLS ════════ -->
 				<section>
 
-					<!-- 3-tools overview -->
-					<section>
-						<h3 style="margin-bottom:0.3em;">The better ways</h3>
-						<div class="tools3">
-							<div class="tool t-sp">
-								<div class="nm">SuperPowers</div>
-								<div class="role">Encode the process</div>
-								<div class="desc">Skills that tell the agent <em>how</em> to work<br>brainstorming turns a request into a spec + Definition of Done</div>
-							</div>
-							<div class="tool t-goal">
-								<div class="nm">/goal</div>
-								<div class="role">Loop until the goal is met</div>
-								<div class="desc">Hand it a spec + a machine-checkable goal<br>It builds, tests, fixes until the verifier passes</div>
-							</div>
-							<div class="tool t-flow">
-								<div class="nm">/workflow</div>
-								<div class="role">Fan out many agents</div>
-								<div class="desc">Orchestrate independent units in parallel<br>N conversions at once, each isolated</div>
-							</div>
-						</div>
-						<p class="mid c-muted" style="margin-top:0.5em;">SuperPowers produces the spec; <span class="c-goal mono">/goal</span> and <span class="c-flow mono">/workflow</span> are two ways to execute against it</p>
-						<aside class="notes" data-slide="8/0">
-							這一章就三個工具，先看全貌。
-							SuperPowers 負責把任務變成一份帶「完成定義」的規格；/goal 和 /workflow 是拿著規格去執行的兩種方式——一個是循環到目標達成，一個是多個 agent 平行展開。
-							順序就是：先定義好，再執行。
-						</aside>
-					</section>
-
 					<!-- SuperPowers lifecycle bar -->
 					<section>
 						<div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:0.2em;">
@@ -1085,7 +1058,7 @@
 							<span class="fl-line"><span class="c-skill">brainstorming</span> is the entry point</span>
 						</p> -->
 						<!-- <button class="exp-btn arm-c2" style="margin-top:0.3em;" onclick="lbOpenPath('method/method_superpowers_', 25)">See a real SuperPowers run &nbsp;📷</button> -->
-						<aside class="notes" data-slide="8/1">
+						<aside class="notes" data-slide="8/0">
 							大家應該都有這種經驗：同一個需求，今天丟出去結果不錯，明天再丟一次就不行，差別常常只是那天 prompt 寫得好不好。
 							SuperPowers 想解決的就是這件事。它是一套用 skill 組起來的開發流程，從定義、規劃、建構到驗證，每個階段該怎麼做都寫在 skill 裡。
 							有人可能會想：這跟內建的 plan mode 差在哪？plan mode 是用權限做的一道關卡，只管「動手前先規劃」這一步；SuperPowers 管的是整條流程。
@@ -1111,7 +1084,7 @@
 							<span class="fl-line">Refuses to write code until the design is approved</span>
 							<span class="fl-line"><strong class="c-text">That gate is the point</strong></span>
 						</p>
-						<aside class="notes" data-slide="8/2">
+						<aside class="notes" data-slide="8/1">
 							brainstorming 就五步：摸清專案脈絡、一次問一個問題、給兩三個方案和取捨、設計分段讓你確認、最後 commit 一份帶 Definition of Done 的規格。
 							重點在最後那道關卡：設計沒被確認，它就不寫 code。
 							它強迫的正是我們最常跳過的那一步——先想清楚再動手。前面多花十幾分鐘，換的是後面少掉的重寫和 debug。
@@ -1130,11 +1103,37 @@
 						</div>
 						<button class="exp-btn arm-c1" style="margin-top:0.4em;" onclick="specOpen()">See the real spec &nbsp;📄</button>
 						<p class="mid c-goal" style="margin-top:0.5em;font-weight:600;">A committed spec with a testable DoD — exactly what <span class="mono">/goal</span> &amp; <span class="mono">/workflow</span> consume</p>
-						<aside class="notes" data-slide="8/3">
+						<aside class="notes" data-slide="8/2">
 							把剛剛那句 prompt 丟進 brainstorming 會發生什麼？
 							它會反問：「保持一切正常」到底是什麼意思？還有，要怎麼自動驗證這件事？
 							討論出來的答案就變成可測試的 DoD：用 newman 把 postman/api.json 裡的每支 endpoint 跑一遍，全部要回 2xx、不能有 500、不能有 DB 錯誤。
 							這份規格已經 commit 進 repo，按下面的按鈕可以看原文。它就是 /goal 和 /workflow 接下來要吃的輸入。
+						</aside>
+					</section>
+
+					<!-- two ways to execute the spec — loop toward autopilot -->
+					<section>
+						<h3 style="margin-bottom:0.3em;">The spec exists — two ways to <span class="tl-future">loop toward autopilot</span></h3>
+						<div class="tools3 two">
+							<div class="tool t-goal">
+								<div class="nm">/goal</div>
+								<div class="role">Loop until the goal is met</div>
+								<div class="desc">Hand it a spec + a machine-checkable goal<br>It builds, tests, fixes until the verifier passes</div>
+							</div>
+							<div class="tool t-flow">
+								<div class="nm">/workflow</div>
+								<div class="role">Fan out many agents</div>
+								<div class="desc">Orchestrate independent units in parallel<br>N conversions at once, each isolated</div>
+							</div>
+						</div>
+						<p class="mid c-muted flush-note" style="margin-top:0.5em;">
+							<span class="fl-line">Once the spec is defined, <span class="c-goal mono">/goal</span> and <span class="c-flow mono">/workflow</span> take it and run</span>
+							<span class="fl-line">Define it well enough to run on its own — that's the <span class="tl-future">autopilot</span></span>
+						</p>
+						<aside class="notes" data-slide="8/3">
+							規格定義好之後，就進到執行。/goal 和 /workflow 是拿著這份規格去跑的兩種方式——一個是循環到目標達成，一個是多個 agent 平行展開。
+							它們共同的前提就是前面那份帶 DoD 的規格：定義得夠清楚、有機器可檢查的裁判，agent 才能一直自己跑下去。
+							而這正是自動駕駛的前置條件——規格好到它能自己驗證、自己收斂，你才敢放手讓它自動運行。下一章把這兩個工具拆開來看。
 						</aside>
 					</section>
 
