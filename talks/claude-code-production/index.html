@@ -1299,7 +1299,7 @@
 						<div class="caseb">
 							<div class="item f">
 								<span class="lab">What</span>
-								<p>A live <strong class="c-text">downloader</strong> backend — dispatches software builds to users and logs each download:</p>
+								<p>A live <strong class="c-text">downloader</strong> service — dispatches software builds to users and logs each download:</p>
 								<div class="chips">
 									<span class="chip">trial</span>
 									<span class="chip">patch</span>
@@ -1452,37 +1452,38 @@
 									<td style="color:var(--ok);">41/47 HTTP 2xx<br><span style="font-size:0.85em;">+ 326/326 row counts ✓</span></td>
 									<td>≈21.3M units<br><span style="color:var(--faint);font-size:0.85em;">telemetry<br>⚠ report claims 44.6M</span></td>
 									<td>≈5.0 h</td>
-									<td style="color:var(--ok);"><strong>3.1 — best</strong><br><span style="color:var(--faint);font-size:0.85em;">robust 4.5 · tests 2.5<br>struct 3.5 · review 2</span></td>
+									<td style="color:var(--ok);"><strong>3.1<br><span style="font-size:0.85em;">best</span></strong><br><span style="color:var(--faint);font-size:0.85em;">robust 4.5 · tests 2.5<br>struct 3.5 · review 2</span></td>
 								</tr>
 								<tr>
 									<td class="exp" style="color:var(--goal);white-space:nowrap;">C1 · /goal</td>
 									<td>47/47 HTTP 2xx<br><span style="color:var(--faint);font-size:0.85em;">no row diff</span></td>
 									<td>≈30.0M units</td>
-									<td style="color:var(--ok);">≈97 min — fastest</td>
+									<td style="color:var(--ok);">≈97 min<br><span style="font-size:0.85em;">fastest</span></td>
 									<td><strong>2.25</strong><br><span style="color:var(--warn);font-size:0.85em;">output SQL never committed</span></td>
 								</tr>
 								<tr>
 									<td class="exp" style="color:var(--flow);white-space:nowrap;">C2 · /workflow</td>
-									<td>40/40 HTTP 2xx<br><span style="color:var(--faint);font-size:0.85em;">iter 34→40 · 7 excluded N/A</span></td>
-									<td style="color:var(--ok);">≈5.5M units<br><span style="font-size:0.85em;">cheapest — ~¼ of the rest</span></td>
+									<td>47/47 HTTP 2xx<br><span style="color:var(--faint);font-size:0.85em;">no row diff</span></td>
+									<td style="color:var(--ok);">≈5.5M units<br><span style="font-size:0.85em;">cheapest</span></td>
 									<td>≈132 min</td>
 									<td><strong>2.5</strong><br><span style="color:var(--warn);font-size:0.85em;">MSSQL left in legacy Java</span></td>
 								</tr>
 								<tr>
 									<td class="exp" style="color:var(--muted);">D · the real migration</td>
-									<td>shipped to prod<br><span style="color:var(--warn);font-size:0.85em;">1 incident found by traffic</span></td>
+									<td>shipped to prod<br></td>
 									<td style="color:var(--faint);">NOT FOUND</td>
 									<td>~1 month<br><span style="color:var(--faint);font-size:0.85em;">calendar elapsed</span></td>
-									<td><strong>2.9 — 2nd</strong><br><span style="color:var(--faint);font-size:0.85em;">robust 4 · tests 1.5<br>struct 4 · review 2</span></td>
+									<td><strong>2.9<br><span style="font-size:0.85em;">2nd</span></strong><br><span style="color:var(--faint);font-size:0.85em;">robust 4 · tests 1.5<br>struct 4 · review 2</span></td>
 								</tr>
 							</tbody>
 						</table>
 						<aside class="notes" data-slide="13/3">
 							結果都在這張表，我挑三個重點講。
-							第一，正確性要小心讀。表上的通過率全部只是 HTTP 2xx——A 甚至是 0 個 assertion、自己宣稱的，連證據檔案都沒有。B 寫 41/47 反而最誠實：那 6 個是外部服務的問題，不是遷移本身，而且 B 是唯一附上資料面證據的一組——326 張表的筆數全部對上。但要老實說：連 B 都只比對到筆數，我們設計的那把「逐列比對」的尺，沒有任何一組真的做出來。通過率高，不代表驗證做得好，就是這個意思。
-							第二，成本和時間。C1 最快，97 分鐘收斂，但它有個致命傷：轉換出來的 SQL 只活在資料庫裡，根本沒 commit 進 repo，等於沒辦法重建、沒辦法稽核。C2 最便宜，大概是其他組的四分之一，而且是唯一把每支 stored proc 新舊對照都 commit 起來的一組——代價是舊的 Java 裡還留著沒轉乾淨的 MSSQL 語法。B 連續跑了約五個小時，換到最完整的理解和文件。
-							第三，程式碼品質。排名是 B 3.1、D 2.9、C2 2.5、C1 2.25、A 2.0。B 第一，靠的是動手前先盤點方言、把 root cause 寫進 repo。但注意 D——完全沒有正式工作流的一個月人工迭代——只差 0.2 分。它贏在 production 真的磨過：commit 紀律最好、citext 用得最乾淨。可是它也 ship 過一個 bug，靠線上流量才抓到，事後又花了快一個月才修掉。而且每一組的測試和 review 分數都很低——紀律墊高的是理解和可重現性，不是自動長出安全網。
-							所以方法的價值不在讓它「做得到」，在讓品質不靠運氣——不用靠一個月的線上流量幫你抓 bug。而品質不靠運氣，正是之後敢讓它自動駕駛的前提。
+							<br>第一，正確性要小心讀。表上的通過率全部只是 HTTP 2xx——A 甚至是 0 個 assertion、自己宣稱的，連證據檔案都沒有。
+							<br>B 寫 41/47 反而最誠實：那 6 個是外部服務的問題，不是遷移本身，而且 B 是唯一附上資料面證據的一組——326 張表的筆數全部對上。但要老實說：連 B 都只比對到筆數，我們設計的那把「逐列比對」的尺，沒有任何一組真的做出來。通過率高，不代表驗證做得好，就是這個意思。
+							<br>第二，成本和時間。C1 最快，97 分鐘收斂，但它有個致命傷：轉換出來的 SQL 只活在資料庫裡，根本沒 commit 進 repo，等於沒辦法重建、沒辦法稽核。C2 最便宜，大概是其他組的四分之一，而且是唯一把每支 stored proc 新舊對照都 commit 起來的一組——代價是舊的 Java 裡還留著沒轉乾淨的 MSSQL 語法。B 連續跑了約五個小時，換到最完整的理解和文件。
+							<br>第三，程式碼品質。排名是 B 3.1、D 2.9、C2 2.5、C1 2.25、A 2.0。B 第一，靠的是動手前先盤點方言、把 root cause 寫進 repo。但注意 D——完全沒有正式工作流的一個月人工迭代——只差 0.2 分。它贏在 production 真的磨過：commit 紀律最好、citext 用得最乾淨。可是它也 ship 過一個 bug，靠線上流量才抓到，事後又花了快一個月才修掉。而且每一組的測試和 review 分數都很低——紀律墊高的是理解和可重現性，不是自動長出安全網。
+							<br>所以方法的價值不在讓它「做得到」，在讓品質不靠運氣——不用靠一個月的線上流量幫你抓 bug。而品質不靠運氣，正是之後敢讓它自動駕駛的前提。
 						</aside>
 					</section>
 
