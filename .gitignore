@@ -19,3 +19,7 @@ dev.html
 .playwright-mcp/
 .claude/
 skills-lock.json
+
+# packaged, self-contained talk deliverables (derived artifacts, regenerable)
+talks/**/*-talk.html
+talks/**/*-talk.zip
