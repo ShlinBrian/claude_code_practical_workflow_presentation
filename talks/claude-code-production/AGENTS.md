@@ -65,8 +65,9 @@ Use these rules for readability fixes:
 3. **Do not shrink whole slides to hide problems.** Reduce only the narrow component that is failing, and keep body copy comfortably readable. Avoid global font-size changes unless the entire deck is being rebalanced.
 4. **For horizontal process rows, preserve the row when the relationship is the point.** Widen the flow container, reduce arrow padding/gaps, or trim card padding so nodes such as `A vs B = result` remain on one visual line.
 5. **Always break long body text into per-meaning lines — never leave it as a paragraph that wraps on its own.** Any multi-clause footer/takeaway/note longer than roughly one line must be split into explicit line blocks (one beat per line) using a `display:block` line class such as `.q-line` or `.flush-note .fl-line`, with comfortable `line-height` (~1.5) and a small vertical gap between lines. Center the block and let each line break where the meaning breaks, not where the box edge happens to fall. A long connected paragraph forced into two ugly wrapped lines is the failure mode this rule exists to prevent — three clear beats always read better.
-6. **Keep slide text and its speaker note in sync only for content edits.** Pure layout fixes that do not change wording do not require touching the slide's `<aside class="notes">`. If wording changes, update the matching `<aside class="notes">` in the same pass.
-7. **Verify the exact cited slides after every layout patch.** Check the real rendered URL/hash, not only the source. Confirm the problematic text is no longer wrapped or crowded.
+6. **Never let a long multi-clause sentence self-wrap — break it into beats, and pull enumerations out of the prose.** This extends rule 5 for body copy inside cards/blocks. A sentence with an inline comma-list (e.g. "dispatches builds — trial, patch, subscription, OEM, digital — and logs each") reads as a wall; split it into a short lead line, the enumerated items as a **chip/tag row** (small mono chips: `--surface` fill, `--border`, `border-radius:6px`, ~`0.42em`), then any trailing context on its own line. For a two-part "rule → consequence" statement, put the rule on a bright line and the consequence on a muted (`c-muted`) second line, joined by `→`, not crammed into one sentence. Prefer this structural breakup over shrinking the text or forcing `<br>` mid-clause.
+7. **Keep slide text and its speaker note in sync only for content edits.** Pure layout fixes that do not change wording do not require touching the slide's `<aside class="notes">`. If wording changes, update the matching `<aside class="notes">` in the same pass.
+8. **Verify the exact cited slides after every layout patch.** Check the real rendered URL/hash, not only the source. Confirm the problematic text is no longer wrapped or crowded.
 
 Recent examples to preserve:
 
@@ -75,6 +76,7 @@ Recent examples to preserve:
 - Self-verifying quote: split a long quote into three `.q-line` beats instead of leaving it as one dense block.
 - Verifier equation: widen the `.flow` container so `PostgreSQL response vs golden MSSQL response = per-endpoint, per-row A/B` reads as one equation.
 - End-of-run flush note (slide 4/2): the footer takeaway is split into `.flush-note .fl-line` blocks (one beat per line, centered, `line-height:1.5`, ~0.3em gap) instead of a single paragraph that wrapped into two cramped lines.
+- Case intro (slide 11/0, "Not a swap the JDBC driver job"): replaced three stacked full-width cards with two `.caseb` accent-bar blocks (no boxes); the "What" build-type list (trial/patch/subscription/OEM/digital) became a `.caseb .chips` chip row, and "The bar" split into a bright rule line + a muted `→` consequence line — the concrete case of rule 6.
 
 ## Verifying layout
 

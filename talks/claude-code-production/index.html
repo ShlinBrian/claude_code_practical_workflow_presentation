@@ -113,6 +113,19 @@
 			.case3 .card { margin: 0; max-width: 100%; padding: 14px 20px; }
 			.case3 .card .card-label { margin-bottom: 0.5em; }
 			.case3 .card .mid { font-size: 0.62em; }
+			/* case intro — condensed accent-bar lines (no boxes) */
+			.caseb { max-width: 78%; margin: 0.6em auto 0; display: flex; flex-direction: column; gap: 26px; text-align: left; }
+			.caseb .item { border-left: 4px solid var(--border-2); padding: 4px 0 4px 22px; }
+			.caseb .item.f { border-left-color: var(--flow); }
+			.caseb .item.g { border-left-color: var(--goal); }
+			.caseb .item .lab { display: block; font-family: 'JetBrains Mono', monospace; font-size: 0.42em;
+				letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+			.caseb .item p { margin: 0; font-size: 0.62em; line-height: 1.55; color: var(--text); }
+			.caseb .item p + p { margin-top: 8px; }
+			.caseb .chips { display: flex; flex-wrap: wrap; gap: 7px; margin: 9px 0; }
+			.caseb .chips .chip { font-family: 'JetBrains Mono', monospace; font-size: 0.42em;
+				color: var(--muted); background: var(--surface); border: 1px solid var(--border);
+				border-radius: 6px; padding: 3px 10px; }
 
 			/* ── two-col ── */
 			.two-col {
@@ -996,7 +1009,7 @@
 							<span class="fl-line">It is a trap</span>
 						</p>
 						<aside class="notes" data-slide="7/0">
-							我們人其實天生就喜歡把事情簡單化，都很想直接丟一句話給 agent，然後拿到可以上線的東西。<br>
+							我們都喜歡把事情簡單化，都很想直接丟一句話給 agent，然後拿到可以上線的東西。<br>
 							例如說：「把這個 Java 服務從 MSSQL 搬到 PostgreSQL，保持一切正常運作。」<br>
 							看起來很合理，有任務、也有目標，但你會得到什麼樣的結果？<br>
 						</aside>
@@ -1016,11 +1029,11 @@
 							<div class="step on-warn"><span class="t c-warn">No isolation</span><span class="d">it edited your working tree in place</span></div>
 						</div>
 						<aside class="notes" data-slide="7/1">
-							agent 會認真地改 SQL、換 db driver，build 過了，然後說「完成了」。從它的角度看，它確實完成了。
-							但有三個東西不見了：
-							一，沒有規格——「保持一切正常」沒有定義。
-							二，沒有完成的定義——沒有任何東西在檢查答案對還不對。
-							三，沒有隔離——它直接改了你的工作目錄。
+							agent 會認真地改 SQL、換 db driver，build 過了，然後說「完成了」。從它的角度看，它確實完成了。<br>
+							但我們不喜歡，不喜歡的原因就是缺少了 spec, 完成的定義 以及環境：<br>
+							一，沒有規格——「保持一切正常」沒有定義。<br>
+							二，沒有完成的定義——沒有任何東西在檢查答案對還不對。<br>
+							三，沒有隔離——它直接改了你的工作目錄。<br>
 							這三個洞，就是接下來的方法要補的。
 						</aside>
 					</section>
@@ -1072,11 +1085,13 @@
 							<span class="repo-qr-label"><span class="mono">obra/superpowers</span><br>Scan for the repo</span>
 						</a>
 						<aside class="notes" data-slide="8/0">
-							大家應該都有這種經驗：同一個需求，今天丟出去結果不錯，明天再丟一次就不行，差別常常只是那天 prompt 寫得好不好。
-							SuperPowers 想解決的就是這件事。它是一套用 skill 組起來的開發流程，從定義、規劃、建構到驗證，每個階段該怎麼做都寫在 skill 裡。
-							有人可能會想：這跟內建的 plan mode 差在哪？plan mode 是用權限做的一道關卡，只管「動手前先規劃」這一步；SuperPowers 管的是整條流程。
-							這樣品質就不是取決於當天的 prompt，而是取決於流程。整條流程的入口是 brainstorming，下一頁拆開來看。
-							右下角的 QR 是 SuperPowers 的 repo（github.com/obra/superpowers），想自己裝來玩的可以掃一下。
+							這邊提供的解決方案就是使用 SuperPowers 的 skills。
+							<br>它是一套用 skill 組起來的開發流程，從定義、規劃、建構到驗證，每個階段該怎麼做都寫在 skill 裡。
+							<br>在 GitHub 很受歡迎，甚至已經被 Claude Code, Codex 納入成為官方可安裝的 plugin
+							<br>有人可能會想：這跟內建的 plan mode 差在哪？plan mode 是用權限做的一道關卡，只管「動手前先規劃」這一步
+							<br>SuperPowers 管的是整條流程。
+							<br>這樣品質就不是取決於當天的 prompt，而是取決於流程。整條流程的入口是 brainstorming，下一頁拆開來看。
+							<br>右下角的 QR 是 SuperPowers 的 repo（github.com/obra/superpowers），想自己裝來玩的可以掃一下。
 						</aside>
 					</section>
 
@@ -1199,34 +1214,29 @@
 
 					<section>
 						<h3 style="margin-bottom:0.35em;">Not a "swap the JDBC driver" job</h3>
-						<div class="case3">
-							<div class="card accent-text flush-note">
-								<div class="card-label">What</div>
-								<p class="mid" style="margin:0;line-height:1.5;">
-									<span class="fl-line">A years-old commercial download backend, still in production — real users every day</span>
-									<span class="fl-line">Moved <strong class="c-text">MSSQL → PostgreSQL</strong>: data, schema, stored procedures, dialect SQL in Java/JSP</span>
-								</p>
+						<div class="caseb">
+							<div class="item f">
+								<span class="lab">What</span>
+								<p>A live <strong class="c-text">downloader</strong> backend — dispatches software builds to users and logs each download:</p>
+								<div class="chips">
+									<span class="chip">trial</span>
+									<span class="chip">patch</span>
+									<span class="chip">subscription</span>
+									<span class="chip">OEM</span>
+									<span class="chip">digital</span>
+								</div>
+								<p>In production every day, on <strong class="c-text">MSSQL → PostgreSQL</strong>.</p>
 							</div>
-							<div class="card accent-goal flush-note">
-								<div class="card-label">The bar</div>
-								<p class="mid" style="margin:0;line-height:1.5;">
-									<span class="fl-line">Every API must return the <strong class="c-goal">correct</strong> response on PostgreSQL</span>
-									<span class="fl-line">A wrong answer ships to real customers</span>
-								</p>
-							</div>
-							<div class="card accent-flow flush-note">
-								<div class="card-label">The shape</div>
-								<p class="mid" style="margin:0;line-height:1.5;">
-									<span class="fl-line">Difficulty stacks in two phases:</span>
-									<span class="fl-line"><strong class="c-flow">Phase A · migrate the schema</strong>, then <strong class="c-goal">Phase B · migrate the data</strong></span>
-								</p>
+							<div class="item g">
+								<span class="lab">The bar</span>
+								<p>Every API must return the <strong class="c-goal">correct</strong> answer on PostgreSQL.</p>
+								<p class="c-muted">Dispatch the wrong build → a real user downloads the wrong file.</p>
 							</div>
 						</div>
 						<aside class="notes" data-slide="11/0">
 							先講清楚這個案子是什麼。這不是換個 driver 就好的事。
-							這是一個跑了很多年、還在線上的商用下載後端，每天都有真實用戶在用。整套從 MSSQL 搬到 PostgreSQL：資料、schema、stored procedure，還有埋在 Java/JSP 裡的方言 SQL。
-							標準只有一個：每支 API 在 PostgreSQL 上都要回傳正確的結果，因為錯的答案會直接送到用戶手上。
-							工作分兩個階段：Phase A 搬 schema，Phase B 搬資料。
+							這是一個叫 downloader 的後端系統，還在線上跑——它負責把各類軟體 build（試用版、patch、訂閱版、OEM、數位版）派送給使用者，並記錄整個下載歷程。它不是管能不能下載，而是解析出對應的正確 build、把下載連結準備好提供給官網跟 downloader 程式，使用者再從那裡取得檔案。整套從 MSSQL 搬到 PostgreSQL：資料、schema、stored procedure，還有埋在 Java/JSP 裡的方言 SQL。
+							標準只有一個：每支 API 在 PostgreSQL 上都要回傳正確的結果，因為派送錯的 build，使用者就會下載到錯的檔案。
 						</aside>
 					</section>
 
