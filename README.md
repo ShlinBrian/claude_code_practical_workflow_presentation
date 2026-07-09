@@ -1,3 +1,21 @@
+# Claude Code in Production — A Practical RD Workflow
+
+<p align="center">
+  <a href="https://shlinbrian.github.io/claude_code_practical_workflow_presentation/">
+    <img src="talks/claude-code-production/assets/cover.png" alt="Claude Code in Production — A Practical RD Workflow" width="720">
+  </a>
+</p>
+
+<p align="center">
+  <b><a href="https://shlinbrian.github.io/claude_code_practical_workflow_presentation/">▶ 線上觀看簡報 / Open the live presentation</a></b>
+</p>
+
+用鍵盤 `→` / `←` 換頁,按 `S` 開講者備忘稿(內含中文講稿),`ESC` 看全部投影片總覽。
+
+**本機執行:** `npm start` 後開 <http://localhost:8000/talks/claude-code-production/>
+
+---
+
 > **About this repository**
 >
 > This is a personal talk — **"Claude Code in Production: A Practical RD Workflow"** —
