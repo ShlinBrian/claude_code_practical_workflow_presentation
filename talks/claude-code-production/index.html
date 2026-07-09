@@ -588,32 +588,35 @@
 			/* two roads to autopilot: Path A = SuperPowers full lifecycle (full-width card),
 			   Path B = /goal + /workflow loop tools, converging on ⇒ autopilot */
 			.tools3.two.spec-src { grid-template-columns: 26px 1fr 1fr;
-				grid-template-rows: auto auto auto auto auto; row-gap: 10px;
-				column-gap: 18px; align-items: stretch; }
+				grid-template-rows: auto auto auto auto auto auto; row-gap: 10px;
+				column-gap: 18px; align-items: stretch; max-width: 80%; }
+			/* divider between road A group (rows 1–2) and road B group (rows 4–5) */
+			.tools3.two .road-split { grid-column: 1 / -1; grid-row: 3; height: 1px;
+				background: var(--border); opacity: 0.7; margin: 6px 0; }
 			.road-badge { align-self: center; justify-self: center; font-family: 'JetBrains Mono', monospace;
 				font-weight: 700; font-size: 0.5em; color: var(--faint); border: 1px solid var(--border);
 				border-radius: 6px; width: 26px; height: 26px; display: flex; align-items: center;
 				justify-content: center; }
 			.tools3.two .road-badge.ra { grid-column: 1; grid-row: 2; }
-			.tools3.two .road-badge.rb { grid-column: 1; grid-row: 4; }
-			.tools3.two .a-tag { grid-column: 2 / -1; grid-row: 1; font-size: 0.42em; color: var(--muted);
+			.tools3.two .road-badge.rb { grid-column: 1; grid-row: 5; }
+			.tools3.two .a-tag { grid-column: 2 / -1; grid-row: 1; font-size: 0.5em; color: var(--muted);
 				margin: 0; }
 			.tools3.two .sp-flow-card { grid-column: 2 / -1; grid-row: 2; padding: 16px 22px; display: flex;
 				align-items: center; gap: 22px; text-align: left; }
-			.tools3.two .b-tag { grid-row: 3; }
-			.tools3.two .b-flow { grid-column: 2 / -1; grid-row: 4; display: flex;
+			.tools3.two .b-tag { grid-row: 4; }
+			.tools3.two .b-flow { grid-column: 2 / -1; grid-row: 5; display: flex;
 				align-items: center; gap: 16px; }
-			.tools3.two .road-out { grid-row: 5; }
+			.tools3.two .road-out { grid-row: 6; }
 			/* B road: spec source node → two stacked horizontal lanes */
 			.b-flow .spec-node { flex: none; background: var(--surface); border: 1px solid var(--border);
 				border-top: 3px solid var(--skill); border-radius: 12px; padding: 14px 18px; text-align: left;
 				display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
 			.b-flow .spec-node .sn-sp { font-family: 'JetBrains Mono', monospace; font-weight: 700;
-				font-size: 0.58em; color: var(--skill); }
+				font-size: 0.68em; color: var(--skill); }
 			.b-flow .spec-node .sp-col { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
-			.b-flow .spec-node .sk-lbl { font-family: 'JetBrains Mono', monospace; font-size: 0.4em;
+			.b-flow .spec-node .sk-lbl { font-family: 'JetBrains Mono', monospace; font-size: 0.48em;
 				color: var(--skill); white-space: nowrap; letter-spacing: 0.01em; }
-			.b-flow .spec-node .chip { font-family: 'JetBrains Mono', monospace; font-size: 0.5em;
+			.b-flow .spec-node .chip { font-family: 'JetBrains Mono', monospace; font-size: 0.58em;
 				color: var(--text); background: var(--surface); border: 1px solid var(--border);
 				border-radius: 7px; padding: 7px 16px; white-space: nowrap; }
 			.b-flow .b-arrow { flex: none; color: var(--faint); font-size: 0.9em; }
@@ -625,16 +628,16 @@
 			.b-flow .lane.l-flow { border-left-color: var(--flow); }
 			.b-flow .lane .ln-head { display: flex; align-items: center; gap: 14px; }
 			.b-flow .lane .ln-nm { flex: none; font-family: 'JetBrains Mono', monospace; font-weight: 700;
-				font-size: 0.56em; width: 5.8em; }
+				font-size: 0.66em; width: 5.8em; }
 			.b-flow .lane.l-goal .ln-nm { color: var(--goal); }
 			.b-flow .lane.l-flow .ln-nm { color: var(--flow); }
-			.b-flow .lane .ln-desc { flex: 1; font-size: 0.42em; color: var(--muted); line-height: 1.5; }
-			.b-flow .lane .ln-arr { flex: none; font-size: 0.5em; }
+			.b-flow .lane .ln-desc { flex: 1; font-size: 0.5em; color: var(--muted); line-height: 1.5; }
+			.b-flow .lane .ln-arr { flex: none; font-size: 0.58em; }
 			.b-flow .lane.l-goal .ln-arr { color: var(--goal); }
 			.b-flow .lane.l-flow .ln-arr { color: var(--flow); }
 			/* per-lane terminal example */
 			.b-flow .lane .ln-eg { width: 100%; margin: 0; padding: 8px 12px; border-radius: 8px;
-				font-size: 0.38em; line-height: 1.5; }
+				font-size: 0.46em; line-height: 1.5; }
 			.b-flow .lane .ln-eg .pr { display: block; }
 			/* recap on the closing slide — one shared spec feeds three parallel lanes */
 			.recap-flow { display: flex; align-items: center; justify-content: center; gap: 16px;
@@ -642,12 +645,12 @@
 			.recap-flow .spec-node.shared { flex: none; display: flex; flex-direction: column;
 				align-items: flex-start; gap: 6px; background: var(--surface); border: 1px solid var(--border);
 				border-top: 3px solid var(--skill); border-radius: 12px; padding: 14px 18px; text-align: left; }
-			.recap-flow .spec-node.shared .sk-lbl { font-family: 'JetBrains Mono', monospace; font-size: 0.4em;
+			.recap-flow .spec-node.shared .sk-lbl { font-family: 'JetBrains Mono', monospace; font-size: 0.48em;
 				color: var(--skill); white-space: nowrap; letter-spacing: 0.01em; }
-			.recap-flow .spec-node.shared .chip { font-family: 'JetBrains Mono', monospace; font-size: 0.5em;
+			.recap-flow .spec-node.shared .chip { font-family: 'JetBrains Mono', monospace; font-size: 0.58em;
 				color: var(--text); background: var(--surface); border: 1px solid var(--border);
 				border-radius: 7px; padding: 7px 16px; white-space: nowrap; }
-			.recap-flow .rf-arrow { flex: none; color: var(--faint); font-size: 0.9em; }
+			.recap-flow .rf-arrow { flex: none; color: var(--faint); font-size: 1.05em; }
 			.recap-flow .rf-lanes { flex: none; display: flex; flex-direction: column; gap: 12px; align-items: stretch; }
 			.recap-flow .lane { display: flex; align-items: center; gap: 14px; background: var(--surface);
 				border: 1px solid var(--border); border-left: 3px solid var(--border-2);
@@ -656,32 +659,32 @@
 			.recap-flow .lane.l-goal { border-left-color: var(--goal); }
 			.recap-flow .lane.l-flow { border-left-color: var(--flow); }
 			.recap-flow .lane .ln-nm { flex: none; font-family: 'JetBrains Mono', monospace; font-weight: 700;
-				font-size: 0.5em; width: 6.4em; }
+				font-size: 0.6em; width: 6.4em; }
 			.recap-flow .lane.l-sp .ln-nm   { color: var(--skill); }
 			.recap-flow .lane.l-goal .ln-nm { color: var(--goal); }
 			.recap-flow .lane.l-flow .ln-nm { color: var(--flow); }
 			.recap-flow .lane .ln-chips { display: flex; align-items: center; gap: 8px; }
-			.recap-flow .lane .ln-chips .chip { font-family: 'JetBrains Mono', monospace; font-size: 0.4em;
+			.recap-flow .lane .ln-chips .chip { font-family: 'JetBrains Mono', monospace; font-size: 0.48em;
 				color: var(--text); background: var(--surface); border: 1px solid var(--border);
 				border-radius: 6px; padding: 4px 10px; white-space: nowrap; }
-			.recap-flow .lane .ln-desc { font-size: 0.42em; color: var(--muted); }
-			.recap-flow .lane .ln-arr { flex: none; font-size: 0.5em; }
+			.recap-flow .lane .ln-desc { font-size: 0.5em; color: var(--muted); }
+			.recap-flow .lane .ln-arr { flex: none; font-size: 0.58em; }
 			.recap-flow .lane.l-sp .ln-arr   { color: var(--skill); }
 			.recap-flow .lane.l-goal .ln-arr { color: var(--goal); }
 			.recap-flow .lane.l-flow .ln-arr { color: var(--flow); }
 			.sp-flow-card .lbl { font-family: 'JetBrains Mono', monospace; font-weight: 700;
-				font-size: 0.58em; color: var(--skill); white-space: nowrap; }
+				font-size: 0.68em; color: var(--skill); white-space: nowrap; }
 			.sp-flow { flex: 1; display: flex; align-items: flex-end; justify-content: space-between;
 				gap: 8px; flex-wrap: nowrap; }
 			.sp-flow .sp-col { display: flex; flex-direction: column; align-items: center; gap: 6px; }
-			.sp-flow .sk-lbl { font-family: 'JetBrains Mono', monospace; font-size: 0.4em;
+			.sp-flow .sk-lbl { font-family: 'JetBrains Mono', monospace; font-size: 0.48em;
 				color: var(--skill); white-space: nowrap; letter-spacing: 0.01em; }
-			.sp-flow .chip { font-family: 'JetBrains Mono', monospace; font-size: 0.5em;
+			.sp-flow .chip { font-family: 'JetBrains Mono', monospace; font-size: 0.58em;
 				color: var(--text); background: var(--surface); border: 1px solid var(--border);
 				border-radius: 7px; padding: 7px 16px; white-space: nowrap; }
-			.sp-flow .arr { color: var(--flow); font-size: 0.5em; padding-bottom: 6px; }
+			.sp-flow .arr { color: var(--flow); font-size: 0.58em; padding-bottom: 6px; }
 			/* Path B tag sits above the two tool cards */
-			.tools3.two .b-tag { grid-column: 2 / -1; font-size: 0.42em; color: var(--muted);
+			.tools3.two .b-tag { grid-column: 2 / -1; font-size: 0.5em; color: var(--muted);
 				margin: 0; }
 			/* convergence line — both roads point here */
 			.road-out { grid-column: 1 / -1; text-align: center; font-size: 0.6em; margin-top: 2px;
@@ -1297,6 +1300,7 @@
 									<span class="sp-col"><span class="sk-lbl">verification</span><span class="chip">verify</span></span>
 								</div>
 							</div>
+							<div class="road-split"></div>
 							<div class="road-badge rb">B</div>
 							<div class="b-tag">Take the spec — loop against a verifier</div>
 							<div class="b-flow">
@@ -1329,9 +1333,10 @@
 							規格定義好之後，這邊有兩條通往 autopilot 的路。
 							<br>路 A：直接用 SuperPowers 把整條 lifecycle 走完——spec → plan → TDD → review → verify，讓它自己把任務從頭執行到尾。
 							<br>路 B：左邊那份 SuperPowers brainstorming 產出的規格，往右餵給 /goal 和 /workflow 這兩條 lane，讓它們拿著同一份規格去迴圈。
-							<br> goal: 是循環到目標達成——你給它一個機器可檢查的目標加規格，它就一直 build → 測試 → 修，跑到裁判通過。
+							<br> goal: 是循環到目標達成——你給它一個可自我驗證的目標跟規格，它就一直 build → 測試 → 修，跑到裁判通過。
 							<br> workflow: 是多個 agent 平行展開——一句自然語言下指令，它會展開成很多平行的獨立單位，各自處理再各自驗證。
-							<br>重點是——不管走哪一條，最後都通往同一個地方：autopilot。你只要用自然語言把要做的事講清楚，剩下的它們來做。下一頁講這件事會通往哪裡。
+							<br> 只需要提到他們的關鍵字或是斜線指令，就可以呼叫他們
+							<br>不管走哪一條，我們利用工具，只需要用簡單的自然語言，就可以讓agent有紀律的完成任務。
 						</aside>
 					</section>
 
@@ -1343,8 +1348,7 @@
 							<span class="fl-line">Define it well enough to run on its own <br>⇒ <span class="tl-future">autopilot</span></span>
 						</p>
 						<aside class="notes" data-slide="8/4">
-							把前一頁那兩個工具拉高一層來看：它們共同的前提，就是前面那份帶 DoD 的規格。
-							規格定義好，/goal 和 /workflow 就拿著它去跑；定義得夠清楚、有機器可檢查的裁判，agent 才能一直自己跑下去。
+							一旦spec定義好，/goal 和 /workflow 就拿著它去跑；定義得夠清楚、有機器可檢查的裁判，agent 才能一直自己跑下去。
 							而這正是自動駕駛的前置條件——規格好到它能自己驗證、自己收斂，你才敢放手讓它自動運行。
 						</aside>
 					</section>
