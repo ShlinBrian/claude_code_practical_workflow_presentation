@@ -588,28 +588,65 @@
 			/* two roads to autopilot: Path A = SuperPowers full lifecycle (full-width card),
 			   Path B = /goal + /workflow loop tools, converging on ⇒ autopilot */
 			.tools3.two.spec-src { grid-template-columns: 26px 1fr 1fr;
-				grid-template-rows: auto auto auto auto; row-gap: 10px;
+				grid-template-rows: auto auto auto auto auto; row-gap: 10px;
 				column-gap: 18px; align-items: stretch; }
 			.road-badge { align-self: center; justify-self: center; font-family: 'JetBrains Mono', monospace;
 				font-weight: 700; font-size: 0.5em; color: var(--faint); border: 1px solid var(--border);
 				border-radius: 6px; width: 26px; height: 26px; display: flex; align-items: center;
 				justify-content: center; }
-			.tools3.two .road-badge.ra { grid-column: 1; grid-row: 1; }
-			.tools3.two .road-badge.rb { grid-column: 1; grid-row: 3; }
-			.tools3.two .sp-flow-card { grid-column: 2 / -1; grid-row: 1; padding: 16px 22px; display: flex;
+			.tools3.two .road-badge.ra { grid-column: 1; grid-row: 2; }
+			.tools3.two .road-badge.rb { grid-column: 1; grid-row: 4; }
+			.tools3.two .a-tag { grid-column: 2 / -1; grid-row: 1; font-size: 0.42em; color: var(--muted);
+				margin: 0; }
+			.tools3.two .sp-flow-card { grid-column: 2 / -1; grid-row: 2; padding: 16px 22px; display: flex;
 				align-items: center; gap: 22px; text-align: left; }
-			.tools3.two .b-tag { grid-row: 2; }
-			.tools3.two .t-goal { grid-column: 2; grid-row: 3; }
-			.tools3.two .t-flow { grid-column: 3; grid-row: 3; }
-			.tools3.two .road-out { grid-row: 4; }
+			.tools3.two .b-tag { grid-row: 3; }
+			.tools3.two .b-flow { grid-column: 2 / -1; grid-row: 4; display: flex;
+				align-items: center; gap: 16px; }
+			.tools3.two .road-out { grid-row: 5; }
+			/* B road: spec source node → two stacked horizontal lanes */
+			.b-flow .spec-node { flex: none; background: var(--surface); border: 1px solid var(--border);
+				border-top: 3px solid var(--skill); border-radius: 12px; padding: 14px 18px; text-align: left;
+				display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+			.b-flow .spec-node .sn-sp { font-family: 'JetBrains Mono', monospace; font-weight: 700;
+				font-size: 0.58em; color: var(--skill); }
+			.b-flow .spec-node .sp-col { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
+			.b-flow .spec-node .sk-lbl { font-family: 'JetBrains Mono', monospace; font-size: 0.4em;
+				color: var(--skill); white-space: nowrap; letter-spacing: 0.01em; }
+			.b-flow .spec-node .chip { font-family: 'JetBrains Mono', monospace; font-size: 0.5em;
+				color: var(--text); background: var(--surface); border: 1px solid var(--border);
+				border-radius: 7px; padding: 7px 16px; white-space: nowrap; }
+			.b-flow .b-arrow { flex: none; color: var(--faint); font-size: 0.9em; }
+			.b-flow .lanes { flex: 1; display: flex; flex-direction: column; gap: 12px; }
+			.b-flow .lane { display: flex; flex-direction: column; gap: 8px; background: var(--surface);
+				border: 1px solid var(--border); border-left: 3px solid var(--border-2);
+				border-radius: 10px; padding: 11px 16px; text-align: left; }
+			.b-flow .lane.l-goal { border-left-color: var(--goal); }
+			.b-flow .lane.l-flow { border-left-color: var(--flow); }
+			.b-flow .lane .ln-head { display: flex; align-items: center; gap: 14px; }
+			.b-flow .lane .ln-nm { flex: none; font-family: 'JetBrains Mono', monospace; font-weight: 700;
+				font-size: 0.56em; width: 5.8em; }
+			.b-flow .lane.l-goal .ln-nm { color: var(--goal); }
+			.b-flow .lane.l-flow .ln-nm { color: var(--flow); }
+			.b-flow .lane .ln-desc { flex: 1; font-size: 0.42em; color: var(--muted); line-height: 1.5; }
+			.b-flow .lane .ln-arr { flex: none; font-size: 0.5em; }
+			.b-flow .lane.l-goal .ln-arr { color: var(--goal); }
+			.b-flow .lane.l-flow .ln-arr { color: var(--flow); }
+			/* per-lane terminal example */
+			.b-flow .lane .ln-eg { width: 100%; margin: 0; padding: 8px 12px; border-radius: 8px;
+				font-size: 0.38em; line-height: 1.5; }
+			.b-flow .lane .ln-eg .pr { display: block; }
 			.sp-flow-card .lbl { font-family: 'JetBrains Mono', monospace; font-weight: 700;
 				font-size: 0.58em; color: var(--skill); white-space: nowrap; }
-			.sp-flow { display: flex; align-items: center; gap: 8px; flex-wrap: nowrap; }
-			.sp-flow .chip { font-family: 'JetBrains Mono', monospace; font-size: 0.42em;
+			.sp-flow { flex: 1; display: flex; align-items: flex-end; justify-content: space-between;
+				gap: 8px; flex-wrap: nowrap; }
+			.sp-flow .sp-col { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+			.sp-flow .sk-lbl { font-family: 'JetBrains Mono', monospace; font-size: 0.4em;
+				color: var(--skill); white-space: nowrap; letter-spacing: 0.01em; }
+			.sp-flow .chip { font-family: 'JetBrains Mono', monospace; font-size: 0.5em;
 				color: var(--text); background: var(--surface); border: 1px solid var(--border);
-				border-radius: 6px; padding: 5px 11px; white-space: nowrap; }
-			.sp-flow .arr { color: var(--flow); font-size: 0.42em; }
-			.road-tag { margin-left: auto; font-size: 0.4em; color: var(--muted); white-space: nowrap; }
+				border-radius: 7px; padding: 7px 16px; white-space: nowrap; }
+			.sp-flow .arr { color: var(--flow); font-size: 0.5em; padding-bottom: 6px; }
 			/* Path B tag sits above the two tool cards */
 			.tools3.two .b-tag { grid-column: 2 / -1; font-size: 0.42em; color: var(--muted);
 				margin: 0; }
@@ -639,6 +676,7 @@
 			.lc-stage .sk { font-size: 0.52em; color: var(--muted); padding: 6px 0 6px 16px;
 				position: relative; line-height: 1.5; white-space: nowrap; }
 			.lc-stage .sk::before { content: '›'; position: absolute; left: 2px; color: var(--flow); }
+			.lc-stage .sk.dot::before { content: '·'; color: inherit; }
 			.lc-stage .sk b { color: var(--text); font-weight: 600; }
 			.lc-stage.star { border-color: var(--skill); border-top: 3px solid var(--skill); }
 			.lc-stage.star .st { color: var(--skill); }
@@ -737,8 +775,8 @@
 						會從<br>
 						1. 每日小習慣<br>
 						2. 幫助我們定義任務/完成任務的方法<br>
-						3. 介紹我們實際使用的真實案例，將一個原本使用 MSSQL 資料庫的 Java 專案轉換成使用 PostgreSQL，以便更好的使用AWS維護<br>
-						4. 四種方法的比較<br>
+						3. 再來是介紹我們實際使用的真實案例，將一個原本使用 MSSQL 資料庫的 Java 專案轉換成使用 PostgreSQL，以便更好的使用AWS維護<br>
+						4. 再來是四種方法的比較<br>
 						5. 以及最後會有可以帶走的 checklist 和 takeaway<br>
 					</aside>
 				</section>
@@ -792,7 +830,7 @@
 						讓任務、完成的定義、工作環境都被定義得夠清楚，讓agent能 *自我驗證*。<br>
 						我們都知道，這就是最麻煩的地方，所以我們今天會介紹有哪些簡單好用的工具或指令來幫我們。<br>
 
-						**第三階 Autopilot 也就是這條路的終點，也就是最近常聽到的loop engineering**：<br>
+						**第三階 Autopilot 也就是這條路的終點，也就是最近在矽谷圈很常聽到的loop engineering**：<br>
 						把前面這些包成一個 *自主運作* 的系統，就可以讓 agent 進入 全自動駕駛。<br>
 						Agent可以：<br>
 						1. 拿新任務<br>
@@ -903,12 +941,12 @@
 						<!-- <p class="mid c-muted" style="margin-top:0.7em;">Three moves, by <em>when</em> you reach for them — <strong>during the run · at the end · when context fills</strong></p> -->
 						<aside class="notes" data-slide="5/0">
 							（左邊亮）
-							<br>大家應該都遇過：跑到一半 context 快滿了、usage 快用完了，或是 agent 開始變笨忘記你前面講過的決定。
-							結果就是把整個任務從頭再解釋一遍。
+							<br>大家應該都遇過：像是 context 快滿了、usage 快用完了，或是 agent 開始變笨忘記你前面講過的決定。
+							結果你可能就是把整個任務從頭再解釋一遍。
 							<br>（第二下：右邊亮、左邊暗）
-							<br>解法有三個方向：
+							<br>我們可以做的有三個方向：
 							<br>1. 是在執行過程中主動控制 context，等一下的 /rewind、/btw、subagent 就是在做這件事
-							<br>2. 是在 context 用完之前，先把狀態交接出去。
+							<br>2. 或是在 context/usage 用完之前，先把狀態交接出去。
 							<br>3. 是收尾的時候，把值得留的決定寫進 CLAUDE.md，下個 session 一開始就知道。
 							<br>這樣你是在指揮它，而不是每次都重來。
 						</aside>
@@ -929,8 +967,8 @@
 						<p class="mid c-muted" style="margin-top:0.5em;"><span class="c-goal mono">/rewind</span> back out · <span class="c-goal mono">/btw</span> look up without growing context · <span class="c-goal mono">subagent</span> type an instruction to spin one up</p>
 						<aside class="notes" data-slide="5/1">
 							在執行過程中：
-							<br>/rewind：當你發現 agent 開始走錯方向，或是你後悔剛剛你下的prompt，直接 /rewind，就可以 rollback 到你想要的 checkpoint。
-							<br>/btw：跑到一半想查個小問題，又不想讓它進到對話紀錄，可以使用 /btw，他會將答案顯示在一個可以關掉的視窗裡，不佔用你現在 session 的 context。
+							<br>/rewind：當你發現 agent 開始走錯方向，或是你後悔剛剛你下的prompt，可以直接 /rewind，就可以 rollback 到你想要的 checkpoint。
+							<br>/btw：跑到一半想查個小問題，可以使用 /btw，他會將答案顯示在一個可以關掉的視窗裡，就不會污染你現在 session 的 context。
 							<br>subagent：我們可以呼叫建立一個 subagent，來去進行一些跟主任務比較不相關的工作，像是請他「測試那些剛修改完的 modules 然後只回傳失敗的」，這樣只有結果會被傳回 session 當中。
 							<br>透過這些方法，我們就可以保持這個 session 當中的對話，都是有意義的資訊
 						</aside>
@@ -1007,7 +1045,7 @@
 							像是UI或是程式風格的修改，如果改完你覺得不錯，就在完成的最後說「把剛剛這個設計存成規則寫進 CLAUDE.md」<br>
 							Claude就會幫你把他自己的 memory.md 內容，整理你要的規則，寫入CLAUDE.md。<br>
 							下次你再開啟新 agent 就會有這些 knowledge，這對舊有的 project 想要做長期 autopilot 來說，也是非常重要的習慣跟前置作業<br>
-							收尾時可以直接說「把值得記住的規則整理一下」，它會幫你挑重點。不過 CLAUDE.md 要保持精簡，人工看過、只留真的值得記的，不要把整個 session 倒進去。
+							不過 CLAUDE.md 也注意要保持精簡，前期會需要人工看過、只留真的值得記的，不要把整個 session 倒進去。
 						</aside>
 					</section>
 
@@ -1061,8 +1099,8 @@
 							<span class="fl-line">It is a trap</span>
 						</p>
 						<aside class="notes" data-slide="7/0">
-							我們都喜歡把事情簡單化，都很想直接丟一句話給 agent，然後拿到可以上線的東西。<br>
-							例如說：「把這個 Java 服務從 MSSQL 搬到 PostgreSQL，保持一切正常運作。」<br>
+							我們都喜歡把事情簡單化，都很想直接丟一句話給 agent，然後拿到可以上線、品質好的東西。<br>
+							例如說：「把這個 Java 服務從 MSSQL資料庫 搬到 PostgreSQL資料庫，保持一切正常運作。」<br>
 							看起來很合理，有任務、也有目標，但你會得到什麼樣的結果？<br>
 						</aside>
 					</section>
@@ -1081,12 +1119,13 @@
 							<div class="step on-warn"><span class="t c-warn">No isolation</span><span class="d">it edited your working tree in place</span></div>
 						</div>
 						<aside class="notes" data-slide="7/1">
-							agent 會認真地改 SQL、換 db driver，build 過了，然後說「完成了」。從它的角度看，它確實完成了。<br>
-							但我們不喜歡，不喜歡的原因就是缺少了 spec, 完成的定義 以及環境：<br>
-							一，沒有規格——「保持一切正常」沒有定義。<br>
-							二，沒有完成的定義——沒有任何東西在檢查答案對還不對。<br>
-							三，沒有隔離——它直接改了你的工作目錄。<br>
-							這三個洞，就是接下來的方法要補的。
+							<br>agent 會認真地改 SQL、換 db driver，build 過了，然後說「完成了」。從它的角度看，它確實完成了。
+							<br>但我們常常不喜歡，我們不知道他的改動是不是可靠、是不是真的跟我們腦海中的想像一樣、是不是有被驗證過？
+							<br>會這樣就是因為缺少了 spec, 完成的定義 以及環境：
+							<br>一，沒有規格——「保持一切正常」沒有定義。
+							<br>二，沒有完成的定義——沒有任何東西在檢查答案對還不對。
+							<br>三，沒有隔離——它直接改了你的工作目錄動到還沒commit的程式。
+							<br>這三個洞，就是接下來的方法要補的。
 						</aside>
 					</section>
 				</section>
@@ -1106,7 +1145,7 @@
 							<div class="lc-stage star">
 								<div class="st">Define</div>
 								<div class="sk hero">brainstorming</div>
-								<div class="sk">idea → spec + DoD</div>
+								<div class="sk dot">&nbsp;idea → spec + DoD</div>
 							</div>
 							<div class="lc-arr">→</div>
 							<div class="lc-stage">
@@ -1138,13 +1177,11 @@
 						</a>
 						<aside class="notes" data-slide="8/0">
 							這邊提供的解決方案就是使用 SuperPowers 的 skills。
-							<br>它是一套用 skill 組起來的開發流程，從定義、規劃、建構到驗證，每個階段該怎麼做都寫在 skill 裡。
-							<br>在 GitHub 很受歡迎，甚至已經被 Claude Code, Codex 納入成為官方可安裝的 plugin
-							<br>有人可能會想：這跟內建的 plan mode 差在哪？
-							<br>plan mode 是用權限做的一道關卡，只管「動手前先規劃」這一步
-							<br>SuperPowers 管的是整條流程。
-							<br>透過這樣，交付品質就不再是取決於當天的 prompt，而是完整可被驗證的流程。
-							<br>整條流程最關鍵的就是 brainstorming，我們可以利用它來幫我們把任務定義清楚
+							<br>它是一套用 skill 組起來的開發流程，仿造一位資深工程師，從定義、規劃、建構到驗證
+							<br>每個階段該怎麼做都寫在 skill 裡。
+							<br>這個 project 在 GitHub 很受歡迎，甚至已經被 Claude Code, Codex 納入成為官方可安裝的 plugin
+							<br>透過 SuperPower，交付品質就不再是取決於當天的 prompt，而是一套完整可被驗證的流程。
+							<br>其中，整條流程最關鍵的就是 brainstorming，我們可以利用它來幫我們把任務定義清楚
 						</aside>
 					</section>
 
@@ -1167,7 +1204,12 @@
 							<span class="fl-line"><strong class="c-text">That gate is the point</strong></span>
 						</p>
 						<aside class="notes" data-slide="8/1">
-							brainstorming 有五個步驟：1. 摸清專案脈絡、2. 一次問一個問題、3. 給兩三個方案和取捨、4. 設計分段讓你確認、5. 最後 commit 一份帶 Definition of Done 的規格。
+							brainstorming 有五個步驟：
+							<br>1. 摸清專案脈絡
+							<br>2. 一次問一個問題
+							<br>3. 給兩三個方案和取捨
+							<br>4. 設計分段讓你確認、
+							<br>5. 最後 commit 一份帶 Definition of Done 的規格。
 							<br>重點在最後那道關卡：設計沒被確認，它就不寫 code。
 							<br>它強迫的正是我們最常跳過的那一步——先想清楚再動手。
 							<br>前面多花十分鐘，換的是後面少掉的重寫和 debug。
@@ -1198,9 +1240,9 @@
 							這邊截圖給大家看一下brainstorming 的實際畫面。
 							<br>我們把剛剛那句「把服務從 MSSQL 搬到 PostgreSQL，保持一切正常」真的丟進 brainstorming 之後。
 							<br>它不會直接開工，而是先摸清專案，然後一題一題反問：
-							<br>第一，「保持一切正常」的驗收標準是什麼、要怎麼證明搬對了？
-							<br>第二，PostgreSQL 的 schema 跟資料從哪來？
-							<br>第三，這次要涵蓋哪些範圍？
+							<br>第一，「保持一切正常」的驗收標準是什麼、要怎麼證明搬對了？status code 200? response body same?
+							<br>第二，PostgreSQL 的 schema 跟 data 從哪來？
+							<br>第三，這次要涵蓋哪些範圍？both app and database?
 							<br>每回答一題，模糊的需求就被逼出一塊可測試的定義。
 							<br>最後就會逐題被問成一份帶有 完成定義 的規格。
 						</aside>
@@ -1211,37 +1253,51 @@
 						<h3 style="margin-bottom:0.3em;">Two roads to <span class="tl-future">autopilot</span></h3>
 						<div class="tools3 two spec-src">
 							<div class="road-badge ra">A</div>
+							<div class="a-tag">Runs the whole lifecycle itself</div>
 							<div class="tool t-sp sp-flow-card">
 								<div class="lbl">SuperPowers</div>
 								<div class="sp-flow">
-									<span class="chip">spec</span><span class="arr">→</span>
-									<span class="chip">plan</span><span class="arr">→</span>
-									<span class="chip">TDD</span><span class="arr">→</span>
-									<span class="chip">review</span><span class="arr">→</span>
-									<span class="chip">verify</span>
+									<span class="sp-col"><span class="sk-lbl">brainstorming</span><span class="chip">spec</span></span><span class="arr">→</span>
+									<span class="sp-col"><span class="sk-lbl">writing-plans</span><span class="chip">plan</span></span><span class="arr">→</span>
+									<span class="sp-col"><span class="sk-lbl">subagent-TDD</span><span class="chip">TDD</span></span><span class="arr">→</span>
+									<span class="sp-col"><span class="sk-lbl">code-review</span><span class="chip">review</span></span><span class="arr">→</span>
+									<span class="sp-col"><span class="sk-lbl">verification</span><span class="chip">verify</span></span>
 								</div>
-								<div class="road-tag">runs the whole lifecycle itself</div>
 							</div>
 							<div class="road-badge rb">B</div>
 							<div class="b-tag">Take the spec — loop against a verifier</div>
-							<div class="tool t-goal">
-								<div class="nm">/goal</div>
-								<div class="role">Loop until the goal is met</div>
-								<div class="desc">Hand it a spec + a machine-checkable goal<br>It builds, tests, fixes until the verifier passes</div>
-								<div class="term tool-eg"><span class="pr">/goal Every test passes AND output matches the expected baseline. <br>Spec: docs/superpowers/spec.md</span></div>
-							</div>
-							<div class="tool t-flow">
-								<div class="nm">/workflow</div>
-								<div class="role">Fan out many agents</div>
-								<div class="desc">Orchestrate independent units in parallel<br>N conversions at once, each isolated</div>
-								<div class="term tool-eg"><span class="pr">/workflow process every independent unit in parallel, then verify each. <br>Spec: docs/superpowers/spec.md</span></div>
+							<div class="b-flow">
+								<div class="spec-node">
+									<div class="sn-sp">SuperPowers</div>
+									<span class="sp-col"><span class="sk-lbl">brainstorming</span><span class="chip">spec</span></span>
+								</div>
+								<div class="b-arrow">→</div>
+								<div class="lanes">
+									<div class="lane l-goal">
+										<div class="ln-head">
+											<span class="ln-nm">/goal</span>
+											<span class="ln-desc">Loop until the goal is met <br>— build, test, fix until the verifier passes</span>
+											<span class="ln-arr">▶</span>
+										</div>
+										<div class="term ln-eg"><span class="pr">/goal Every test passes AND output matches the expected baseline. <br>Spec: docs/superpowers/spec.md</span></div>
+									</div>
+									<div class="lane l-flow">
+										<div class="ln-head">
+											<span class="ln-nm">/workflow</span>
+											<span class="ln-desc">Fan out many agents <br>— independent units in parallel, each isolated</span>
+											<span class="ln-arr">▶</span>
+										</div>
+										<div class="term ln-eg"><span class="pr">/workflow process every independent unit in parallel, then verify each. <br>Spec: docs/superpowers/spec.md</span></div>
+									</div>
+								</div>
 							</div>
 						</div>
 						<aside class="notes" data-slide="8/3">
-							規格定義好之後，通往 autopilot 有兩條路，兩條都是從 SuperPowers 出發。
-							<br>路 A：直接用 SuperPowers 把整條 lifecycle 走完——spec → plan → TDD → review → verify，讓它自己把任務從頭扛到尾。
-							<br>路 B：把 SuperPowers 產出的那份規格，餵給 /goal 或 /workflow 這類 loop 工具，讓它們拿著規格去迴圈——一個是循環到目標達成，一個是多個 agent 平行展開。
-							<br>看卡片下面的範例：/goal 你給它一個機器可檢查的目標加上規格，它就一直 build → 測試 → 修，跑到裁判通過；/workflow 你用一句自然語言下指令，它會展開成很多平行的獨立單位，各自處理再各自驗證。
+							規格定義好之後，這邊有兩條通往 autopilot 的路。
+							<br>路 A：直接用 SuperPowers 把整條 lifecycle 走完——spec → plan → TDD → review → verify，讓它自己把任務從頭執行到尾。
+							<br>路 B：左邊那份 SuperPowers brainstorming 產出的規格，往右餵給 /goal 和 /workflow 這兩條 lane，讓它們拿著同一份規格去迴圈。
+							<br> goal: 是循環到目標達成——你給它一個機器可檢查的目標加規格，它就一直 build → 測試 → 修，跑到裁判通過。
+							<br> workflow: 是多個 agent 平行展開——一句自然語言下指令，它會展開成很多平行的獨立單位，各自處理再各自驗證。
 							<br>重點是——不管走哪一條，最後都通往同一個地方：autopilot。你只要用自然語言把要做的事講清楚，剩下的它們來做。下一頁講這件事會通往哪裡。
 						</aside>
 					</section>
