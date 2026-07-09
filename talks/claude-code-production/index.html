@@ -26,6 +26,7 @@
 				--faint: #5d6b7a;
 				--goal: #e3b341;
 				--goal-dim: #7a6526;
+				--cmd: #A6B1FE;
 				--flow: #4ec9c0;
 				--flow-dim: #2c6661;
 				--skill: #bb81b0;
@@ -451,8 +452,9 @@
 				font-family: 'JetBrains Mono', monospace; font-size: 0.46em;
 				line-height: 1.6; width: 88%; margin: 0.4em auto;
 			}
-			.term .pr { color: var(--flow); }
+			.term .pr { color: var(--text); }
 			.term .pr::before { content: '❯ '; color: var(--faint); }
+			.term .cc { color: var(--cmd); font-weight: 600; }
 			.term .ag { color: var(--muted); display: block; }
 			.term .ag::before { content: ''; display:inline-block; width:18px; height:15px;
 			  background: url('assets/claude-icon.png') center/contain no-repeat;
@@ -993,10 +995,10 @@
 						<h3 style="margin-bottom:0.4em;">Keep the run on track</h3>
 						<div class="term" style="font-size:0.5em;">
 							<span class="cm"># wrong turn? rewind to before it — no re-explaining</span><br>
-							<span class="pr">/rewind</span> → pick the &lt;checkpoint&gt; before the bad edit<br><br>
+							<span class="pr"><span class="cc">/rewind</span> → pick the &lt;checkpoint&gt; before the bad edit</span><br><br>
 							<span class="cm"># quick lookup you DON'T want in history — answer shows</span><br>
 							<!-- <span class="cm"># in a dismissable overlay, context stays the same size</span><br> -->
-							<span class="pr">/btw</span> what does this driver error mean?<br><br>
+							<span class="pr"><span class="cc">/btw</span> what does this driver error mean?</span><br><br>
 							<span class="cm"># offload a noisy task to a fresh context — only the result returns</span><br>
 							<span class="pr">create a subagent to test the modified modules and return only the fail ones</span>
 						</div>
@@ -1316,7 +1318,7 @@
 											<span class="ln-desc">Loop until the goal is met <br>— build, test, fix until the verifier passes</span>
 											<span class="ln-arr">▶</span>
 										</div>
-										<div class="term ln-eg"><span class="pr">/goal Every test passes AND output matches the expected baseline. <br>Spec: docs/superpowers/spec.md</span></div>
+										<div class="term ln-eg"><span class="pr"><span class="cc">/goal</span> Every test passes AND output matches the expected baseline. <br>Spec: docs/superpowers/spec.md</span></div>
 									</div>
 									<div class="lane l-flow">
 										<div class="ln-head">
@@ -1324,17 +1326,17 @@
 											<span class="ln-desc">Fan out many agents <br>— independent units in parallel, each isolated</span>
 											<span class="ln-arr">▶</span>
 										</div>
-										<div class="term ln-eg"><span class="pr">/workflow process every independent unit in parallel, then verify each. <br>Spec: docs/superpowers/spec.md</span></div>
+										<div class="term ln-eg"><span class="pr"><span class="cc">/workflow</span> process every independent unit in parallel, then verify each. <br>Spec: docs/superpowers/spec.md</span></div>
 									</div>
 								</div>
 							</div>
 						</div>
 						<aside class="notes" data-slide="8/3">
 							規格定義好之後，這邊有兩條通往 autopilot 的路。
-							<br>路 A：直接用 SuperPowers 把整條 lifecycle 走完——spec → plan → TDD → review → verify，讓它自己把任務從頭執行到尾。
-							<br>路 B：左邊那份 SuperPowers brainstorming 產出的規格，往右餵給 /goal 和 /workflow 這兩條 lane，讓它們拿著同一份規格去迴圈。
-							<br> goal: 是循環到目標達成——你給它一個可自我驗證的目標跟規格，它就一直 build → 測試 → 修，跑到裁判通過。
-							<br> workflow: 是多個 agent 平行展開——一句自然語言下指令，它會展開成很多平行的獨立單位，各自處理再各自驗證。
+							<br>路線 A：直接用 SuperPowers 把整條 lifecycle 走完——spec → plan → TDD → review → verify，讓它自己把任務從頭執行到尾。
+							<br>路線 B：承接 SuperPowers brainstorming 產出的規格，餵給 /goal 和 /workflow 這兩條 lane，讓它們拿著同一份規格去迴圈。
+							<br> goal: 是循環到目標達成，你給它一個可自我驗證的目標跟規格，它就一直 build → 測試 → 修，跑到裁判通過。
+							<br> workflow: 是多個 agent 平行展開，一句自然語言下指令，它會展開成很多平行的獨立單位，各自處理再各自驗證。
 							<br> 只需要提到他們的關鍵字或是斜線指令，就可以呼叫他們
 							<br>不管走哪一條，我們利用工具，只需要用簡單的自然語言，就可以讓agent有紀律的完成任務。
 						</aside>
