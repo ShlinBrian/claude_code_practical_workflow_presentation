@@ -1484,24 +1484,27 @@
 					<section>
 						<h3 style="margin-bottom:0.2em;">How much method should drive it?</h3>
 						<div class="flow vert" style="max-width:820px;gap:0;">
-							<div class="step on-warn" style="padding:11px 18px;border-left-color:var(--naive);"><span class="t"><span class="badge" style="color:var(--naive);border-color:var(--naive);">A</span> &nbsp;Naive</span><span class="d">one-line prompt, repo as-is → the trap</span></div>
-							<div class="arr" style="font-size:0.62em;padding:5px 0;">↓ &nbsp;add the full method</div>
-							<div class="step on-skill" style="padding:11px 18px;border-left-color:var(--skill);"><span class="t"><span class="badge" style="color:var(--skill);border-color:var(--skill);">B</span> &nbsp;Full Superpowers</span><span class="d">the full chain: brainstorm → plan → worktrees → TDD → review → verify</span></div>
-							<div class="arr" style="font-size:0.62em;padding:5px 0;">↓ &nbsp;keep brainstorm, swap to a lean executor</div>
+							<div class="step on-warn" style="padding:11px 18px;border-left-color:var(--naive);"><span class="t"><span class="badge" style="color:var(--naive);border-color:var(--naive);">A</span> &nbsp;Naive</span><span class="d">one-line prompt</span></div>
+							<!-- <div class="arr" style="font-size:0.62em;padding:5px 0;">↓ &nbsp;add the full method</div> -->
+							<br>
+							<div class="step on-skill" style="padding:11px 18px;border-left-color:var(--skill);"><span class="t"><span class="badge" style="color:var(--skill);border-color:var(--skill);">B</span> &nbsp;Full Superpowers</span><span class="d">the full chain: <br>brainstorm → plan → worktrees → TDD → review → verify</span></div>
+							<!-- <div class="arr" style="font-size:0.62em;padding:5px 0;">↓ &nbsp;keep brainstorm, swap to a lean executor</div> -->
+							<br>
 							<div class="flow" style="margin:0;gap:14px;">
-								<div class="step on-goal" style="min-width:210px;padding:11px 18px;border-left-color:var(--goal);"><span class="t"><span class="badge" style="color:var(--goal);border-color:var(--goal);">C1</span> &nbsp;Brainstorm + <span class="mono">/goal</span></span><span class="d">spec w/ DoD → raw /goal loop to verifier</span></div>
-								<div class="step on-flow" style="min-width:210px;padding:11px 18px;border-left-color:var(--flow);"><span class="t"><span class="badge" style="color:var(--flow);border-color:var(--flow);">C2</span> &nbsp;Brainstorm + <span class="mono">/workflow</span></span><span class="d">same front half → /workflow fan-out</span></div>
+								<div class="step on-goal" style="min-width:210px;padding:11px 18px;border-left-color:var(--goal);"><span class="t"><span class="badge" style="color:var(--goal);border-color:var(--goal);">C1</span> &nbsp;Brainstorm + <span class="mono">/goal</span></span><span class="d">spec with DoD → /goal loop to verifier</span></div>
+								<div class="step on-flow" style="min-width:210px;padding:11px 18px;border-left-color:var(--flow);"><span class="t"><span class="badge" style="color:var(--flow);border-color:var(--flow);">C2</span> &nbsp;Brainstorm + <span class="mono">/workflow</span></span><span class="d">spec with DoD → /workflow fan-out</span></div>
 							</div>
-							<div class="arr" style="font-size:0.62em;padding:5px 0;">+ &nbsp;one real-world control, scored on the same rubric</div>
-							<div class="step" style="padding:11px 18px;border-left-color:var(--muted);"><span class="t"><span class="badge" style="color:var(--muted);border-color:var(--muted);">D</span> &nbsp;The real migration</span><span class="d">manual + AI · ~1 month · shipped to production · no formal workflow</span></div>
+							<!-- <div class="arr" style="font-size:0.62em;padding:5px 0;">+ &nbsp;one real-world control, scored on the same rubric</div> -->
+							<br>
+							<div class="step" style="padding:11px 18px;border-left-color:var(--muted);"><span class="t"><span class="badge" style="color:var(--muted);border-color:var(--muted);">D</span> &nbsp;The real migration</span><span class="d">manual + poorer AI · ~1 month</span></div>
 						</div>
 						<p class="xs c-faint" style="margin-top:0.4em;">A vs rest = method beats one-liner · B vs C = full vs lean · C1 vs C2 = /goal vs /workflow · D = reality check</p>
-						<div class="exp-btns" style="margin-top:0.5em;">
+						<!-- <div class="exp-btns" style="margin-top:0.5em;">
 							<button class="exp-btn arm-a"  onclick="lbOpen('naive',15)">A · naive &nbsp;📷</button>
 							<button class="exp-btn arm-b"  onclick="lbOpen('superpowers',25)">B · superpowers &nbsp;📷</button>
 							<button class="exp-btn arm-c1" onclick="lbOpen('goal',4)">C1 · /goal &nbsp;📷</button>
 							<button class="exp-btn arm-c2" onclick="lbOpen('workflow',7)">C2 · /workflow &nbsp;📷</button>
-						</div>
+						</div> -->
 						<aside class="notes" data-slide="13/0">
 							我們比較的對象有：
 							<br>A：Naive的方法，只使用一句簡單的 prompt 來執行任務。
@@ -1553,38 +1556,38 @@
 							<tbody>
 								<tr>
 									<td class="exp" style="color:var(--naive);">A · naive</td>
-									<td>47/47 claimed &nbsp;<br><span class="warn-badge">⚠ self-asserted</span><br><span style="color:var(--warn);font-size:0.85em;">0 assertions · no artifact</span></td>
-									<td>≈26.7M units<br><span style="color:var(--faint);font-size:0.85em;">self-reported</span></td>
-									<td>≈104 min<br><span style="color:var(--faint);font-size:0.85em;">self-reported</span></td>
-									<td><strong>2.0</strong><br><span style="color:var(--faint);font-size:0.85em;">robust 3.5 · tests 1<br>struct 2.5 · review 1</span></td>
+									<td>47/47 claimed &nbsp;<br><span class="warn-badge">⚠ self-asserted</span><br></td>
+									<td>≈26.7M units<br></td>
+									<td>≈104 min<br></td>
+									<td><strong>2.0</strong><br></td>
 								</tr>
 								<tr>
 									<td class="exp" style="color:var(--skill);">B · full superpowers</td>
-									<td style="color:var(--ok);">41/47 HTTP 2xx<br><span style="font-size:0.85em;">+ 326/326 row counts ✓</span></td>
-									<td>≈21.3M units<br><span style="color:var(--faint);font-size:0.85em;">telemetry<br>⚠ report claims 44.6M</span></td>
+									<td style="color:var(--ok);">41/47 HTTP 2xx<br>most honest</td>
+									<td>≈21.3M units<br></td>
 									<td>≈5.0 h</td>
-									<td style="color:var(--ok);"><strong>3.1<br><span style="font-size:0.85em;">best</span></strong><br><span style="color:var(--faint);font-size:0.85em;">robust 4.5 · tests 2.5<br>struct 3.5 · review 2</span></td>
+									<td style="color:var(--ok);"><strong>3.1<br><span style="font-size:0.85em;">best</span></strong><br></td>
 								</tr>
 								<tr>
 									<td class="exp" style="color:var(--goal);white-space:nowrap;">C1 · /goal</td>
-									<td>47/47 HTTP 2xx<br><span style="color:var(--faint);font-size:0.85em;">no row diff</span></td>
+									<td>47/47 HTTP 2xx<br></td>
 									<td>≈30.0M units</td>
 									<td style="color:var(--ok);">≈97 min<br><span style="font-size:0.85em;">fastest</span></td>
-									<td><strong>2.25</strong><br><span style="color:var(--warn);font-size:0.85em;">output SQL never committed</span></td>
+									<td><strong>2.25</strong><br></td>
 								</tr>
 								<tr>
 									<td class="exp" style="color:var(--flow);white-space:nowrap;">C2 · /workflow</td>
-									<td>47/47 HTTP 2xx<br><span style="color:var(--faint);font-size:0.85em;">no row diff</span></td>
+									<td>47/47 HTTP 2xx<br></td>
 									<td style="color:var(--ok);">≈5.5M units<br><span style="font-size:0.85em;">cheapest</span></td>
 									<td>≈132 min</td>
-									<td><strong>2.5</strong><br><span style="color:var(--warn);font-size:0.85em;">MSSQL left in legacy Java</span></td>
+									<td><strong>2.5</strong><br></td>
 								</tr>
 								<tr>
 									<td class="exp" style="color:var(--muted);">D · the real migration</td>
 									<td>shipped to stage<br></td>
 									<td style="color:var(--faint);">NOT FOUND</td>
-									<td>~1 month<br><span style="color:var(--faint);font-size:0.85em;">calendar elapsed</span></td>
-									<td><strong>2.9<br><span style="font-size:0.85em;">2nd</span></strong><br><span style="color:var(--faint);font-size:0.85em;">robust 4 · tests 1.5<br>struct 4 · review 2</span></td>
+									<td>~1 month<br></td>
+									<td><strong>2.9<br><span style="font-size:0.85em;">2nd</span></strong><br></td>
 								</tr>
 							</tbody>
 						</table>
