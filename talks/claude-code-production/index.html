@@ -348,6 +348,25 @@
 			}
 			.checklist li .h { font-weight: 600; font-size: 1.05em; }
 			.checklist li .q { color: var(--muted); margin-top: 2px; }
+			/* grouped checklist: [ label | bracket rail | items ] */
+			.checklist-grouped {
+				display: grid; grid-template-columns: max-content 22px minmax(0, 620px);
+				align-items: stretch; width: max-content; max-width: 92%; margin: 0 auto;
+			}
+			.checklist-grouped .grp-label {
+				display: flex; align-items: center; justify-content: flex-end; gap: 8px;
+				font-size: 0.6em; text-transform: uppercase; letter-spacing: 0.08em;
+				color: var(--goal); font-weight: 600; white-space: nowrap; padding-right: 2px;
+			}
+			.checklist-grouped .grp-label::after {
+				content: ""; width: 14px; height: 1px; background: var(--goal-dim);
+			}
+			.checklist-grouped .grp-rail {
+				border-left: 2px solid var(--goal-dim); margin: 8px 0;
+			}
+			/* single-row groups: shorten the rail so it reads as a tick, not a bar */
+			.checklist-grouped .grp-rail.solo { margin: 14px 0; }
+			.checklist-grouped .checklist { max-width: 100%; margin: 0; }
 
 			/* ── blockquote ── */
 			.reveal blockquote {
@@ -1690,14 +1709,26 @@
 				<section>
 					<h3 style="margin-bottom:0.1em;">Takeaway</h3>
 					<p class="c-muted" style="font-size:0.6em;margin:0 0 0.5em;">Re-brief the task in five fields</p>
-					<ol class="checklist" style="max-width:88%;">
-						<li><div><div class="h">Goal</div><div class="q"><strong class="c-text">Deliverable + decision</strong>, not an action</div></div></li>
-						<li><div><div class="h">Context</div><div class="q">What would <strong class="c-text">someone new</strong> need to know?</div></div></li>
-						<li><div><div class="h">Materials</div><div class="q">Give the sources — <strong class="c-text">don't make things up</strong></div></div></li>
-						<li><div><div class="h">Boundaries</div><div class="q">Wall off anything <strong class="c-text">you can't undo</strong></div></div></li>
-						<li><div><div class="h">Definition of done</div><div class="q">No verifier → <strong class="c-text">build it first</strong></div></div></li>
-					</ol>
-					<p class="mid c-muted" style="margin-top:0.4em;">1–3 write the <strong class="c-text">spec</strong> · 4 is <strong class="c-text">isolation</strong> · 5 is the <strong class="c-text">verifier</strong> — the filled-in brief <strong class="c-goal">is your prompt</strong></p>
+					<div class="checklist-grouped">
+						<div class="grp-label fragment fade-in" data-fragment-index="0">spec</div>
+						<div class="grp-rail fragment fade-in" data-fragment-index="0"></div>
+						<ol class="checklist" style="counter-reset:chk 0;">
+							<li><div><div class="h">Goal</div><div class="q"><strong class="c-text">Deliverable + decision</strong>, not an action</div></div></li>
+							<li><div><div class="h">Context</div><div class="q">What would <strong class="c-text">someone new</strong> need to know?</div></div></li>
+							<li><div><div class="h">Materials</div><div class="q">Give the sources — <strong class="c-text">don't make things up</strong></div></div></li>
+						</ol>
+						<div class="grp-label fragment fade-in" data-fragment-index="1">isolation</div>
+						<div class="grp-rail solo fragment fade-in" data-fragment-index="1"></div>
+						<ol class="checklist" style="counter-reset:chk 3;">
+							<li><div><div class="h">Boundaries</div><div class="q">Wall off anything <strong class="c-text">you can't undo</strong></div></div></li>
+						</ol>
+						<div class="grp-label fragment fade-in" data-fragment-index="2">verifier</div>
+						<div class="grp-rail solo fragment fade-in" data-fragment-index="2"></div>
+						<ol class="checklist" style="counter-reset:chk 4;">
+							<li><div><div class="h">Definition of done</div><div class="q">No verifier → <strong class="c-text">build it first</strong></div></div></li>
+						</ol>
+					</div>
+					<p class="mid c-muted" style="margin-top:0.4em;">The filled-in brief <strong class="c-goal">is your prompt</strong></p>
 					<aside class="notes" data-slide="15">
 						定義任務，可以使用這五個欄位來重新確認：
 						<br>一，目標：指定成品跟想要的決策，而不是只描述了一個動作。
