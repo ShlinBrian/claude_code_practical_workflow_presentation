@@ -1120,28 +1120,31 @@
 						<h3 style="margin-bottom:0.4em;">Persist decisions so next time starts informed</h3>
 
 						<!-- a tiny dialogue, then one instruction that captures the durable fact -->
-						<div class="term fragment fade-in" data-fragment-index="0" style="font-size:0.46em;width:80%;">
-							<span class="pr">the buttons look too close together — add more space</span>
-							<span class="ag">Done — I added more space between the buttons</span>
-							<!-- <span class="cm"># you like it → ask it to remember this for next time</span><br> -->
-							<span class="pr">nice — save this spacing as the rule in CLAUDE.md</span>
-							<span class="ag">Saved to CLAUDE.md — next time I'll use the same spacing</span>
+						<div class="term-stack" style="width:80%;">
+							<div class="term fragment fade-in" data-fragment-index="0">
+								<span class="pr">the buttons look too close together — add more space</span>
+								<span class="ag">Done — I added more space between the buttons</span>
+							</div>
+							<div class="term fragment fade-in" data-fragment-index="1">
+								<span class="pr">nice — save this spacing as the rule in CLAUDE.md</span>
+								<span class="ag">Saved to CLAUDE.md — next time I'll use the same spacing</span>
+							</div>
 						</div>
 
 						<!-- where facts live: auto-collected now → durable, committed -->
-						<div class="persist fragment fade-in" data-fragment-index="1" style="margin-top:0.5em;">
-							<div class="pcard p-goal">
+						<div class="persist" style="margin-top:0.5em;">
+							<div class="pcard p-goal fragment fade-in" data-fragment-index="2">
 								<span class="pt">memory.md</span>
 								<span class="pd">auto-built by Claude Code<br>this session's facts<br>not committed</span>
 							</div>
-							<div class="parrow">→</div>
-							<div class="pcard p-flow">
+							<div class="parrow fragment fade-in" data-fragment-index="3">→</div>
+							<div class="pcard p-flow fragment fade-in" data-fragment-index="3">
 								<span class="pt">CLAUDE.md</span>
 								<span class="pd">committed<br>read at the start of<br>every future session</span>
 							</div>
 						</div>
 
-						<p class="mid c-muted flush-note fragment fade-in" data-fragment-index="2" style="margin-top:0.5em;">
+						<p class="mid c-muted flush-note fragment fade-in" data-fragment-index="4" style="margin-top:0.5em;">
 							<span class="fl-line">At the end, just say <span class="mono c-goal">"keep the rules worth remembering"</span> and it tidies them up</span>
 							<span class="fl-line">Keep it short — <strong class="c-text">only what's worth keeping</strong></span>
 						</p>
