@@ -547,16 +547,18 @@
 				background: rgba(0,0,0,0.88); align-items: center; justify-content: center;
 				flex-direction: column; gap: 16px;
 			}
-			.lb-overlay.open { display: flex; animation: lbFade 0.22s ease-out; }
+			.lb-overlay.open { display: flex; animation: lbFade 0.3s ease-out; }
 			.lb-overlay img {
 				max-width: 88vw; max-height: 76vh;
 				border-radius: 8px; border: 1px solid #333;
 				display: block; object-fit: contain;
 			}
-			.lb-overlay.open #lb-img { animation: lbZoom 0.28s cubic-bezier(0.16,0.84,0.44,1); }
+			.lb-overlay.open #lb-img { animation: lbZoom 0.5s cubic-bezier(0.16,0.84,0.44,1); }
+			/* when flying out of a thumbnail (FLIP), inline transform drives it — no keyframe */
+			.lb-overlay.open #lb-img.flip { animation: none; }
 			@keyframes lbFade { from { opacity: 0; } to { opacity: 1; } }
 			@keyframes lbZoom {
-				from { opacity: 0; transform: scale(0.82); }
+				from { opacity: 0; transform: scale(0.4); }
 				to   { opacity: 1; transform: scale(1); }
 			}
 			.lb-close {
@@ -1053,23 +1055,32 @@
 					<section>
 						<h3 style="margin-bottom:0.4em;">Keep the run on track</h3>
 						<div class="term-stack">
+							<!-- each block fades in, then the deck's next auto-walks its screenshot(s) in the lightbox, then closes and moves to the next block -->
 							<div class="term fragment fade-in" data-fragment-index="0">
-								<button class="shot-btn" onclick="lbOpenPath('rewind/rewind', 2)">📷<span class="lbl">rewind</span></button>
+								<button id="shot-rewind" class="shot-btn" onclick="lbOpenOne('rewind/rewind1.png', this)">📷<span class="lbl">rewind</span></button>
 								<span class="cm"># wrong turn? rewind to before it — no re-explaining</span><br>
 								<span class="pr"><span class="cc">/rewind</span> → pick the &lt;checkpoint&gt; before the bad edit</span>
 							</div>
-							<div class="term fragment fade-in" data-fragment-index="1">
-								<button class="shot-btn" onclick="lbOpenOne('btw/btw.png')">📷<span class="lbl">btw</span></button>
+							<!-- rewind1 zooms out of the 📷 button; rewind2 is the same shot's next page → horizontal slide, no zoom -->
+							<span class="fragment" data-fragment-index="1" data-lb="rewind/rewind1.png" data-origin="#shot-rewind" data-lb-transition="slide"></span>
+							<span class="fragment" data-fragment-index="2" data-lb="rewind/rewind2.png" data-lb-transition="slide"></span>
+							<span class="fragment" data-fragment-index="3" data-lb="close"></span>
+							<div class="term fragment fade-in" data-fragment-index="4">
+								<button id="shot-btw" class="shot-btn" onclick="lbOpenOne('btw/btw.png', this)">📷<span class="lbl">btw</span></button>
 								<span class="cm"># quick lookup you DON'T want in history — answer shows</span><br>
 								<span class="pr"><span class="cc">/btw</span> is there anything still uncommitted?</span>
 							</div>
-							<div class="term fragment fade-in" data-fragment-index="2">
-								<button class="shot-btn" onclick="lbOpenOne('subagent/subagent.png')">📷<span class="lbl">subagent</span></button>
+							<span class="fragment" data-fragment-index="5" data-lb="btw/btw.png" data-origin="#shot-btw"></span>
+							<span class="fragment" data-fragment-index="6" data-lb="close"></span>
+							<div class="term fragment fade-in" data-fragment-index="7">
+								<button id="shot-subagent" class="shot-btn" onclick="lbOpenOne('subagent/subagent.png', this)">📷<span class="lbl">subagent</span></button>
 								<span class="cm"># offload a noisy task to a fresh context — only the result returns</span><br>
 								<span class="pr">create a subagent to check the changed code for bugs and return only the issues</span>
 							</div>
+							<span class="fragment" data-fragment-index="8" data-lb="subagent/subagent.png" data-origin="#shot-subagent"></span>
+							<span class="fragment" data-fragment-index="9" data-lb="close"></span>
 						</div>
-						<p class="mid c-muted fragment fade-in" data-fragment-index="3" style="margin-top:0.5em;"><span class="c-goal mono">/rewind</span> back out · <span class="c-goal mono">/btw</span> look up without growing context · <span class="c-goal mono">subagent</span> type an instruction to spin one up</p>
+						<p class="mid c-muted fragment fade-in" data-fragment-index="10" style="margin-top:0.5em;"><span class="c-goal mono">/rewind</span> back out · <span class="c-goal mono">/btw</span> look up without growing context · <span class="c-goal mono">subagent</span> type an instruction to spin one up</p>
 						<aside class="notes" data-slide="5/1">
 							在執行過程中：
 							<br>/rewind：當你發現 agent 開始走錯方向，或是你後悔剛剛你下的prompt，可以直接 /rewind，就可以 rollback 到你想要的 checkpoint。
@@ -1326,23 +1337,32 @@
 					<section>
 						<h3 style="margin-bottom:0.15em;">"Keep everything working" → questioned into a spec <button class="exp-btn arm-c1" style="margin-left:0.4em;vertical-align:middle;font-size:0.4em;" onclick="event.stopPropagation();specOpen()">Spec &nbsp;📄</button></h3>
 						<div class="bsgrid">
-							<figure onclick="lbOpenOne('brainstorming/superpowers-brainstorming1.png')">
+							<figure id="bsfig1" onclick="lbOpenOne('brainstorming/superpowers-brainstorming1.png', this)">
 								<img src="brainstorming/superpowers-brainstorming1.png" alt="the one-line prompt + project exploration">
 								<figcaption><span class="n">1</span>explores the codebase</figcaption>
 							</figure>
-							<figure onclick="lbOpenOne('brainstorming/superpowers-brainstorming2.png')">
+							<figure id="bsfig2" onclick="lbOpenOne('brainstorming/superpowers-brainstorming2.png', this)">
 								<img src="brainstorming/superpowers-brainstorming2.png" alt="Correctness bar question">
 								<figcaption><span class="n">2</span>how do we <em>prove</em> it's correct?</figcaption>
 							</figure>
-							<figure onclick="lbOpenOne('brainstorming/superpowers-brainstorming3.png')">
+							<figure id="bsfig3" onclick="lbOpenOne('brainstorming/superpowers-brainstorming3.png', this)">
 								<img src="brainstorming/superpowers-brainstorming3.png" alt="Data source question">
 								<figcaption><span class="n">3</span>where does the data come from?</figcaption>
 							</figure>
-							<figure onclick="lbOpenOne('brainstorming/superpowers-brainstorming4.png')">
+							<figure id="bsfig4" onclick="lbOpenOne('brainstorming/superpowers-brainstorming4.png', this)">
 								<img src="brainstorming/superpowers-brainstorming4.png" alt="DB scope question">
 								<figcaption><span class="n">4</span>which scope do we cover?</figcaption>
 							</figure>
 						</div>
+						<!-- the deck's next auto-zooms each screenshot out FROM its thumbnail, closing between each -->
+						<span class="fragment" data-lb="brainstorming/superpowers-brainstorming1.png" data-origin="#bsfig1"></span>
+						<span class="fragment" data-lb="close"></span>
+						<span class="fragment" data-lb="brainstorming/superpowers-brainstorming2.png" data-origin="#bsfig2"></span>
+						<span class="fragment" data-lb="close"></span>
+						<span class="fragment" data-lb="brainstorming/superpowers-brainstorming3.png" data-origin="#bsfig3"></span>
+						<span class="fragment" data-lb="close"></span>
+						<span class="fragment" data-lb="brainstorming/superpowers-brainstorming4.png" data-origin="#bsfig4"></span>
+						<span class="fragment" data-lb="close"></span>
 						<aside class="notes" data-slide="8/2">
 							這邊截圖給大家看一下brainstorming 的實際畫面。
 							<br>我們把剛剛那句「把服務從 MSSQL 搬到 PostgreSQL，保持一切正常」真的丟進 brainstorming 之後。
@@ -1897,18 +1917,136 @@
 				document.getElementById('lb').classList.add('open'); lbShow();
 			}
 			function lbOpen(arm, total) { lbOpenPath('exp/exp_' + arm + '_', total); }
-			// single image, no prev/next
-			function lbOpenOne(src) {
-				_lbTotal = 0;
+			// the thumbnail the current fullscreen image flew out of (for zoom-OUT on close)
+			var _lbOrigin = null, _lbGen = 0;
+			// transform that parks the fullscreen #lb-img exactly onto `originEl`'s box
+			function _lbFlipTransform(originEl) {
 				var img = document.getElementById('lb-img');
-				img.src = src;
-				document.getElementById('lb-nav').style.display = 'none';
-				var lb = document.getElementById('lb');
-				lb.classList.remove('open');
-				void lb.offsetWidth; // force reflow so the zoom/fade replays each open
-				lb.classList.add('open');
+				var o = originEl.getBoundingClientRect();
+				if (!o.width) return null;
+				var last = img.getBoundingClientRect();
+				var sx = o.width / last.width, sy = o.height / last.height;
+				var dx = (o.left + o.width / 2)  - (last.left + last.width / 2);
+				var dy = (o.top  + o.height / 2) - (last.top  + last.height / 2);
+				return 'translate(' + dx + 'px,' + dy + 'px) scale(' + sx + ',' + sy + ')';
 			}
-			function lbClose() { document.getElementById('lb').classList.remove('open'); }
+			// single image, no prev/next. `origin` (optional) = the on-slide thumbnail
+			// element (or selector) to zoom OUT of: the fullscreen image flies from that
+			// thumbnail's box (FLIP), so it reads as "open this picture → zoom into it".
+			function lbOpenOne(src, origin) {
+				_lbTotal = 0;
+				var gen = ++_lbGen;
+				var img = document.getElementById('lb-img');
+				var lb = document.getElementById('lb');
+				document.getElementById('lb-nav').style.display = 'none';
+				if (typeof origin === 'string') origin = document.querySelector(origin);
+				_lbOrigin = (origin && origin.getBoundingClientRect) ? origin : null;
+				img.src = src;
+
+				var doZoom = function() {
+					if (gen !== _lbGen) return; // superseded by a newer open/close
+					if (!_lbOrigin || !_lbFlipTransform(_lbOrigin)) {
+						// no thumbnail to fly from → plain center zoom (CSS lbZoom)
+						img.classList.remove('flip');
+						img.style.transition = ''; img.style.transform = ''; img.style.opacity = '';
+						lb.classList.remove('open'); void lb.offsetWidth; lb.classList.add('open');
+						return;
+					}
+					// FLIP: show fullscreen, measure it, invert onto the thumbnail, then play
+					img.classList.add('flip');
+					img.style.transition = 'none'; img.style.transform = '';
+					lb.classList.add('open');
+					img.style.transformOrigin = 'center center';
+					// start parked ON the thumbnail, nearly opaque so you can read WHICH figure it is
+					img.style.transform = _lbFlipTransform(_lbOrigin);
+					img.style.opacity = '0.9';
+					void img.offsetWidth; // commit the inverted (on-thumbnail) state
+					// hold briefly at the thumbnail, then grow slow-out-of-origin → full
+					setTimeout(function() {
+						if (gen !== _lbGen) return;
+						img.style.transition = 'transform 0.85s cubic-bezier(0.5,0,0.2,1), opacity 0.5s ease-out';
+						img.style.transform = 'none';
+						img.style.opacity = '1';
+					}, 200);
+				};
+				// wait until the fullscreen image is decoded so its measured rect is real
+				if (img.complete && img.naturalWidth) doZoom();
+				else img.onload = doZoom;
+			}
+			function lbClose() {
+				var gen = ++_lbGen;
+				var lb = document.getElementById('lb'), img = document.getElementById('lb-img');
+				if (!lb.classList.contains('open')) { _lbOrigin = null; return; }
+				var back = (_lbOrigin && _lbOrigin.getBoundingClientRect) ? _lbFlipTransform(_lbOrigin) : null;
+				var reset = function() {
+					lb.classList.remove('open'); img.classList.remove('flip');
+					img.style.transition = ''; img.style.transform = ''; img.style.opacity = '';
+				};
+				if (!back) { reset(); _lbOrigin = null; return; }
+				// hero zoom-OUT: shrink the fullscreen image back into its thumbnail, then hide
+				img.classList.add('flip');
+				img.style.transition = 'transform 0.55s cubic-bezier(0.5,0,0.2,1), opacity 0.4s ease-in';
+				img.style.transform = back;
+				img.style.opacity = '0';
+				_lbOrigin = null;
+				setTimeout(function() { if (gen === _lbGen) reset(); }, 560);
+			}
+			// swap the currently-open image to `src` with a horizontal page-turn (no
+			// zoom). Keeps _lbOrigin so a later close still hero-zooms to the button.
+			function lbSlideTo(src) {
+				var gen = ++_lbGen;
+				var img = document.getElementById('lb-img');
+				// KEEP .flip on: it suppresses the CSS lbZoom keyframe, which would otherwise
+				// hijack the transform and re-zoom instead of sliding. Drive everything inline.
+				img.classList.add('flip');
+				img.onload = null; // drop any stale decode handler from a prior open
+				// current page exits left
+				img.style.transition = 'transform 0.24s ease-in, opacity 0.24s ease-in';
+				img.style.transform = 'translateX(-46px)';
+				img.style.opacity = '0';
+				setTimeout(function() {
+					if (gen !== _lbGen) return;
+					var enter = function() {
+						if (gen !== _lbGen) return;
+						img.onload = null;
+						// new page starts off to the right, then slides to center
+						img.style.transition = 'none';
+						img.style.transform = 'translateX(46px)';
+						img.style.opacity = '0';
+						void img.offsetWidth;
+						img.style.transition = 'transform 0.34s cubic-bezier(0.16,0.84,0.44,1), opacity 0.3s ease-out';
+						img.style.transform = 'translateX(0)';
+						img.style.opacity = '1';
+					};
+					img.onload = enter;
+					img.src = src;
+					if (img.complete && img.naturalWidth) { img.onload = null; enter(); }
+				}, 240);
+			}
+			// ── fragment-driven lightbox ──
+			// A driver fragment carries data-lb="<img path>" (show that image) or
+			// data-lb="close" (dismiss). The deck's next/prev IS the trigger — no
+			// button click. Backward nav is idempotent: after any show/hide we recompute
+			// the lightbox from the LAST still-visible data-lb driver on the slide.
+			function _lbSyncFromFragments(slide) {
+				if (!slide) return;
+				var last = null, origin = null, trans = null;
+				slide.querySelectorAll('.fragment[data-lb]').forEach(function(f) {
+					if (f.classList.contains('visible')) {
+						last = f.dataset.lb; origin = f.dataset.origin || null; trans = f.dataset.lbTransition || null;
+					}
+				});
+				if (!last || last === 'close') { lbClose(); return; }
+				var lb = document.getElementById('lb');
+				var img = document.getElementById('lb-img');
+				// same image already showing → don't replay the zoom (avoids flicker
+				// when an unrelated fragment triggers a resync)
+				if (lb.classList.contains('open') && img.getAttribute('src') === last) return;
+				// "next page of the same shot" while already open → horizontal slide, keep the
+				// origin so a later close still zooms back to the right button
+				if (trans === 'slide' && lb.classList.contains('open')) { lbSlideTo(last); return; }
+				lbOpenOne(last, origin);
+			}
 			function lbStep(d) { _lbIdx = Math.max(1, Math.min(_lbTotal, _lbIdx + d)); lbShow(); }
 			function lbShow() {
 				document.getElementById('lb-img').src = _lbPrefix + _lbIdx + '.png';
@@ -1988,11 +2126,15 @@
 			Reveal.on('fragmentshown', function(event) {
 				if (event.fragment.dataset.frame === 'framing-shift') _framingUpdate(true);
 				if (event.fragment.dataset.frame === 'hygiene-shift') _hygieneUpdate(true);
+				if ('lb' in event.fragment.dataset) _lbSyncFromFragments(event.fragment.closest('section'));
 			});
 			Reveal.on('fragmenthidden', function(event) {
 				if (event.fragment.dataset.frame === 'framing-shift') _framingUpdate(false);
 				if (event.fragment.dataset.frame === 'hygiene-shift') _hygieneUpdate(false);
+				if ('lb' in event.fragment.dataset) _lbSyncFromFragments(event.fragment.closest('section'));
 			});
+			// leaving a slide with an open auto-lightbox → dismiss it
+			Reveal.on('slidechanged', function() { lbClose(); });
 
 			// ── hygiene slide #/4/0: emphasize pain → fix ──
 			function _hygieneUpdate(forward) {

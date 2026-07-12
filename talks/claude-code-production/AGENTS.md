@@ -78,6 +78,25 @@ Recent examples to preserve:
 - End-of-run flush note (slide 4/2): the footer takeaway is split into `.flush-note .fl-line` blocks (one beat per line, centered, `line-height:1.5`, ~0.3em gap) instead of a single paragraph that wrapped into two cramped lines.
 - Case intro (slide 11/0, "Not a swap the JDBC driver job"): replaced three stacked full-width cards with two `.caseb` accent-bar blocks (no boxes); the "What" build-type list (trial/patch/subscription/OEM/digital) became a `.caseb .chips` chip row, and "The bar" split into a bright rule line + a muted `→` consequence line — the concrete case of rule 6.
 
+## Screenshot lightbox — fragment-driven, hero zoom in/out (slides 5/1 and 8/2)
+
+Screenshots on these slides open in the shared `#lb` lightbox and are driven by the **deck's own next/prev key**, not by manual button clicks. The mechanism and its animation preferences are deliberate — preserve them.
+
+**How it's wired:**
+
+- Invisible **driver fragments** carry the state: `<span class="fragment" data-lb="<img path>">` opens/shows that image, `data-lb="close"` dismisses. On every `fragmentshown`/`fragmenthidden`, `_lbSyncFromFragments()` recomputes the lightbox from the **last still-visible** `data-lb` driver on the slide, so forward *and* backward scrubbing are both idempotent (no stuck overlay). Leaving the slide (`slidechanged`) closes it.
+- Each `next` press is **one step**: `close` is always its **own** step — never share a `data-fragment-index` with the next image or the next content block. (5/1 sequence: rewind block → rewind1 → rewind2 → close → btw block → btw → close → subagent block → subagent → close → footer. 8/2: bs1 → close → bs2 → close → bs3 → close → bs4 → close.)
+
+**Zoom in/out preference (the key convention):**
+
+1. **Hero zoom, not a pop.** An image must appear to **zoom OUT of its on-slide origin** and, on close, **zoom back INTO** that origin — never fade/pop in place. The origin is passed via `data-origin="#<id>"` on the driver (and as the 2nd arg to `lbOpenOne(src, origin)` for click handlers). On 8/2 the origin is each grid `<figure>` (`#bsfig1..4`); on 5/1 there is no thumbnail, so the origin is the block's 📷 button (`#shot-rewind` / `#shot-btw` / `#shot-subagent`). Implemented as a FLIP transform (`_lbFlipTransform`): measure fullscreen rect, invert onto the origin's box, then play.
+2. **Start slow so the origin is legible.** The open **holds ~200ms parked on the origin** (at the origin's small scale) before growing, and the grow's first half is slow (`transform 0.85s cubic-bezier(0.5,0,0.2,1)`). This is intentional — a fast ease-out left the thumbnail too quickly to see *which* image it came from. Do not speed up the first half.
+3. **Close mirrors open** — shrink+fade back into the same origin (`~0.55s`), then hide.
+4. **"Next page of the same shot" = horizontal slide, NOT a zoom.** rewind1→rewind2 is the same screenshot's next page, so `data-lb-transition="slide"` drives `lbSlideTo()`: rewind1 exits left, rewind2 enters from the right, at scale 1.0 (no zoom). It **keeps `_lbOrigin`**, so closing from rewind2 still hero-zooms back into the rewind button.
+5. **Gotcha — keep the `.flip` class on during any inline-transform animation.** The CSS rule `.lb-overlay.open #lb-img { animation: lbZoom }` (the center-zoom fallback) will **override inline transforms** and hijack a slide/FLIP into a scale animation. `.flip` suppresses that keyframe; `lbSlideTo` and the FLIP paths must add/keep it. A `_lbGen` generation counter guards against close/open/slide races.
+
+When editing these slides, verify the animation by sampling `getComputedStyle(#lb-img).transform` over time (scale for zoom, translateX for slide) — a settled screenshot alone won't catch a hijacked transition.
+
 ## Verifying layout
 
 `npm start` serves on `:8000`; open `#/<h>/<v>` to inspect a slide. The Playwright MCP browser cannot reach the host's `localhost` from its sandbox — verify layout in a real browser, or use another screenshot path.
