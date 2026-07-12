@@ -1039,15 +1039,20 @@
 					<section>
 						<h3 style="margin-bottom:0.4em;">Keep the run on track</h3>
 						<div class="term" style="font-size:0.5em;">
-							<span class="cm"># wrong turn? rewind to before it — no re-explaining</span><br>
-							<span class="pr"><span class="cc">/rewind</span> → pick the &lt;checkpoint&gt; before the bad edit</span><br><br>
-							<span class="cm"># quick lookup you DON'T want in history — answer shows</span><br>
-							<!-- <span class="cm"># in a dismissable overlay, context stays the same size</span><br> -->
-							<span class="pr"><span class="cc">/btw</span> what does this driver error mean?</span><br><br>
-							<span class="cm"># offload a noisy task to a fresh context — only the result returns</span><br>
-							<span class="pr">create a subagent to test the modified modules and return only the fail ones</span>
+							<span class="fragment fade-in" data-fragment-index="0">
+								<span class="cm"># wrong turn? rewind to before it — no re-explaining</span><br>
+								<span class="pr"><span class="cc">/rewind</span> → pick the &lt;checkpoint&gt; before the bad edit</span>
+							</span><br><br>
+							<span class="fragment fade-in" data-fragment-index="1">
+								<span class="cm"># quick lookup you DON'T want in history — answer shows</span><br>
+								<span class="pr"><span class="cc">/btw</span> what does this driver error mean?</span>
+							</span><br><br>
+							<span class="fragment fade-in" data-fragment-index="2">
+								<span class="cm"># offload a noisy task to a fresh context — only the result returns</span><br>
+								<span class="pr">create a subagent to test the modified modules and return only the fail ones</span>
+							</span>
 						</div>
-						<p class="mid c-muted" style="margin-top:0.5em;"><span class="c-goal mono">/rewind</span> back out · <span class="c-goal mono">/btw</span> look up without growing context · <span class="c-goal mono">subagent</span> type an instruction to spin one up</p>
+						<p class="mid c-muted fragment fade-in" data-fragment-index="3" style="margin-top:0.5em;"><span class="c-goal mono">/rewind</span> back out · <span class="c-goal mono">/btw</span> look up without growing context · <span class="c-goal mono">subagent</span> type an instruction to spin one up</p>
 						<aside class="notes" data-slide="5/1">
 							在執行過程中：
 							<br>/rewind：當你發現 agent 開始走錯方向，或是你後悔剛剛你下的prompt，可以直接 /rewind，就可以 rollback 到你想要的 checkpoint。
