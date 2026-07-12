@@ -289,6 +289,9 @@
 			.reveal table.cost-table tr.cheap td.cost { color: var(--ok); }
 			.reveal table.cost-table tr.dear td.cost  { color: var(--warn); }
 			.reveal table.cost-table td.exp { color: var(--text); }
+			/* colored (highlighted) cells read slightly larger than plain white ones */
+			.reveal table.cost-table td.hi { font-size: 1.12em; font-weight: 600; }
+			.reveal table.cost-table td.hi .sub { font-size: 0.7em; font-weight: 500; opacity: 0.9; }
 
 			/* ── diagnosis ── */
 			.diag { counter-reset: d; list-style: none; padding: 0; max-width: 85%; margin: 0.3em auto; }
@@ -1556,29 +1559,29 @@
 							<tbody>
 								<tr>
 									<td class="exp" style="color:var(--naive);">A · naive</td>
-									<td>47/47 claimed &nbsp;<br><span class="warn-badge">⚠ self-asserted</span><br></td>
+									<td>47/47 claimed &nbsp;<br><span class="warn-badge" style="font-size:0.82em;">⚠ self-asserted</span><br></td>
 									<td>≈26.7M units<br></td>
 									<td>≈104 min<br></td>
 									<td><strong>2.0</strong><br></td>
 								</tr>
 								<tr>
 									<td class="exp" style="color:var(--skill);">B · full superpowers</td>
-									<td style="color:var(--ok);">41/47 HTTP 2xx<br>most honest</td>
+									<td class="hi" style="color:var(--ok);">41/47 HTTP 2xx<br><span class="sub">most honest</span></td>
 									<td>≈21.3M units<br></td>
 									<td>≈5.0 h</td>
-									<td style="color:var(--ok);"><strong>3.1<br><span style="font-size:0.85em;">best</span></strong><br></td>
+									<td class="hi" style="color:var(--ok);">3.1<br><span class="sub">best</span></td>
 								</tr>
 								<tr>
 									<td class="exp" style="color:var(--goal);white-space:nowrap;">C1 · /goal</td>
 									<td>47/47 HTTP 2xx<br></td>
 									<td>≈30.0M units</td>
-									<td style="color:var(--ok);">≈97 min<br><span style="font-size:0.85em;">fastest</span></td>
+									<td class="hi" style="color:var(--ok);">≈97 min<br><span class="sub">fastest</span></td>
 									<td><strong>2.25</strong><br></td>
 								</tr>
 								<tr>
 									<td class="exp" style="color:var(--flow);white-space:nowrap;">C2 · /workflow</td>
 									<td>47/47 HTTP 2xx<br></td>
-									<td style="color:var(--ok);">≈5.5M units<br><span style="font-size:0.85em;">cheapest</span></td>
+									<td class="hi" style="color:var(--ok);">≈5.5M units<br><span class="sub">cheapest</span></td>
 									<td>≈132 min</td>
 									<td><strong>2.5</strong><br></td>
 								</tr>
@@ -1587,7 +1590,7 @@
 									<td>shipped to stage<br></td>
 									<td style="color:var(--faint);">NOT FOUND</td>
 									<td>~1 month<br></td>
-									<td><strong>2.9<br><span style="font-size:0.85em;">2nd</span></strong><br></td>
+									<td class="hi" style="color:var(--goal);">2.9<br><span class="sub">2nd</span></td>
 								</tr>
 							</tbody>
 						</table>
