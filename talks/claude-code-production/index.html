@@ -61,6 +61,20 @@
 			.xs    { font-size: 0.5em; line-height: 1.5; }
 			.mono  { font-family: 'JetBrains Mono', monospace; }
 
+			/* ── page number: low-key, matches the dark IDE aesthetic ── */
+			.reveal .slide-number {
+				left: 16px; bottom: 14px; right: auto; top: auto;
+				padding: 3px 9px;
+				font-family: 'JetBrains Mono', monospace;
+				font-size: 14px; line-height: 1;
+				color: var(--muted);
+				background: var(--surface);
+				border: 1px solid var(--border);
+				border-radius: 6px;
+			}
+			.reveal .slide-number a { color: inherit; }
+			.reveal.on-cover .slide-number { display: none !important; }
+
 			/* ── colors ── */
 			.c-goal  { color: var(--goal) !important; }
 			.c-flow  { color: var(--flow) !important; }
@@ -1875,6 +1889,7 @@
 
 			Reveal.initialize({
 				hash: true,
+				slideNumber: 'c',
 				transition: 'slide',
 				backgroundTransition: 'fade',
 				center: true,
@@ -1888,6 +1903,14 @@
 				scrollActivationWidth: null,
 				plugins: [RevealHighlight, RevealNotes],
 			});
+
+			// ── hide the page number on the cover (first slide) ──
+			function _toggleCoverNumber() {
+				document.querySelector('.reveal')
+					.classList.toggle('on-cover', Reveal.getIndices().h === 0);
+			}
+			Reveal.on('ready', _toggleCoverNumber);
+			Reveal.on('slidechanged', _toggleCoverNumber);
 
 			// ── framing slide #/2: emphasize one question at a time ──
 			function _framingUpdate(forward) {
