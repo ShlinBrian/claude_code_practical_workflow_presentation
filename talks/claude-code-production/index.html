@@ -502,7 +502,7 @@
 			.term .cm { color: var(--faint); }
 			/* stacked code blocks, each with a floating screenshot button in its top-right */
 			.term-stack { width: 82%; margin: 0.4em auto; display: flex; flex-direction: column; gap: 14px; }
-			.term-stack .term { width: 100%; margin: 0; position: relative; padding-right: 60px; }
+			.term-stack .term { width: 100%; margin: 0; position: relative; padding-right: 60px; font-size: 0.5em; }
 			.shot-btn {
 				position: absolute; top: 10px; right: 10px;
 				display: inline-flex; align-items: center; gap: 5px;
@@ -1052,7 +1052,7 @@
 					<!-- during the run: three moves that protect context -->
 					<section>
 						<h3 style="margin-bottom:0.4em;">Keep the run on track</h3>
-						<div class="term-stack" style="font-size:0.5em;">
+						<div class="term-stack">
 							<div class="term fragment fade-in" data-fragment-index="0">
 								<button class="shot-btn" onclick="lbOpenPath('rewind/rewind', 2)">📷<span class="lbl">rewind</span></button>
 								<span class="cm"># wrong turn? rewind to before it — no re-explaining</span><br>
