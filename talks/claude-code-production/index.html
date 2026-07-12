@@ -1061,20 +1061,20 @@
 							<div class="term fragment fade-in" data-fragment-index="1">
 								<button class="shot-btn" onclick="lbOpenOne('btw/btw.png')">📷<span class="lbl">btw</span></button>
 								<span class="cm"># quick lookup you DON'T want in history — answer shows</span><br>
-								<span class="pr"><span class="cc">/btw</span> what does this driver error mean?</span>
+								<span class="pr"><span class="cc">/btw</span> is there anything still uncommitted?</span>
 							</div>
 							<div class="term fragment fade-in" data-fragment-index="2">
 								<button class="shot-btn" onclick="lbOpenOne('subagent/subagent.png')">📷<span class="lbl">subagent</span></button>
 								<span class="cm"># offload a noisy task to a fresh context — only the result returns</span><br>
-								<span class="pr">create a subagent to test the modified modules and return only the fail ones</span>
+								<span class="pr">create a subagent to check the changed code for bugs and return only the issues</span>
 							</div>
 						</div>
 						<p class="mid c-muted fragment fade-in" data-fragment-index="3" style="margin-top:0.5em;"><span class="c-goal mono">/rewind</span> back out · <span class="c-goal mono">/btw</span> look up without growing context · <span class="c-goal mono">subagent</span> type an instruction to spin one up</p>
 						<aside class="notes" data-slide="5/1">
 							在執行過程中：
 							<br>/rewind：當你發現 agent 開始走錯方向，或是你後悔剛剛你下的prompt，可以直接 /rewind，就可以 rollback 到你想要的 checkpoint。
-							<br>/btw：跑到一半想查個小問題，可以使用 /btw，他會將答案顯示在一個可以關掉的視窗裡，就不會污染你現在 session 的 context。
-							<br>subagent：我們可以呼叫建立一個 subagent，來去進行一些跟主任務比較不相關的工作，像是請他「測試那些剛修改完的 modules 然後只回傳失敗的」，這樣只有結果會被傳回 session 當中。
+							<br>/btw：跑到一半想查個小問題，像是「還有沒有東西沒 commit」，可以使用 /btw，他會將答案顯示在一個可以關掉的視窗裡，就不會污染你現在 session 的 context。
+							<br>subagent：我們可以呼叫建立一個 subagent，來去進行一些跟主任務比較不相關的工作，像是請他「檢查剛改動的程式碼有沒有 bug，然後只回傳問題」，這樣只有結果會被傳回 session 當中。
 							<br>透過這些方法，我們就可以保持這個 session 當中的對話，都是有意義的資訊
 						</aside>
 					</section>
