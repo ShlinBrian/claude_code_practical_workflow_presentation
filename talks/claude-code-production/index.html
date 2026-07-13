@@ -1484,19 +1484,20 @@
 					<!-- the one prerequisite: the verifier must exist first -->
 					<section>
 						<h3 style="margin-bottom:0.5em;">But first — <span class="c-goal">build the verifier</span></h3>
-						<div class="flow" style="max-width:88%;">
-							<div class="step on-goal"><span class="t c-goal">Both tools are self-verifying</span><span class="d">they loop against a verifier — only as reliable as the verifier you give them</span></div>
-							<div class="step on-flow"><span class="t c-flow">No verifier yet? Build it first</span><span class="d">it's step one, not the last step — thin coverage means the loop runs blind</span></div>
+						<div class="flow three" style="max-width:92%;">
+							<div class="step on-goal"><span class="t c-goal">Both tools are self-verifying</span><span class="d">they loop against a verifier</span></div>
+							<div class="step on-flow"><span class="t c-flow">Verifier already exists?</span><span class="d">reuse it, then let the tool loop</span></div>
+							<div class="step on-warn"><span class="t c-warn">No verifier yet?</span><span class="d">building it is step one, not the last step</span></div>
 						</div>
 						<p class="mid c-faint" style="margin-top:0.7em;"><em>If you can't verify it, don't ship it</em></p>
 						<aside class="notes" data-slide="8/5">
-							所以在放手讓它自動跑之前，有一個前提要先講清楚。
-							必須要先建立你的 verifier 也就是裁判
-							<br>不管是 /goal 和 /workflow 還是未來的 autopilot 都是依靠自我驗證來完成任務，所以它們的可靠度，就等於你給它的那個裁判的可靠度。
-							<br>有些任務的裁判是現成的，像是以前已經搭建好的測試
+							所以在放手讓它自動跑之前，有一個前提要先講清楚：必須先建立你的 verifier，也就是裁判。
+							<br>不管是 /goal、/workflow 還是未來的 autopilot，都是靠自我驗證來完成任務——所以它們的可靠度，就等於你那個裁判的可靠度。
+							<br>那裁判從哪來？分兩種情況。
+							<br>有些任務的裁判是現成的，像是早就寫好的測試，那就直接拿來用，讓工具對著它循環就好。
 							<br>但新功能開發沒有現成答案，裁判就是你的測試，得自己先蓋出來。
-							<br>需要在討論spec的時候就把驗證的方式也定義好，這樣才能在後面讓 agent 自己去跑。
-							<br>所以建立驗證是第一步，不是最後一步。如果覆蓋不夠，這個迴圈就是在盲跑，跑出來的東西你也沒辦法相信。
+							<br>這時候你得在討論 spec 的時候，就把驗證方式一起定義好，這樣才能在後面放手讓 agent 自己去跑。
+							<br>建立驗證是第一步，不是最後一步。如果覆蓋不夠，這個迴圈就是在盲跑，跑出來的東西你也沒辦法相信。
 							<br>Anthropic 的文章也提過：無法驗證的東西，就是沒辦法上線的東西。
 						</aside>
 					</section>
@@ -1784,7 +1785,7 @@
 				     ════════════════════════════════════════════════════════════ -->
 				<section>
 					<h3 style="margin-bottom:0.1em;">Takeaway (1&nbsp;/&nbsp;2)</h3>
-					<p class="c-muted" style="font-size:0.6em;margin:0 0 0.5em;">Re-brief the task in five fields</p>
+					<p class="c-muted" style="font-size:0.6em;margin:0 0 0.5em;">A checklist for your task</p>
 					<div class="checklist-grouped">
 						<div class="grp-label fragment fade-in" data-fragment-index="0">spec</div>
 						<div class="grp-rail fragment fade-in" data-fragment-index="0"></div>
