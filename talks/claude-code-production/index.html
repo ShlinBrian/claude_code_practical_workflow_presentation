@@ -230,7 +230,7 @@
 				.inv .cell .n { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700;
 					font-size: 1.5em; color: var(--flow); line-height: 1; }
 				.inv .cell .k { font-size: 0.5em; color: var(--text); margin-top: 8px; font-weight: 600; }
-				.inv .cell .s { font-size: 0.42em; color: var(--faint); margin-top: 3px; }
+				.inv .cell .s { font-size: 0.52em; color: var(--muted); margin-top: 3px; line-height: 1.4; }
 
 				/* ── problem → fix rows ── */
 				.pf { display: flex; flex-direction: column; gap: 14px; max-width: 94%; margin: 0.4em auto; }
@@ -1616,7 +1616,7 @@
 					<section>
 						<h3 style="margin-bottom:0.3em;">How they're compared</h3>
 						<div class="inv">
-							<div class="cell"><div class="k c-ok" style="font-size:0.6em;">Correctness</div><div class="s">47 endpoint test, per-row comparison</div></div>
+							<div class="cell"><div class="k c-ok" style="font-size:0.6em;">Correctness</div><div class="s">47 endpoint test<br>per-row comparison</div></div>
 							<div class="cell"><div class="k c-goal" style="font-size:0.6em;">Cost</div><div class="s">weighted token-units</div></div>
 							<div class="cell"><div class="k c-flow" style="font-size:0.6em;">Completion time</div><div class="s">continuous execution</div></div>
 							<div class="cell"><div class="k c-skill" style="font-size:0.6em;">Code quality</div><div class="s">1. robustness · 2. tests <br>3. structure · 4. review trail</div></div>
