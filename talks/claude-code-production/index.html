@@ -1527,8 +1527,8 @@
 							<div class="step on-flow"><span class="t">3 · Move the code</span><span class="d">the app's SQL rewritten to speak PostgreSQL</span></div>
 						</div>
 						<p class="mid c-goal verify-quote" style="margin-top:0.6em;font-weight:700;text-align:center;font-size:0.86em;">
-							<span class="q-line">The hard part isn't "does it run"</span>
-							<span class="q-line">It's "are the answers <em>still correct</em>" — so we replay every API on both databases and compare</span>
+							<span class="q-line">The hard part isn't "Does it run ?"</span>
+							<span class="q-line">It's "Are the answers <em>still correct </em>? "</span>
 						</p>
 						<aside class="notes" data-slide="11/1">
 							規模上，大概 39 萬筆資料、23 張表、48 支 stored procedure、橫跨 4 個資料庫——說大不大，但也不是幾行 SQL 能解決的量。
@@ -1579,12 +1579,6 @@
 							<div class="step" style="padding:11px 18px;border-left-color:var(--muted);"><span class="t"><span class="badge" style="color:var(--muted);border-color:var(--muted);">D</span> &nbsp;The real migration</span><span class="d">manual + poorer AI · ~1 month</span></div>
 						</div>
 						<p class="xs c-faint" style="margin-top:0.4em;">A vs rest = method beats one-liner · B vs C = full vs lean · C1 vs C2 = /goal vs /workflow · D = reality check</p>
-						<!-- <div class="exp-btns" style="margin-top:0.5em;">
-							<button class="exp-btn arm-a"  onclick="lbOpen('naive',15)">A · naive &nbsp;📷</button>
-							<button class="exp-btn arm-b"  onclick="lbOpen('superpowers',25)">B · superpowers &nbsp;📷</button>
-							<button class="exp-btn arm-c1" onclick="lbOpen('goal',4)">C1 · /goal &nbsp;📷</button>
-							<button class="exp-btn arm-c2" onclick="lbOpen('workflow',7)">C2 · /workflow &nbsp;📷</button>
-						</div> -->
 						<aside class="notes" data-slide="13/0">
 							我們比較的對象有：
 							<br>A：Naive的方法，只使用一句簡單的 prompt 來執行任務。
@@ -1914,13 +1908,12 @@
 		<script src="../../dist/plugin/notes.js"></script>
 		<script>
 			// ── lightbox logic ──
-			var _lbPrefix = 'exp/exp_naive_', _lbTotal = 0, _lbIdx = 1;
+			var _lbPrefix = '', _lbTotal = 0, _lbIdx = 1;
 			function lbOpenPath(prefix, total) {
 				_lbPrefix = prefix; _lbTotal = total; _lbIdx = 1;
 				document.getElementById('lb-nav').style.display = '';
 				document.getElementById('lb').classList.add('open'); lbShow();
 			}
-			function lbOpen(arm, total) { lbOpenPath('exp/exp_' + arm + '_', total); }
 			// the thumbnail the current fullscreen image flew out of (for zoom-OUT on close)
 			var _lbOrigin = null, _lbGen = 0;
 			// transform that parks the fullscreen #lb-img exactly onto `originEl`'s box
