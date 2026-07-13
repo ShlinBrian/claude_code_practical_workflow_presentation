@@ -834,6 +834,30 @@
 			.loopv-row .step .d { font-size: 0.44em; color: var(--muted); line-height: 1.35; }
 			.loopv-row .step.done { border-left-color: var(--ok); }
 			.loopv-row .step.done .t { color: var(--ok); }
+			/* mini takeaway (2/2) cards embedded in the two middle loop steps */
+			.loopv-row .step .mini-map { display: flex; flex-direction: column; gap: 4px;
+				margin-top: 7px; padding-top: 7px; border-top: 1px dashed var(--border); }
+			.loopv-row .step .mm-node { display: flex; align-items: center; gap: 6px; align-self: flex-start;
+				background: var(--surface); border: 1px solid var(--border); border-top: 2px solid var(--skill);
+				border-radius: 7px; padding: 5px 8px; }
+			.loopv-row .step .mm-sk { font-family: 'JetBrains Mono', monospace; font-size: 0.34em;
+				color: var(--skill); white-space: nowrap; }
+			.loopv-row .step .mm-lane { display: flex; align-items: center; gap: 6px;
+				background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--border);
+				border-radius: 6px; padding: 4px 8px; }
+			.loopv-row .step .mm-lane.mm-col { flex-direction: column; align-items: flex-start; gap: 4px; }
+			.loopv-row .step .mm-lane.l-sp   { border-left-color: var(--skill); }
+			.loopv-row .step .mm-lane.l-goal { border-left-color: var(--goal); }
+			.loopv-row .step .mm-lane.l-flow { border-left-color: var(--flow); }
+			.loopv-row .step .mm-nm { font-family: 'JetBrains Mono', monospace; font-weight: 700;
+				font-size: 0.34em; white-space: nowrap; }
+			.loopv-row .step .mm-lane.l-sp .mm-nm   { color: var(--skill); }
+			.loopv-row .step .mm-lane.l-goal .mm-nm { color: var(--goal); }
+			.loopv-row .step .mm-lane.l-flow .mm-nm { color: var(--flow); }
+			.loopv-row .step .mm-chips { display: grid; grid-template-columns: repeat(2, max-content); gap: 3px; }
+			.loopv-row .step .mm-chip { font-family: 'JetBrains Mono', monospace; font-size: 0.3em;
+				color: var(--text); background: var(--surface); border: 1px solid var(--border);
+				border-radius: 4px; padding: 2px 6px; white-space: nowrap; }
 			.loopv-row .arr { display: flex; align-items: center; color: var(--faint);
 				font-size: 1.0em; padding: 0 12px; }
 			.loopv-arc { display: block; width: 100%; height: auto; margin-top: -2px; }
@@ -1836,7 +1860,7 @@
 						<br>*換頁*
 						<br>讓它能自己跑起來的。
 						最後這就是我們期望的終點：一個不用你盯著的 agent。
-						它自己去看有沒有新任務、跟你來回把「完成」確認清楚、自己走完規劃、實作、測試、驗證，把任務交出去，然後拿下一個，一直轉下去。
+						它自己拉一個任務（看有沒有新的、接下來）、跟你來回把「完成」確認清楚、自己走完規劃、實作、測試、驗證，把任務交出去，然後拿下一個，一直轉下去。
 						今天講的所有東西，都是在為這件事打底，就是任務、完成的定義、工作環境都定義得夠清楚。
 						而你在 harness 上的投資，也會隨著模型變強越來越有價值，以上是今天的分享，謝謝大家
 					</aside>
@@ -1844,53 +1868,63 @@
 
 
 				<!-- ════════ CLOSING VISION — autopilot (callback) ════════ -->
-				<!-- <section class="closing">
+				<section class="closing">
 					<div class="eyebrow" style="color:var(--faint);letter-spacing:0.14em;">Where it all goes</div>
 					<h3 style="font-size:1.35em;margin:0.1em 0 0.1em;">An agent that runs itself</h3>
 					<div class="loopv">
 						<div class="loopv-row">
 							<div class="step">
-								<span class="t">Pull</span>
-								<span class="d">any new task<br>waiting for me?</span>
-							</div>
-							<div class="arr">→</div>
-							<div class="step">
-								<span class="t">Pick it up</span>
-								<span class="d">a task lands<br>in the queue</span>
+								<span class="t">Pull a task</span>
+								<span class="d">grab the next one<br>waiting in the queue</span>
 							</div>
 							<div class="arr">→</div>
 							<div class="step">
 								<span class="t">Agree on &ldquo;Done&rdquo;</span>
 								<span class="d">go back &amp; forth until<br>the goal is nailed down</span>
+								<div class="mini-map">
+									<div class="mm-node">
+										<span class="mm-sk">brainstorming</span>
+										<span class="mm-chip">spec</span>
+									</div>
+								</div>
 							</div>
 							<div class="arr">→</div>
 							<div class="step">
 								<span class="t">Run the full cycle</span>
 								<span class="d">plan · build · test<br>· verify — on its own</span>
+								<div class="mini-map">
+									<div class="mm-lane l-sp mm-col">
+										<span class="mm-nm">SuperPowers</span>
+										<span class="mm-chips"><span class="mm-chip">plan</span><span class="mm-chip">TDD</span><span class="mm-chip">review</span><span class="mm-chip">verify</span></span>
+									</div>
+									<div class="mm-lane l-goal"><span class="mm-nm">/goal</span></div>
+									<div class="mm-lane l-flow"><span class="mm-nm">/workflow</span></div>
+								</div>
 							</div>
 							<div class="arr">→</div>
 							<div class="step done">
 								<span class="t">Ship it &#10003;</span>
 								<span class="d">task finished,<br>end to end</span>
 							</div>
-						</div> -->
+						</div>
 						<!-- return arc: ship ✓ (right) loops back to pull (left) -->
-						<!-- <svg class="loopv-arc" viewBox="0 0 1040 74" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-							<path d="M980,4 C980,52 900,64 520,64 C140,64 60,52 60,8"
+						<svg class="loopv-arc" viewBox="0 0 1040 74" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+							<path d="M895,4 C895,52 815,64 532,64 C249,64 169,52 169,8"
 								fill="none" stroke="#4ec9c0" stroke-width="2" stroke-dasharray="2 6" stroke-linecap="round"/>
-							<path d="M54,16 L60,4 L66,16" fill="none" stroke="#4ec9c0" stroke-width="2" stroke-linejoin="round"/>
-							<text x="520" y="58" fill="#4ec9c0" font-size="13" font-family="'JetBrains Mono',monospace" text-anchor="middle">then reach for the next one — no one watching</text>
+							<path d="M163,16 L169,4 L175,16" fill="none" stroke="#4ec9c0" stroke-width="2" stroke-linejoin="round"/>
+							<text x="532" y="58" fill="#4ec9c0" font-size="13" font-family="'JetBrains Mono',monospace" text-anchor="middle">then reach for the next one — no one watching</text>
 						</svg>
 					</div>
 					<p class="mid c-muted fragment" style="margin-top:0.6em;">Everything today was about earning the right to run <span class="tl-future">on autopilot</span></p>
 					<div class="sig fragment">RD Camp · 2026</div>
 					<aside class="notes" data-slide="17">
 						最後這就是我們期望的終點：一個不用你盯著的 agent。
-						它自己去看有沒有新任務、跟你來回把「完成」確認清楚、自己走完規劃、實作、測試、驗證，把任務交出去，然後拿下一個，一直轉下去。
+						它自己拉一個任務（看有沒有新的、接下來）、跟你來回把「完成」確認清楚、自己走完規劃、實作、測試、驗證，把任務交出去，然後拿下一個，一直轉下去。
+						中間這兩步，我直接把剛剛 takeaway 的那組卡片縮小放進去：「Agree on Done」就是 brainstorming 產出 spec，「Run the full cycle」就是 SuperPowers、/goal、/workflow 三條路。autopilot 只是把這條工作流包進自主迴圈。
 						今天講的所有東西，都是在為這件事打底，就是任務、完成的定義、工作環境都定義得夠清楚。
 						而你在 harness 上的投資，也會隨著模型變強越來越有價值，以上是今天的分享，謝謝大家
 					</aside>
-				</section> -->
+				</section>
 
 			</div>
 		</div>
