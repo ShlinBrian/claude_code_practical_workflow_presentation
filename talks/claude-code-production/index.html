@@ -864,8 +864,8 @@
 					<h2 style="font-size:1.5em;">Agenda</h2>
 					<ol class="agenda">
 						<li><span class="n">01</span><div><div class="t">Everyday hygiene</div><div class="s">Cheapest wins</div></div></li>
-						<li><span class="n">02</span><div><div class="t">The method</div><div class="s">3 gaps → 3 tools</div></div></li>
-						<li><span class="n">03</span><div><div class="t">The case</div><div class="s">MSSQL → PostgreSQL</div></div></li>
+						<li><span class="n">02</span><div><div class="t">The method</div><div class="s">Define task and build workflow</div></div></li>
+						<li><span class="n">03</span><div><div class="t">The case</div><div class="s">A Java service: MSSQL → PostgreSQL</div></div></li>
 						<li><span class="n">04</span><div><div class="t">The comparison</div><div class="s">Four methods vs reality</div></div></li>
 						<li><span class="n">05</span><div><div class="t">Takeaway</div><div class="s">Checklist + reproducible workflow</div></div></li>
 					</ol>
@@ -873,10 +873,10 @@
 						首先，這是我今天想分享的流程： <br>
 						會從<br>
 						1. 每日小習慣<br>
-						2. 幫助我們定義任務/完成任務的方法<br>
+						2. 幫助我們定義任務與建立流程的方法<br>
 						3. 再來是介紹我們實際使用的真實案例，將一個原本使用 MSSQL 資料庫的 Java 專案轉換成使用 PostgreSQL，以便更好的使用AWS維護<br>
 						4. 再來是四種方法的比較，並跟一個真實去年做遷移的版本對照<br>
-						5. 以及最後會有可以帶走的 takeaway 包含一個checklist 和 一套可重複使用workflow<br>
+						5. 以及最後會有可以帶走的 takeaway<br>
 					</aside>
 				</section>
 
@@ -950,7 +950,7 @@
 					<div class="flow vert" style="margin-top:0.4em;font-size:1.35em;">
 						<div id="framing-left" class="step on-warn frame-q" style="max-width:700px;">
 							<span class="t c-warn">Stop asking &mdash; &ldquo;Can the agent do it?&rdquo;</span>
-							<span class="d">Tune the prompts &middot; switch to a better model &middot; hit a ceiling</span>
+							<span class="d">Tune the prompts &middot; switch to a better model</span>
 						</div>
 						<div id="framing-arrow" class="arr frame-q dim" style="font-size:1.5em;">&darr;</div>
 						<div id="framing-right" class="step on-goal frame-q dim" style="max-width:970px;">
@@ -959,11 +959,12 @@
 						</div>
 					</div>
 					<span class="fragment" data-fragment-index="1" data-frame="framing-shift"></span>
-					<p class="mid c-muted fragment" data-fragment-index="1" style="margin-top:0.9em;">Define it that well and the agent can run it <span class="tl-future">on its own</span> — that's the autopilot</p>
+					<!-- <p class="mid c-muted fragment" data-fragment-index="1" style="margin-top:0.9em;">Define it that well and the agent can run it <span class="tl-future">on its own</span> — that's the autopilot</p> -->
 					<aside class="notes" data-slide="3">
 						(上面亮)
-						<br>我們現在最前沿的 model 基本上強到可以執行任何事情。
-						所以我們其實不用再去想 「這個 agent 做得到嗎？」
+						以前可能會一直調prompt，或換不同 model 來做同樣的事情。
+						<br>但現在最前沿的 model 基本上強到可以執行任何事情。
+						<br>所以我們其實不用再去想 「這個 agent 做得到嗎？」
 						<br>(下面亮)
 						<br>我們應該在意的是「我有沒有把它定義到，讓它做得到的程度？」
 						包含 任務本身、完成的定義、還有你交給它的工作環境
@@ -1007,7 +1008,8 @@
 					</svg>
 					<aside class="notes" data-slide="4">
 						第一章先從幾個小習慣開始，這些是今天回去馬上就能用的東西，門檻最低、回報也最快。
-						它們同時也是後面所有東西的基礎：context 管得乾淨、交接寫得清楚，之後 agent 才有辦法自己接手、自己跑。
+						<br>它們同時也是後面所有東西的基礎：context 管得乾淨、交接寫得清楚
+						<br>之後 agent 才有辦法自己接手、自己跑。
 					</aside>
 				</section>
 
@@ -1046,8 +1048,8 @@
 							<br>我們可以做的有三個方向：
 							<br>1. 是在執行過程中主動控制 context，等一下的 /rewind、/btw、subagent 就是在做這件事
 							<br>2. 或是在 context/usage 用完之前，先把狀態交接出去。
-							<br>3. 是收尾的時候，把值得留的決定寫進 CLAUDE.md，下個 session 一開始就知道。
-							<br>這樣你是在指揮它，而不是每次都重來。
+							<br>3. 是收尾的時候，把值得留的決定寫進 CLAUDE.md，未來的 session 就會帶入這些好的記憶。
+							<br>這樣你是在指揮它，而不是每次都做重複的事情。
 						</aside>
 					</section>
 
@@ -1083,10 +1085,13 @@
 						<p class="mid c-muted fragment fade-in" data-fragment-index="10" style="margin-top:0.5em;"><span class="c-goal mono">/rewind</span> back out · <span class="c-goal mono">/btw</span> look up without growing context · <span class="c-goal mono">subagent</span> type an instruction to spin one up</p>
 						<aside class="notes" data-slide="5/1">
 							在執行過程中：
-							<br>/rewind：當你發現 agent 開始走錯方向，或是你後悔剛剛你下的prompt，可以直接 /rewind，就可以 rollback 到你想要的 checkpoint。
-							<br>/btw：跑到一半想查個小問題，像是「還有沒有東西沒 commit」，可以使用 /btw，他會將答案顯示在一個可以關掉的視窗裡，就不會污染你現在 session 的 context。
-							<br>subagent：我們可以呼叫建立一個 subagent，來去進行一些跟主任務比較不相關的工作，像是請他「檢查剛改動的程式碼有沒有 bug，然後只回傳問題」，這樣只有結果會被傳回 session 當中。
-							<br>透過這些方法，我們就可以保持這個 session 當中的對話，都是有意義的資訊
+							<br>/rewind：當你發現 agent 開始走錯方向，或是你後悔剛剛下的prompt，可以直接 /rewind，就可以 rollback 到你想要的 checkpoint。
+							<br>(按)他會顯示這次 session 的 prompt 歷史紀錄，你可以選擇你想要回到的 checkpoint，回到當下的狀態
+							<br>/btw：跑到一半想查個小問題，可以使用 /btw
+							<br>(按)像是詢問還沒 commit 的內容有哪些，他會將答案顯示在一個可以關掉的視窗裡，就不會污染你現在 session 的 context。
+							<br>subagent：我們可以呼叫建立一個 subagent，來去進行一些跟主任務比較不相關的工作
+							<br>(按)像是請他「檢查剛改動的程式碼有沒有 bug」，他就會呼叫 subagent 背景執行，最後只有執行結果會被傳回 session 當中。
+							<br>透過這三個小技巧，我們就可以保持這個 session 當中的對話，都是有意義的資訊
 						</aside>
 					</section>
 
@@ -1119,10 +1124,11 @@
 						</div>
 
 						<aside class="notes" data-slide="5/2">
-							再來這邊的使用情境就是當你 context 快要滿了的時候，或是Usage快用完、想換model、換成使用codex的時候。<br>
-							我們可以使用交接的方式來達成 延續任務<br>
-							請它寫一份 handoff.md，做完什麼、接下來做什麼、有哪些關鍵決定，使用 /clear 清掉現在的 context後。<br>
-							開啟新的 agent 讀完 handoff 就能接著做原先的任務，不用再重新解釋。
+							再來這邊的使用情境就是當你 context 快要滿了的時候，或是Usage快用完、想換model、換成使用codex的時候。
+							<br>我們可以使用交接的方式來 延續任務
+							<br>(按)請它寫一份 handoff.md，做完什麼、接下來做什麼、有哪些關鍵決定
+							<br>(按)使用 /clear 清掉現在的 context後。
+							<br>(按)開啟新的 agent 讀完 handoff 就能接著做原先的任務，不用再重新解釋。
 						</aside>
 					</section>
 
@@ -1156,11 +1162,12 @@
 						</div>
 
 						<p class="mid c-muted flush-note fragment fade-in" data-fragment-index="4" style="margin-top:0.5em;">
-								<span class="fl-line">At the end, just say <span class="mono c-goal">"keep what's worth keeping"</span> — it prunes the rest</span>
+								<span class="fl-line">At the end, just say <span class="mono c-goal">"Keep what matters"</span> — it prunes the rest</span>
 								<span class="fl-line"><strong class="c-text">The valuable decisions stay</strong>, and the future session starts with them</span>
 						</p>
 						<aside class="notes" data-slide="5/3">
-							再來是 session 收尾的時候，把值得留的東西存下來。<br>
+							再來這頁是讓你的決定持久化
+							我們可以在 session 收尾的時候，把值得留的東西存下來。<br>
 							像是UI或是程式風格的修改，如果改完你覺得不錯，就在完成的最後說「把剛剛這個設計存成規則寫進 CLAUDE.md」<br>
 							Claude就會幫你把他自己的 memory.md 內容，整理你要的規則，寫入CLAUDE.md。<br>
 							下次你再開啟新 agent 就會有這些 knowledge，這對舊有的 project 想要做長期 autopilot 來說，也是非常重要的習慣跟前置作業
@@ -1234,7 +1241,7 @@
 						<div class="flow">
 							<div class="step on-warn fragment fade-in" data-fragment-index="1"><span class="t c-warn">No spec</span><span class="d">&ldquo;keep everything working&rdquo; is undefined</span></div>
 							<div class="step on-warn fragment fade-in" data-fragment-index="2"><span class="t c-warn">No definition of done</span><span class="d">nothing checks the answers are still correct</span></div>
-							<div class="step on-warn fragment fade-in" data-fragment-index="3"><span class="t c-warn">No isolation</span><span class="d">it edited your working tree in place</span></div>
+							<div class="step on-warn fragment fade-in" data-fragment-index="3"><span class="t c-warn">No isolated workspace</span><span class="d">it edited your working tree in place</span></div>
 						</div>
 						<aside class="notes" data-slide="7/1">
 							<br>agent 會認真地改 SQL、換 db driver，build 過了，然後說「完成了」。從它的角度看，它確實完成了。
@@ -1242,7 +1249,7 @@
 							<br>會這樣就是因為缺少了 spec, 完成的定義 以及環境：
 							<br>一，沒有規格——「保持一切正常」沒有定義。
 							<br>二，沒有完成的定義——沒有任何東西在檢查答案對還不對。
-							<br>三，沒有隔離——它直接改了你的工作目錄動到還沒commit的程式。
+							<br>三，沒有隔離工作區——它直接改了你的工作目錄動到還沒commit的程式。
 							<br>這三個洞，就是接下來的方法要補的。
 						</aside>
 					</section>
@@ -1432,7 +1439,7 @@
 					</section>
 
 					<!-- the autopilot payoff — where the two tools lead -->
-					<section>
+					<!-- <section>
 						<h3 style="margin-bottom:0.5em;">Where this leads</h3>
 						<p class="mid c-muted flush-note" style="margin-top:0.5em;">
 							<span class="fl-line">Once the spec is defined, <br><span class="c-goal mono">/goal</span> and <span class="c-flow mono">/workflow</span> take it and run</span>
@@ -1443,7 +1450,7 @@
 							某種程度上來說就是我們想要的 autopilot
 							但有了spec還不夠，規格必須要好到它能自己驗證、自己收斂，這樣我們才敢放手讓它自動運行。
 						</aside>
-					</section>
+					</section> -->
 
 					<!-- the one prerequisite: the verifier must exist first -->
 					<section>
@@ -1578,7 +1585,6 @@
 							<br>
 							<div class="step" style="padding:11px 18px;border-left-color:var(--muted);"><span class="t"><span class="badge" style="color:var(--muted);border-color:var(--muted);">D</span> &nbsp;The real migration</span><span class="d">manual + poorer AI · ~1 month</span></div>
 						</div>
-						<p class="xs c-faint" style="margin-top:0.4em;">A vs rest = method beats one-liner · B vs C = full vs lean · C1 vs C2 = /goal vs /workflow · D = reality check</p>
 						<aside class="notes" data-slide="13/0">
 							我們比較的對象有：
 							<br>A：Naive的方法，只使用一句簡單的 prompt 來執行任務。
@@ -1597,7 +1603,7 @@
 							<div class="arr">vs</div>
 							<div class="step on-goal"><span class="t">golden MSSQL response</span></div>
 							<div class="arr">=</div>
-							<div class="step on-ok" style="border-left-color:var(--ok);"><span class="t c-ok">per-endpoint, per-row A/B</span></div>
+							<div class="step on-ok" style="border-left-color:var(--ok);"><span class="t c-ok">per-endpoint, per-row</span></div>
 						</div>
 						<p class="mid c-muted" style="margin-top:0.6em;">Without a machine-checkable verifier, "loop until goal" means nothing — shared by B / C1 / C2.</p>
 						<aside class="notes" data-slide="13/1">
@@ -1607,20 +1613,22 @@
 					</section>
 
 					<!-- 4 metrics -->
-					<!-- <section>
+					<section>
 						<h3 style="margin-bottom:0.3em;">How they're compared</h3>
 						<div class="inv">
-							<div class="cell"><div class="k c-ok" style="font-size:0.6em;">Correctness</div><div class="s">verifier pass rate (endpoints A/B-faithful)</div></div>
-							<div class="cell"><div class="k c-goal" style="font-size:0.6em;">Cost</div><div class="s">weighted token-units, one total</div></div>
-							<div class="cell"><div class="k c-flow" style="font-size:0.6em;">Completion time</div><div class="s">continuous execution — idle removed</div></div>
-							<div class="cell"><div class="k c-skill" style="font-size:0.6em;">Code quality</div><div class="s">4 dims by a review agent: robustness · tests · structure · review trail</div></div>
+							<div class="cell"><div class="k c-ok" style="font-size:0.6em;">Correctness</div><div class="s">47 endpoint test, per-row comparison</div></div>
+							<div class="cell"><div class="k c-goal" style="font-size:0.6em;">Cost</div><div class="s">weighted token-units</div></div>
+							<div class="cell"><div class="k c-flow" style="font-size:0.6em;">Completion time</div><div class="s">continuous execution</div></div>
+							<div class="cell"><div class="k c-skill" style="font-size:0.6em;">Code quality</div><div class="s">1. robustness · 2. tests <br>3. structure · 4. review trail</div></div>
 						</div>
-						<p class="mid c-muted" style="margin-top:0.6em;">Baseline <strong class="c-text">D</strong> is that migration <strong class="c-text">done for real</strong> — manual + AI, about <strong class="c-goal">a month</strong> — scored on the same rubric</p>
 						<aside class="notes" data-slide="13/2">
-							四個指標：正確性，看裁判的通過率；成本，統一換算成加權的 token 單位；完成時間，只算連續執行、把等人回覆的空檔扣掉；程式碼品質，另外開一個 review agent，從四個維度打分——轉換的穩健度、測試、結構、還有 review 的痕跡，取平均當總分。
-							對照組 D 就是我前面提過、真的做過一次的那場遷移——人加 AI，大概一個月。這次不只當故事講，它的 repo 也用同一把尺打了分，等一下會直接出現在表格裡。
+							這邊有四個比較的指標:
+							<br>1. 正確性: 我們有47個endpoint，以及逐列比對；
+							<br>2. 成本: 按照 Athropic 官方計費的加權 token；
+							<br>3. 完成時間: 只算連續執行；
+							<br>4. 程式碼品質: 另外開一個 review agent，從四個維度打分——轉換的穩健度、測試、結構、還有 review 的痕跡，取平均當總分。
 						</aside>
-					</section> -->
+					</section>
 
 					<!-- Results -->
 					<section>
@@ -1666,11 +1674,12 @@
 							</tbody>
 						</table>
 						<aside class="notes" data-slide="13/3">
-							這邊是我使用一個agent去這五個branch上，比較完的結果，有幾個現象可以跟大家分享：
+							比較完的結果，有幾個現象可以跟大家分享：
 							<br>第一，正確性要小心讀。
-							<br>表上的通過率全部只是 HTTP 2xx
-							<br>但只有 B 寫 41/47 是最誠實的：那 6 個是外部服務的問題，跟本次遷移無關
-							<br>C1、C2 則是暴露他們的問題，雖然都是 47/47，但為了把目標達成，它們可能會透過workaround的方式，像是把error包起來。
+							<br>在逐列資料轉移上都是成功的
+							<br>逐 endpoint 比對上，通過率大部分都是 HTTP 2xx
+							<br>但只有 B 寫 41/47 是最誠實的：因為那 6 個是在開發環境呼叫外部服務產生的報錯，跟本次遷移無關
+							<br>C1、C2 則是暴露他們的問題，雖然都是 47/47，但為了把目標達成，它們可能會透過workaround的方式，像是把error包起來，或是改環境變數。
 							<br>這也提醒我們verifier可能還不夠完善到讓他全自主的執行修改。
 							<br>A 甚至還自己宣稱成功的，連留下證據檔案都沒有。
 							<br>第二，成本和時間，這其實對完成任務來說是其次，而且每次都不太一樣，可以看到 B 雖然連續跑了最久大約五個小時，換到最完整的理解和文件。
@@ -1755,7 +1764,7 @@
 							<li><div><div class="h">Context</div><div class="q">What would <strong class="c-text">someone new</strong> need to know?</div></div></li>
 							<li><div><div class="h">Materials</div><div class="q">Give the sources — <strong class="c-text">don't make things up</strong></div></div></li>
 						</ol>
-						<div class="grp-label fragment fade-in" data-fragment-index="1">isolation</div>
+						<div class="grp-label fragment fade-in" data-fragment-index="1">workspace</div>
 						<div class="grp-rail solo fragment fade-in" data-fragment-index="1"></div>
 						<ol class="checklist" style="counter-reset:chk 3;">
 							<li><div><div class="h">Boundaries</div><div class="q">Wall off anything <strong class="c-text">you can't undo</strong></div></div></li>
@@ -1774,7 +1783,7 @@
 						<br>三，素材：指給它看能用的材料——程式碼、文件、baseline。找不到的就留白，不要編造。
 						<br>四，邊界：前三欄給的是方向，這一欄給牆。想一下：它做出什麼，你會說「這不是我要的」？先寫下來，把不可逆的副作用圍起來、工作區隔離好。
 						<br>五，完成定義：什麼東西出現在眼前，你就可以收工？把它變成機器可檢查的——沒有 verifier 就先建 verifier 再跑。
-						<br>這五欄剛好把第二章的三個洞補滿：前三欄就是規格，邊界就是隔離，完成定義就是 verifier。
+						<br>這五欄剛好把第二章的三個洞補滿：前三欄就是規格，邊界就是工作區，完成定義就是 verifier。
 						<br>這五欄就是你的 prompt
 					</aside>
 				</section>
