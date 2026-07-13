@@ -76,9 +76,9 @@ html = html.replace(/url\((['"]?)([^)'"]+)\1\)/g, (m, q, u) => {
 });
 
 // ── 4. build a path→dataURI map for the DYNAMIC images the lightbox JS
-//        assembles at runtime (exp/exp_<arm>_<n>.png, method/method_superpowers_<n>.png,
+//        assembles at runtime (method/method_superpowers_<n>.png,
 //        rewind/ btw/ subagent/), and rewrite the JS so it resolves through it. ──
-const dynDirs = ['exp', 'method', 'rewind', 'subagent', 'btw', 'assets', 'brainstorming'];
+const dynDirs = ['method', 'rewind', 'subagent', 'btw', 'assets', 'brainstorming'];
 const map = {};
 for (const dir of dynDirs) {
   const dirAbs = resolve(here, dir);
