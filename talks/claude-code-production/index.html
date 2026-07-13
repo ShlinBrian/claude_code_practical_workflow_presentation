@@ -805,6 +805,9 @@
 			/* framing: emphasize one question at a time */
 			.reveal .frame-q { transition: opacity 0.3s, filter 0.3s; }
 			.reveal .frame-q.dim { opacity: 0.28; filter: grayscale(0.4); }
+			/* Two roads (#/8/3): Road B waits dimmed while the speaker walks Road A */
+			.tools3.two .road-b { transition: opacity 0.3s, filter 0.3s; }
+			.tools3.two .road-b.dim { opacity: 0.2; filter: grayscale(0.4); }
 
 			/* ── three-layer maturity slide (prompt / harness / autopilot) ── */
 			.tl-wrap { max-width: 1000px; margin: 0.3em auto 0; }
@@ -1423,9 +1426,9 @@
 								</div>
 							</div>
 							<div class="road-split"></div>
-							<div class="road-badge rb">B</div>
-							<div class="b-tag">Take the spec — loop against a verifier</div>
-							<div class="b-flow">
+							<div id="road-b-badge" class="road-badge rb road-b dim">B</div>
+							<div id="road-b-tag" class="b-tag road-b dim">Take the spec — loop against a verifier</div>
+							<div id="road-b-flow" class="b-flow road-b dim">
 								<div class="spec-node">
 									<div class="sn-sp">SuperPowers</div>
 									<span class="sp-col"><span class="sk-lbl">brainstorming</span><span class="chip">spec</span></span>
@@ -1451,14 +1454,16 @@
 								</div>
 							</div>
 						</div>
+						<span class="fragment" data-frame="tworoads-shift"></span>
 						<aside class="notes" data-slide="8/3">
 							規格定義好之後，這邊有兩條通往 autopilot 的路。
-							<br>路線 A：直接用 SuperPowers 把整條 lifecycle 走完——spec → plan → TDD → review → verify，讓它自己把任務從頭執行到尾。
-							<br>或是走路線 B：承接 SuperPowers brainstorming 產出的規格，餵給 /goal 或 /workflow，讓它們拿著這份spec去執行。
+							<br>先看路線 A：直接用 SuperPowers 把整條 lifecycle 走完——spec → plan → TDD → review → verify，讓它自己把任務從頭執行到尾。
+							<br>（按下一步，讓路線 B 亮起）
+							<br>路線 B：承接 SuperPowers brainstorming 產出的規格，餵給 /goal 或 /workflow，讓它們拿著這份 spec 去執行。
 							<br> goal: 是循環到目標達成，適合線性的任務，你給它一個可自我驗證的目標跟規格，它就一直 build → 測試 → 修，跑到裁判通過。
-							<br> workflow: 是會寫一個javascript建立步驟，呼叫多個 agent 平行展開各自處理任務，再各自驗證。適合廣度的任務，像是要處理一大堆獨立的單元，或是要跑很多不同的測試。
+							<br> workflow: 是會寫一個 javascript 建立步驟，呼叫多個 agent 平行展開各自處理任務，再各自驗證。適合廣度的任務，像是要處理一大堆獨立的單元，或是要跑很多不同的測試。
 							<br> 只需要提到他們的關鍵字或是斜線指令，就可以呼叫他們
-							<br>不管走哪一條，我們利用工具，只需要用簡單的自然語言，就可以讓agent有紀律的完成任務。
+							<br>不管走哪一條，我們利用工具，只需要用簡單的自然語言，就可以讓 agent 有紀律的完成任務。
 						</aside>
 					</section>
 
@@ -2166,15 +2171,22 @@
 			Reveal.on('fragmentshown', function(event) {
 				if (event.fragment.dataset.frame === 'framing-shift') _framingUpdate(true);
 				if (event.fragment.dataset.frame === 'hygiene-shift') _hygieneUpdate(true);
+				if (event.fragment.dataset.frame === 'tworoads-shift') _tworoadsUpdate(true);
 				if ('lb' in event.fragment.dataset) _lbSyncFromFragments(event.fragment.closest('section'));
 			});
 			Reveal.on('fragmenthidden', function(event) {
 				if (event.fragment.dataset.frame === 'framing-shift') _framingUpdate(false);
 				if (event.fragment.dataset.frame === 'hygiene-shift') _hygieneUpdate(false);
+				if (event.fragment.dataset.frame === 'tworoads-shift') _tworoadsUpdate(false);
 				if ('lb' in event.fragment.dataset) _lbSyncFromFragments(event.fragment.closest('section'));
 			});
 			// leaving a slide with an open auto-lightbox → dismiss it
-			Reveal.on('slidechanged', function() { lbClose(); });
+			Reveal.on('slidechanged', function(event) {
+				lbClose();
+				// #/8/3: unless the tworoads fragment is already shown, keep road B dimmed
+				var frag = event.currentSlide && event.currentSlide.querySelector('[data-frame="tworoads-shift"]');
+				if (frag) _tworoadsUpdate(frag.classList.contains('visible'));
+			});
 
 			// ── hygiene slide #/4/0: emphasize pain → fix ──
 			function _hygieneUpdate(forward) {
@@ -2188,6 +2200,16 @@
 					left.classList.remove('dim');
 					right.classList.add('dim');
 				}
+			}
+
+			// ── two roads slide #/8/3: walk road A first, then light road B ──
+			function _tworoadsUpdate(forward) {
+				var b = document.querySelectorAll('.tools3.two .road-b');
+				if (!b.length) return;
+				b.forEach(function(el) {
+					if (forward) el.classList.remove('dim');
+					else el.classList.add('dim');
+				});
 			}
 
 		</script>
