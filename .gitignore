@@ -23,3 +23,5 @@ skills-lock.json
 # packaged, self-contained talk deliverables (derived artifacts, regenerable)
 talks/**/*-talk.html
 talks/**/*-talk.zip
+talks/**/*-script.pptx
+talks/**/*-script-preview.pdf

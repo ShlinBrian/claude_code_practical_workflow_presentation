@@ -100,3 +100,85 @@ When editing these slides, verify the animation by sampling `getComputedStyle(#l
 ## Verifying layout
 
 `npm start` serves on `:8000`; open `#/<h>/<v>` to inspect a slide. The Playwright MCP browser cannot reach the host's `localhost` from its sandbox — verify layout in a real browser, or use another screenshot path.
+
+## Speaker-script PPTX (`build-script-pptx.mjs`)
+
+`npm run build:script-pptx` generates `claude-code-production-script.pptx` — a
+**standalone speaker-script deck, one slide per speaker note**, meant for reading
+on stage (not for projecting). Source: `talks/claude-code-production/build-script-pptx.mjs`.
+
+**Source of truth.** Notes are read straight from the inline
+`<aside class="notes">` blocks in `index.html` — the same single source of truth
+as the deck. There is NO separate script markdown file. When a note changes,
+re-run the command; nothing else to sync.
+
+**The one design rule — uniform size beats layout fidelity.** Every slide's body
+text is ONE flowing block at the **same fixed font size (`BODY_FONT = 22pt`) on
+every slide**. This is deliberate and was chosen over prettier per-note layout:
+
+- **Do NOT reintroduce per-note font scaling.** An earlier version sized each
+  note to fill its slide (28/24/20pt by length); it made paging feel like the
+  text jumped big/small and was rejected. Uniform size is the top priority.
+- **Notes are fully merged, not line-broken.** `noteToLines()` collapses the
+  whole note — every `<br>`, blank line, and `1./2./-` list marker — into a
+  single continuous string; punctuation carries the rhythm (a full-width comma
+  is inserted where a fragment doesn't already end in a break mark). Line breaks
+  were sacrificed on purpose so that long and short notes reach a similar visual
+  density at the same font size. Do not restore paragraph/`<br>` breaks.
+- `**bold**` / `*italic*` survive the merge and become run formatting (italic
+  renders in the deck's amber). White background, near-black body text.
+- **Do NOT set `autoFit` + `shrinkText` together** (and generally avoid them).
+  pptxgenjs emits BOTH `<a:normAutofit>` and `<a:spAutoFit>` inside one
+  `<a:bodyPr>`, which is illegal OOXML (autofit is a one-of choice). LibreOffice
+  and python-pptx tolerate it, but **PowerPoint rejects the file** with "content
+  has a problem / repair?" and won't open it. The box uses the default (no
+  autofit). If the longest note ever stops fitting at 22pt, shorten that note or
+  lower `BODY_FONT` for **all** slides — never rely on autofit.
+
+**Reproduce / verify (this is not optional — always render and look).** There is
+no in-repo pptx renderer, so verification needs two Homebrew tools (one-time):
+
+```bash
+brew install --cask libreoffice   # headless pptx → pdf
+brew install poppler              # pdftoppm: pdf → png
+```
+
+Then, after any change to `build-script-pptx.mjs` or the notes:
+
+```bash
+npm run build:script-pptx
+D="$(mktemp -d)"
+/Applications/LibreOffice.app/Contents/MacOS/soffice --headless --convert-to pdf \
+  --outdir "$D" talks/claude-code-production/claude-code-production-script.pptx
+pdftoppm -png -r 110 "$D/claude-code-production-script.pdf" "$D/pg"   # one PNG per page
+```
+
+Read the PNGs and confirm, page by page: **no overflow, uniform font size, bold/
+italic/colors correct.** Look at the **longest** notes (currently the Ch02
+three-layers overview and the Ch05 takeaway pages) — if they fit at 22pt,
+everything shorter does too.
+
+**CRITICAL — LibreOffice rendering does NOT prove the file is valid.** LibreOffice
+(and python-pptx) are lenient and will happily open a pptx that violates OOXML
+schema; **only PowerPoint enforces it**. A file that renders fine above can still
+make PowerPoint say "content has a problem" and refuse to open (this exact bug
+shipped once — see the autofit note above). So the authoritative check is to open
+it in real PowerPoint. If PowerPoint is installed:
+
+```bash
+osascript -e 'tell application "Microsoft PowerPoint" to quit saving no'; sleep 1
+open -a "Microsoft PowerPoint" talks/claude-code-production/claude-code-production-script.pptx
+sleep 6
+osascript -e 'tell application "Microsoft PowerPoint"
+  if (count of presentations) is 0 then return "FAIL — repair dialog / did not open"
+  return "OK — slides: " & (count of slides of active presentation)
+end tell'
+```
+
+`OK — slides: 31` means it opened clean (no repair prompt). A repair dialog leaves
+zero presentations open → `FAIL`. Clean up the `~$…pptx` lock file PowerPoint
+leaves behind (`rm -f talks/claude-code-production/'~$'*.pptx`).
+
+The `-preview.pdf` sometimes left in the talk folder is just a rendered snapshot
+for eyeballing — it is NOT a build artifact and can be deleted. Only the `.pptx`
+is the deliverable.
