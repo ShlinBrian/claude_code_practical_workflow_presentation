@@ -829,7 +829,7 @@
 
 			/* ── closing vision: autopilot (horizontal run + return arc) ── */
 			.loopv { max-width: 1040px; margin: 0.8em auto 0; }
-			.loopv-row { display: flex; align-items: stretch; justify-content: center; gap: 0; flex-wrap: nowrap; }
+			.loopv-row { display: flex; align-items: flex-start; justify-content: center; gap: 0; flex-wrap: nowrap; }
 			.loopv-row .step { background: var(--surface); border: 1px solid var(--border);
 				border-left: 4px solid var(--flow); border-radius: 10px; padding: 14px 16px;
 				display: flex; flex-direction: column; gap: 5px; min-width: 0; text-align: left; }
@@ -857,7 +857,7 @@
 			.loopv-row .step .mm-lane.l-sp .mm-nm   { color: var(--skill); }
 			.loopv-row .step .mm-lane.l-goal .mm-nm { color: var(--goal); }
 			.loopv-row .step .mm-lane.l-flow .mm-nm { color: var(--flow); }
-			.loopv-row .step .mm-chips { display: grid; grid-template-columns: repeat(2, max-content); gap: 3px; }
+			.loopv-row .step .mm-chips { display: flex; flex-wrap: nowrap; gap: 3px; }
 			.loopv-row .step .mm-chip { font-family: 'JetBrains Mono', monospace; font-size: 0.3em;
 				color: var(--text); background: var(--surface); border: 1px solid var(--border);
 				border-radius: 4px; padding: 2px 6px; white-space: nowrap; }
@@ -901,8 +901,8 @@
 						會從<br>
 						1. 每日小習慣<br>
 						2. 幫助我們定義任務與建立流程的方法<br>
-						3. 再來是介紹我們實際使用的真實案例，將一個原本使用 MSSQL 資料庫的 Java 專案轉換成使用 PostgreSQL，以便更好的使用AWS維護<br>
-						4. 再來是四種方法的比較，並跟一個真實去年做遷移的版本對照<br>
+						3. 再來是介紹我們實際使用的真實案例，將一個 Java 專案，原本使用 MSSQL 資料庫，轉換成使用 PostgreSQL，以便更好的使用AWS維護<br>
+						4. 再來是四種方法的比較，並跟一個我自己實際在去年做遷移的版本對照<br>
 						5. 以及最後會有可以帶走的 takeaway<br>
 					</aside>
 				</section>
@@ -1034,9 +1034,7 @@
 						<text x="540" y="54" fill="#4ec9c0" fill-opacity="0.55" font-size="14" font-family="'JetBrains Mono',monospace" text-anchor="middle">Autopilot</text>
 					</svg>
 					<aside class="notes" data-slide="4">
-						第一章先從幾個小習慣開始，這些是今天回去馬上就能用的東西，門檻最低、回報也最快。
-						<br>它們同時也是後面所有東西的基礎：context 管得乾淨、交接寫得清楚
-						<br>之後 agent 才有辦法自己接手、自己跑。
+						第一章我們可以先從幾個小習慣開始，這些是今天回去馬上就能用的東西，門檻最低、回報也最快。
 					</aside>
 				</section>
 
@@ -1069,7 +1067,7 @@
 						<!-- <p class="mid c-muted" style="margin-top:0.7em;">Three moves, by <em>when</em> you reach for them — <strong>during the run · at the end · when context fills</strong></p> -->
 						<aside class="notes" data-slide="5/0">
 							（左邊亮）
-							<br>大家應該都遇過：像是 context 快滿了、usage 快用完了，或是 agent 開始變笨忘記你前面講過的決定。
+							<br>首先我們應該都遇過：像是 context 快滿了、usage 快用完了，或是 agent 開始變笨忘記你前面講過的決定。
 							結果你可能就是把整個任務從頭再解釋一遍。
 							<br>（第二下：右邊亮、左邊暗）
 							<br>我們可以做的有三個方向：
@@ -1091,34 +1089,31 @@
 								<span class="pr"><span class="cc">/rewind</span> → pick the &lt;checkpoint&gt; before the bad edit</span>
 							</div>
 							<!-- rewind1 zooms out of the 📷 button; rewind2 is the same shot's next page → horizontal slide, no zoom -->
-							<span class="fragment" data-fragment-index="1" data-lb="rewind/rewind1.png" data-origin="#shot-rewind" data-lb-transition="slide"></span>
-							<span class="fragment" data-fragment-index="2" data-lb="rewind/rewind2.png" data-lb-transition="slide"></span>
-							<span class="fragment" data-fragment-index="3" data-lb="close"></span>
+							<!-- <span class="fragment" data-fragment-index="1" data-lb="rewind/rewind1.png" data-origin="#shot-rewind" data-lb-transition="slide"></span>
+							<span class="fragment" data-fragment-index="2" data-lb="rewind/rewind2.png" data-lb-transition="slide"></span> -->
+							<!-- <span class="fragment" data-fragment-index="3" data-lb="close"></span> -->
 							<div class="term fragment fade-in" data-fragment-index="4">
 								<button id="shot-btw" class="shot-btn" onclick="lbOpenOne('btw/btw.png', this)">📷<span class="lbl">btw</span></button>
 								<span class="cm"># quick lookup you DON'T want in history — answer shows</span><br>
 								<span class="pr"><span class="cc">/btw</span> is there anything still uncommitted?</span>
 							</div>
-							<span class="fragment" data-fragment-index="5" data-lb="btw/btw.png" data-origin="#shot-btw"></span>
-							<span class="fragment" data-fragment-index="6" data-lb="close"></span>
+							<!-- <span class="fragment" data-fragment-index="5" data-lb="btw/btw.png" data-origin="#shot-btw"></span>
+							<span class="fragment" data-fragment-index="6" data-lb="close"></span> -->
 							<div class="term fragment fade-in" data-fragment-index="7">
 								<button id="shot-subagent" class="shot-btn" onclick="lbOpenOne('subagent/subagent.png', this)">📷<span class="lbl">subagent</span></button>
 								<span class="cm"># offload a noisy task to a fresh context — only the result returns</span><br>
 								<span class="pr">create a subagent to check the changed code for bugs and return only the issues</span>
 							</div>
-							<span class="fragment" data-fragment-index="8" data-lb="subagent/subagent.png" data-origin="#shot-subagent"></span>
-							<span class="fragment" data-fragment-index="9" data-lb="close"></span>
+							<!-- <span class="fragment" data-fragment-index="8" data-lb="subagent/subagent.png" data-origin="#shot-subagent"></span>
+							<span class="fragment" data-fragment-index="9" data-lb="close"></span> -->
 						</div>
 						<p class="mid c-muted fragment fade-in" data-fragment-index="10" style="margin-top:0.5em;"><span class="c-goal mono">/rewind</span> back out · <span class="c-goal mono">/btw</span> look up without growing context · <span class="c-goal mono">subagent</span> type an instruction to spin one up</p>
 						<aside class="notes" data-slide="5/1">
 							在執行過程中：
 							<br>/rewind：當你發現 agent 開始走錯方向，或是你後悔剛剛下的prompt，可以直接 /rewind，就可以 rollback 到你想要的 checkpoint。
-							<br>(按)他會顯示這次 session 的 prompt 歷史紀錄，你可以選擇你想要回到的 checkpoint，回到當下的狀態
-							<br>/btw：跑到一半想查個小問題，可以使用 /btw
-							<br>(按)像是詢問還沒 commit 的內容有哪些，他會將答案顯示在一個可以關掉的視窗裡，就不會污染你現在 session 的 context。
-							<br>subagent：我們可以呼叫建立一個 subagent，來去進行一些跟主任務比較不相關的工作
-							<br>(按)像是請他「檢查剛改動的程式碼有沒有 bug」，他就會呼叫 subagent 背景執行，最後只有執行結果會被傳回 session 當中。
-							<br>透過這三個小技巧，我們就可以保持這個 session 當中的對話，都是有意義的資訊
+							<br>(按)/btw：跑到一半想查個小問題，可以使用 /btw，像是例如詢問現在還沒 commit 的內容有哪些，他會將答案顯示在一個可以關掉的視窗裡，就不會污染你現在 session 的 context。
+							<br>(按)subagent：我們可以呼叫建立一個 subagent，來去進行一些跟主任務比較不相關的工作，像是請他「檢查剛改動的程式碼有沒有 bug」，他就會呼叫 subagent 背景執行，最後只有執行結果會被傳回 session 當中。
+							<br>(按)透過這三個小技巧，我們就可以保持這個 session 當中的對話，都是有意義的資訊
 						</aside>
 					</section>
 
@@ -1189,15 +1184,18 @@
 						</div>
 
 						<p class="mid c-muted flush-note fragment fade-in" data-fragment-index="4" style="margin-top:0.5em;">
-								<span class="fl-line">At the end, just say <span class="mono c-goal">"Keep what matters"</span> — it prunes the rest</span>
-								<span class="fl-line"><strong class="c-text">The valuable decisions stay</strong>, and the future session starts with them</span>
+								<span class="fl-line"><span class="mono c-goal">"Keep valuable decisions stay"</span></span>
+								<span class="fl-line"><strong class="c-text">The future session starts with them</strong></span>
 						</p>
 						<aside class="notes" data-slide="5/3">
-							再來這頁是讓你的決定持久化
-							我們可以在 session 收尾的時候，把值得留的東西存下來。<br>
-							像是UI或是程式風格的修改，如果改完你覺得不錯，就在完成的最後說「把剛剛這個設計存成規則寫進 CLAUDE.md」<br>
-							Claude就會幫你把他自己的 memory.md 內容，整理你要的規則，寫入CLAUDE.md。<br>
-							下次你再開啟新 agent 就會有這些 knowledge，這對舊有的 project 想要做長期 autopilot 來說，也是非常重要的習慣跟前置作業
+							再來這頁，是讓好的決定持久化，長期保存
+							<br>我們可以在 session 收尾的時候，把值得留的東西存下來。
+							<br>像是範例關於 UI 或是程式風格的修改，如果改完你覺得不錯，就在完成的最後說「把剛剛這個設計存成規則寫進 CLAUDE.md」
+							<br>(按)Claude就會幫你把他自己的 memory.md 內容
+							<br>(按)整理你要的規則，寫入CLAUDE.md。
+							<br>下次你再開啟新 agent 就會有這些 knowledge
+							<br>這對舊有的 project 想要做長期 autopilot 來說，也是非常重要的習慣跟前置作業
+							<br>當我們養成這些習慣之後，agent 就可以定義任務越來越清楚，未來才可以自己接手、自己跑。
 						</aside>
 					</section>
 
@@ -1268,16 +1266,17 @@
 						<div class="flow">
 							<div class="step on-warn fragment fade-in" data-fragment-index="1"><span class="t c-warn">No spec</span><span class="d">&ldquo;keep everything working&rdquo; is undefined</span></div>
 							<div class="step on-warn fragment fade-in" data-fragment-index="2"><span class="t c-warn">No definition of done</span><span class="d">nothing checks the answers are still correct</span></div>
-							<div class="step on-warn fragment fade-in" data-fragment-index="3"><span class="t c-warn">No isolated workspace</span><span class="d">it edited your working tree in place</span></div>
+							<div class="step on-warn fragment fade-in" data-fragment-index="3"><span class="t c-warn">No workspace</span><span class="d">it edited your working tree in place</span></div>
 						</div>
 						<aside class="notes" data-slide="7/1">
 							<br>agent 會認真地改 SQL、換 db driver，build 過了，然後說「完成了」。從它的角度看，它確實完成了。
-							<br>但我們常常不喜歡，我們不知道他的改動是不是可靠、是不是真的跟我們腦海中的想像一樣、是不是有被驗證過？
-							<br>會這樣就是因為缺少了 spec, 完成的定義 以及環境：
+							<br>但我們不知道他的改動是不是可靠、是不是真的跟我們腦海中的想像一樣、是不是有被驗證過？
+							<br>(按)會這樣就是因為缺少了三個要件:
+							<br>(按按按)spec, 完成的定義 以及環境
 							<br>一，沒有規格——「保持一切正常」沒有定義。
-							<br>二，沒有完成的定義——沒有任何東西在檢查答案對還不對。
-							<br>三，沒有隔離工作區——它直接改了你的工作目錄動到還沒commit的程式。
-							<br>這三個洞，就是接下來的方法要補的。
+							<br>二，沒有完成的定義——沒有任何東西在檢查答案對不對。
+							<br>三，沒有定義工作區——不知道什麼可以改, 什麼不行。
+							<br>這三個問題，接下來可以靠方法來解決。
 						</aside>
 					</section>
 				</section>
@@ -1330,7 +1329,6 @@
 						<aside class="notes" data-slide="8/0">
 							這邊提供的解決方案就是使用 SuperPowers 的 skills。
 							<br>它是一套用 skill 組起來的開發流程，仿造一位資深工程師，從定義、規劃、建構到驗證
-							<br>每個階段該怎麼做都寫在 skill 裡。只需要在prompt提到關鍵字或直接用斜線指令就能呼叫，讓 agent 自己依照流程執行。
 							<br>這個 project 在 GitHub 很受歡迎，甚至已經被 Claude Code, Codex 納入成為官方可安裝的 plugin
 							<br>透過 SuperPower，交付品質就不再是取決於當天的 prompt，而是一套完整可被驗證的流程。
 							<br>其中，整條流程最關鍵的就是 brainstorming，我們可以利用它來幫我們把任務定義清楚
@@ -1361,9 +1359,9 @@
 							<br>2. 一次問一個問題
 							<br>3. 給兩三個方案和取捨
 							<br>4. 設計分段讓你確認、
-							<br>5. 最後 commit 一份帶 Definition of Done 的規格。
+							<br>5. 最後 commit 一份帶 完成定義 的規格。
 							<br>重點在最後那道關卡：設計沒被確認，它就不寫 code。
-							<br>它強迫的正是我們最常跳過的那一步——先想清楚再動手。
+							<br>它強迫的正是我們常常跳過的那一步：就是先想清楚再動手。
 							<br>前面多花十分鐘，換的是後面少掉的重寫和 debug。
 						</aside>
 					</section>
@@ -1460,8 +1458,8 @@
 							<br>先看路線 A：直接用 SuperPowers 把整條 lifecycle 走完——spec → plan → TDD → review → verify，讓它自己把任務從頭執行到尾。
 							<br>（按下一步，讓路線 B 亮起）
 							<br>路線 B：承接 SuperPowers brainstorming 產出的規格，餵給 /goal 或 /workflow，讓它們拿著這份 spec 去執行。
-							<br> goal: 是循環到目標達成，適合線性的任務，你給它一個可自我驗證的目標跟規格，它就一直 build → 測試 → 修，跑到裁判通過。
-							<br> workflow: 是會寫一個 javascript 建立步驟，呼叫多個 agent 平行展開各自處理任務，再各自驗證。適合廣度的任務，像是要處理一大堆獨立的單元，或是要跑很多不同的測試。
+							<br> goal: 會根據你給他的目標，循環自我驗證，一直 build → 測試 → 改code，直到驗證全部通過。適合線性的任務。
+							<br> workflow: 是會寫一個 javascript 建立完成步驟，呼叫多個 agent 平行展開各自處理任務，再各自驗證。適合廣度的任務，像是要處理一大堆獨立的單元，或是要跑很多不同的測試。
 							<br> 只需要提到他們的關鍵字或是斜線指令，就可以呼叫他們
 							<br>不管走哪一條，我們利用工具，只需要用簡單的自然語言，就可以讓 agent 有紀律的完成任務。
 						</aside>
@@ -1485,20 +1483,18 @@
 					<section>
 						<h3 style="margin-bottom:0.5em;">But first — <span class="c-goal">build the verifier</span></h3>
 						<div class="flow three" style="max-width:92%;">
-							<div class="step on-goal"><span class="t c-goal">Both tools are self-verifying</span><span class="d">they loop against a verifier</span></div>
+							<div class="step on-goal"><span class="t c-goal">These tools are self-verifying</span><span class="d">they loop against a verifier</span></div>
 							<div class="step on-flow"><span class="t c-flow">Verifier already exists?</span><span class="d">reuse it, then let the tool loop</span></div>
 							<div class="step on-warn"><span class="t c-warn">No verifier yet?</span><span class="d">building it is step one, not the last step</span></div>
 						</div>
 						<p class="mid c-faint" style="margin-top:0.7em;"><em>If you can't verify it, don't ship it</em></p>
 						<aside class="notes" data-slide="8/5">
 							所以在放手讓它自動跑之前，有一個前提要先講清楚：必須先建立你的 verifier，也就是裁判。
-							<br>不管是 /goal、/workflow 還是未來的 autopilot，都是靠自我驗證來完成任務——所以它們的可靠度，就等於你那個裁判的可靠度。
-							<br>那裁判從哪來？分兩種情況。
-							<br>有些任務的裁判是現成的，像是早就寫好的測試，那就直接拿來用，讓工具對著它循環就好。
-							<br>但新功能開發沒有現成答案，裁判就是你的測試，得自己先蓋出來。
+							<br>不管是這些工具，還是未來的全自動 autopilot，都是靠自我驗證來完成單一任務
+							<br>要可以讓 agent 自己跑 build，測試，修正，直到驗證通過，這樣才算完成。
+							<br>所以它們的可靠度，就等於你那個裁判的可靠度。
 							<br>這時候你得在討論 spec 的時候，就把驗證方式一起定義好，這樣才能在後面放手讓 agent 自己去跑。
-							<br>建立驗證是第一步，不是最後一步。如果覆蓋不夠，這個迴圈就是在盲跑，跑出來的東西你也沒辦法相信。
-							<br>Anthropic 的文章也提過：無法驗證的東西，就是沒辦法上線的東西。
+							<br>如果無法被驗證的東西，就是沒辦法上線的東西。
 						</aside>
 					</section>
 
@@ -1511,8 +1507,7 @@
 					<h2>The case</h2>
 					<div class="ch-rule"></div>
 					<aside class="notes" data-slide="10">
-						方法講完了，大家可能會想：這在真的很難的任務上行得通嗎？
-						接下來我們用一個實際的案例來大家看一下。
+						方法講完了，接下來跟大家介紹一下我們實際使用的這個案例
 					</aside>
 				</section>
 
@@ -1568,15 +1563,13 @@
 							<span class="q-line">It's "Are the answers <em>still correct </em>? "</span>
 						</p>
 						<aside class="notes" data-slide="11/1">
-							規模上，大概 39 萬筆資料、23 張表、48 支 stored procedure、橫跨 4 個資料庫——說大不大，但也不是幾行 SQL 能解決的量。
+							規模上，大概 39 萬筆資料、23 張表、48 支 stored procedure、橫跨 4 個資料庫
 							<br>1. 我們會需要先搬 schema，把 table 跟 stored procedure(也就是在DB裡面的function) 在 PostgreSQL 上重建
 							<br>2. 再來是搬資料，把每一筆資料從舊庫複製過來
 							<br>3. 最後是搬程式，把程式裡那些寫給舊資料庫的 SQL指令，全部改寫成 PostgreSQL 適用的指令。
-							<br>其中還有不少新舊語法，和格式差異對不上的細節，這裡就不展開。
+							<br>其中還有不少新舊語法，和格式差異對不上的細節。
 							<br>
 							<br>所以難的不是「跑不跑得起來」，而是「最後的答案對不對」。
-							<br>所以我們的驗證方式是——把每一支 API 在新舊兩個資料庫上的服務各打一次，比對回傳的答案。
-							<br>答案一致，就代表結構和資料都搬對了。這個裁判就是下一章實驗的基礎。
 						</aside>
 					</section>
 
@@ -1621,7 +1614,7 @@
 							<br>B：完整的 Superpowers skills 的流程，從 brainstorming寫spec，制定plan，TDD執行，一路到 review、驗證。
 							<br>C1：保留 brainstorming 產出 spec，執行端只用一個 /goal 迴圈。
 							<br>C2：保留 brainstorming 產出 spec，執行端改用 /workflow 平行展開。
-							<br>再來，我也把去年我實際使用當時的模型，花了一個月慢慢搬遷的版本也挖出來，一同打分數，當作與現實的對照組。
+							<br>再來，我也把去年花了一個月，使用當時較差的模型，慢慢搬遷的版本也挖出來一起比較，當作與現實的對照組。
 						</aside>
 					</section>
 
@@ -1638,7 +1631,6 @@
 						<p class="mid c-muted" style="margin-top:0.6em;">Without a machine-checkable verifier, "loop until goal" means nothing — shared by B / C1 / C2.</p>
 						<aside class="notes" data-slide="13/1">
 							裁判很單純：把在 PostgreSQL 的回應和 MSSQL 的回應，逐 endpoint、逐列比對。
-							Verifier真的很重要，如果沒有可自我驗證的裁判，「循環到目標達成」就沒有意義。
 						</aside>
 					</section>
 
@@ -1655,7 +1647,7 @@
 							這邊有四個比較的指標:
 							<br>1. 正確性: 我們有47個endpoint，以及逐列比對；
 							<br>2. 成本: 按照 Athropic 官方計費的加權 token；
-							<br>3. 完成時間: 只算連續執行；
+							<br>3. 完成時間: 實際執行執行；
 							<br>4. 程式碼品質: 另外開一個 review agent，從四個維度打分——轉換的穩健度、測試、結構、還有 review 的痕跡，取平均當總分。
 						</aside>
 					</section>
@@ -1711,11 +1703,9 @@
 							<br>但只有 B 寫 41/47 是最誠實的：因為那 6 個是在開發環境呼叫外部服務產生的報錯，跟本次遷移無關
 							<br>C1、C2 則是暴露他們的問題，雖然都是 47/47，但為了把目標達成，它們可能會透過workaround的方式，像是把error包起來，或是改環境變數。
 							<br>這也提醒我們verifier可能還不夠完善到讓他全自主的執行修改。
-							<br>A 甚至還自己宣稱成功的，連留下證據檔案都沒有。
-							<br>第二，成本和時間，這其實對完成任務來說是其次，而且每次都不太一樣，可以看到 B 雖然連續跑了最久大約五個小時，換到最完整的理解和文件。
-							<br>第三，程式碼品質。排名是 B 3.1、D 2.9、C2 2.5、C1 2.25、A 2.0。
-							<br>B 甚至還好過 D 一點，B 在過程中把遇到的轉換錯誤root cause等等紀錄得很清楚，並且有紀律的 commit 和連貫從 spec -> plan -> fix 的軌跡
-							<br>所以方法的價值不在讓它「做得到」，在讓品質不靠運氣。而品質不靠運氣，正是之後讓它自動駕駛的前提。
+							<br>第二，成本和時間，這其實對完成任務來說是其次，而且每次都不太一樣，可以參考就好。
+							<br>第三，程式碼品質。B 的排名甚至還好過 我自己 migrate 的版本，B 在過程中把遇到的轉換錯誤root cause等等紀錄得很清楚，並且有紀律的 commit 和遵從 規劃執行測試 的軌跡
+							<br>總結以上資訊，我們可以知道方法的價值，是讓品質不靠運氣，靠扎實可驗證的流程。這也正是之後能讓它 autopilot 的前提。
 						</aside>
 					</section>
 
@@ -1775,7 +1765,7 @@
 						<text x="540" y="54" fill="#4ec9c0" font-size="14" font-family="'JetBrains Mono',monospace" text-anchor="middle" font-weight="700">Autopilot</text>
 					</svg>
 					<aside class="notes" data-slide="14">
-						最後，這是今天可以帶走的東西。把它想成起飛前的檢查表——這五項都確認過，就可以放手讓 agent 自動駕駛。
+						最後，是可以帶走的takeaway。
 					</aside>
 				</section>
 
@@ -1785,14 +1775,14 @@
 				     ════════════════════════════════════════════════════════════ -->
 				<section>
 					<h3 style="margin-bottom:0.1em;">Takeaway (1&nbsp;/&nbsp;2)</h3>
-					<p class="c-muted" style="font-size:0.6em;margin:0 0 0.5em;">A checklist for your task</p>
+					<p class="c-muted" style="font-size:0.6em;margin:0 0 0.5em;">A review checklist for your task</p>
 					<div class="checklist-grouped">
 						<div class="grp-label fragment fade-in" data-fragment-index="0">spec</div>
 						<div class="grp-rail fragment fade-in" data-fragment-index="0"></div>
 						<ol class="checklist" style="counter-reset:chk 0;">
 							<li><div><div class="h">Goal</div><div class="q"><strong class="c-text">Deliverable + decision</strong>, not an action</div></div></li>
 							<li><div><div class="h">Context</div><div class="q">What would <strong class="c-text">someone new</strong> need to know?</div></div></li>
-							<li><div><div class="h">Materials</div><div class="q">Give the sources — <strong class="c-text">don't make things up</strong></div></div></li>
+							<li><div><div class="h">Materials</div><div class="q">Give the <strong class="c-text">sources, tools, skills, mcp servers</strong></div></div></li>
 						</ol>
 						<div class="grp-label fragment fade-in" data-fragment-index="1">workspace</div>
 						<div class="grp-rail solo fragment fade-in" data-fragment-index="1"></div>
@@ -1807,14 +1797,17 @@
 					</div>
 					<p class="mid c-muted" style="margin-top:0.4em;">The filled-in brief <strong class="c-goal">is your prompt</strong></p>
 					<aside class="notes" data-slide="15">
-						定義任務，可以使用這五個欄位來重新確認：
+						關於定義任務，可以使用這五個欄位來重新反覆的確認：
 						<br>一，目標：指定成品跟想要的決策，而不是只描述了一個動作。
-						<br>二，背景：想像一個聰明、但對這個 repo 完全不熟的同事來接手——他需要知道什麼才不會走錯方向？如果缺一張地圖，就先補 CLAUDE.md。
-						<br>三，素材：指給它看能用的材料——程式碼、文件、baseline。找不到的就留白，不要編造。
-						<br>四，邊界：前三欄給的是方向，這一欄給牆。想一下：它做出什麼，你會說「這不是我要的」？先寫下來，把不可逆的副作用圍起來、工作區隔離好。
-						<br>五，完成定義：什麼東西出現在眼前，你就可以收工？把它變成機器可檢查的——沒有 verifier 就先建 verifier 再跑。
-						<br>這五欄剛好把第二章的三個洞補滿：前三欄就是規格，邊界就是工作區，完成定義就是 verifier。
-						<br>這五欄就是你的 prompt
+						<br>二，背景知識：除了任務的背景知識之外，我們也可以想像一個非常聰明、但對這個 repo 完全不熟的同事，需要知道什麼才不會走錯方向？
+						<br>如果缺一張地圖，可能就要先補 CLAUDE.md。
+						<br>三，素材：給看或能用的材料有哪些，程式碼、文件、tools, skills, mcp servers
+						<br>四，邊界：想一下：它做出什麼，你會說「這不是我要的」？先寫下來，把不可逆的副作用圍起來、工作區隔離好。
+						<br>五，完成定義：什麼東西出現在眼前，你就可以收工？
+						<br>沒有 verifier 就先建 verifier 再跑。
+						<br>這五欄，就是把前面 一句話promt 缺少的三個問題補滿
+						<br>(按)前三欄就是規格，邊界就是工作區，完成定義就是 verifier。
+						<br>這五欄就是你交給 agent 的 prompt
 					</aside>
 				</section>
 
@@ -1859,16 +1852,9 @@
 						<br>SuperPowers 把 plan → TDD → review → verify 整條走完
 						<br>/goal 循環到目標達成
 						<br>/workflow 多個 agent 平行展開執行
-						<br>*換頁*
-						<br>從執行者，變成定義任務、讓程式碼可讀的人。這兩件事 agent 取代不了
-						<br>*換頁*
-						<br>所以開始建立harness。
-						<br>*換頁*
-						<br>讓它能自己跑起來的。
-						最後這就是我們期望的終點：一個不用你盯著的 agent。
-						它自己拉一個任務（看有沒有新的、接下來）、跟你來回把「完成」確認清楚、自己走完規劃、實作、測試、驗證，把任務交出去，然後拿下一個，一直轉下去。
-						今天講的所有東西，都是在為這件事打底，就是任務、完成的定義、工作環境都定義得夠清楚。
-						而你在 harness 上的投資，也會隨著模型變強越來越有價值，以上是今天的分享，謝謝大家
+						<br>(按)從執行者，變成定義任務、讓程式碼可讀的人。這兩件事 agent 取代不了
+						<br>(按)所以開始建立harness。
+						<br>(按)讓它能自己跑起來的。
 					</aside>
 				</section>
 
@@ -1914,21 +1900,25 @@
 							</div>
 						</div>
 						<!-- return arc: ship ✓ (right) loops back to pull (left) -->
-						<svg class="loopv-arc" viewBox="0 0 1040 74" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-							<path d="M895,4 C895,52 815,64 532,64 C249,64 169,52 169,8"
+						<svg class="loopv-arc" viewBox="0 0 1040 108" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+							<path d="M895,4 C895,86 815,98 532,98 C249,98 169,86 169,8"
 								fill="none" stroke="#4ec9c0" stroke-width="2" stroke-dasharray="2 6" stroke-linecap="round"/>
 							<path d="M163,16 L169,4 L175,16" fill="none" stroke="#4ec9c0" stroke-width="2" stroke-linejoin="round"/>
-							<text x="532" y="58" fill="#4ec9c0" font-size="13" font-family="'JetBrains Mono',monospace" text-anchor="middle">then reach for the next one — no one watching</text>
+							<text x="532" y="90" fill="#4ec9c0" font-size="13" font-family="'JetBrains Mono',monospace" text-anchor="middle">then reach for the next one</text>
 						</svg>
 					</div>
 					<p class="mid c-muted fragment" style="margin-top:0.6em;">Everything today was about earning the right to run <span class="tl-future">on autopilot</span></p>
 					<div class="sig fragment">RD Camp · 2026</div>
 					<aside class="notes" data-slide="17">
 						最後這就是我們期望的終點：一個不用你盯著的 agent。
-						它自己拉一個任務（看有沒有新的、接下來）、跟你來回把「完成」確認清楚、自己走完規劃、實作、測試、驗證，把任務交出去，然後拿下一個，一直轉下去。
-						中間這兩步，我直接把剛剛 takeaway 的那組卡片縮小放進去：「Agree on Done」就是 brainstorming 產出 spec，「Run the full cycle」就是 SuperPowers、/goal、/workflow 三條路。autopilot 只是把這條工作流包進自主迴圈。
-						今天講的所有東西，都是在為這件事打底，就是任務、完成的定義、工作環境都定義得夠清楚。
-						而你在 harness 上的投資，也會隨著模型變強越來越有價值，以上是今天的分享，謝謝大家
+						<br>它自己拉一個任務（看有沒有新的、接下來）、
+						<br>跟你來回把「什麼是完成」定義清楚、
+						<br>自己走完規劃、實作、測試、驗證，
+						<br>把任務交出去，
+						<br>然後拿下一個，一直轉下去。
+						<br>(按)今天講的所有東西，都是在為這件事打底，就是任務、完成的定義、工作環境都定義得夠清楚。
+						<br>而你在 harness 上的投資，也會隨著模型變強，有複利的效果，會越來越有價值，
+						<br>(按)以上就是我今天的分享，謝謝大家
 					</aside>
 				</section>
 
