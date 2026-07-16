@@ -46,7 +46,7 @@
 				--r-main-font: 'Noto Sans TC', 'Inter', system-ui, sans-serif;
 				--r-heading-text-transform: none;
 				--r-heading-letter-spacing: -0.02em;
-				--r-main-font-size: 32px;
+				--r-main-font-size: 35px;
 			}
 
 			.reveal { font-weight: 400; }
@@ -88,7 +88,7 @@
 			/* ── eyebrow ── */
 			.eyebrow {
 				font-family: 'JetBrains Mono', monospace;
-				font-size: 0.42em; letter-spacing: 0.18em;
+				font-size: 0.5em; letter-spacing: 0.18em;
 				text-transform: uppercase; color: var(--faint);
 				margin-bottom: 0.5em;
 			}
@@ -114,7 +114,7 @@
 			.card.accent-skill { border-left: 4px solid var(--skill); }
 			.card .card-label {
 				font-family: 'JetBrains Mono', monospace;
-				font-size: 0.42em; letter-spacing: 0.12em;
+				font-size: 0.5em; letter-spacing: 0.12em;
 				text-transform: uppercase; margin-bottom: 0.8em;
 			}
 			.card.accent-goal .card-label { color: var(--goal); }
@@ -133,12 +133,12 @@
 			.caseb .item { border-left: 4px solid var(--border-2); padding: 4px 0 4px 22px; }
 			.caseb .item.f { border-left-color: var(--flow); }
 			.caseb .item.g { border-left-color: var(--goal); }
-			.caseb .item .lab { display: block; font-family: 'JetBrains Mono', monospace; font-size: 0.42em;
+			.caseb .item .lab { display: block; font-family: 'JetBrains Mono', monospace; font-size: 0.5em;
 				letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
 			.caseb .item p { margin: 0; font-size: 0.62em; line-height: 1.55; color: var(--text); }
 			.caseb .item p + p { margin-top: 8px; }
 			.caseb .chips { display: flex; flex-wrap: wrap; gap: 7px; margin: 9px 0; }
-			.caseb .chips .chip { font-family: 'JetBrains Mono', monospace; font-size: 0.42em;
+			.caseb .chips .chip { font-family: 'JetBrains Mono', monospace; font-size: 0.48em;
 				color: var(--muted); background: var(--surface); border: 1px solid var(--border);
 				border-radius: 6px; padding: 3px 10px; }
 
@@ -153,7 +153,7 @@
 			}
 			.col .lbl {
 				font-family: 'JetBrains Mono', monospace;
-				font-size: 0.4em; letter-spacing: 0.14em;
+				font-size: 0.48em; letter-spacing: 0.14em;
 				text-transform: uppercase; margin-bottom: 0.8em;
 			}
 
@@ -202,8 +202,16 @@
 				.flow.three { flex-wrap: nowrap; }
 				.flow.three .step { padding: 12px 15px; min-width: 0; flex: 1; }
 				.flow.three .step .t { font-size: 0.6em; }
-				.flow.three .step .d { font-size: 0.46em; }
+				.flow.three .step .d { font-size: 0.54em; }
 				.flow.three .arr { padding: 0 9px; font-size: 1.1em; }
+
+				/* method comparison ladder (#/12): larger step descriptions, scoped so
+				   the shared .flow .step .d elsewhere is untouched */
+				.method-ladder .step .t { font-size: 0.78em; }
+				.method-ladder .step .d { font-size: 0.6em; }
+				.method-ladder .flow .step { flex: 1; }
+				/* C1/C2 titles (esp. the wider mono "/workflow") stay on one line */
+				.method-ladder .flow .step .t { white-space: nowrap; }
 
 				/* ── step/stage badge ── */
 				.badge { font-family: 'JetBrains Mono', monospace; font-weight: 700;
@@ -222,15 +230,17 @@
 					letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.6em; }
 				.ba .before .lbl { color: var(--warn); } .ba .after .lbl { color: var(--ok); }
 
-				/* ── inventory panel (scale facts) ── */
-				.inv { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
-					max-width: 95%; margin: 0.5em auto; }
+				/* ── inventory panel (scale facts) — 2×2 grid ── */
+				.inv { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px 20px;
+					max-width: 760px; margin: 0.5em auto; }
 				.inv .cell { background: var(--surface); border: 1px solid var(--border);
-					border-radius: 10px; padding: 18px 14px; text-align: center; }
+					border-radius: 10px; padding: 20px 24px; text-align: center; }
+				/* keep each enumerated line whole (e.g. "4. review trail" must not split) */
+				.inv .cell .s { white-space: nowrap; }
 				.inv .cell .n { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700;
 					font-size: 1.5em; color: var(--flow); line-height: 1; }
 				.inv .cell .k { font-size: 0.5em; color: var(--text); margin-top: 8px; font-weight: 600; }
-				.inv .cell .s { font-size: 0.52em; color: var(--muted); margin-top: 3px; line-height: 1.4; }
+				.inv .cell .s { font-size: 0.64em; color: var(--muted); margin-top: 8px; line-height: 1.45; }
 
 				/* ── problem → fix rows ── */
 				.pf { display: flex; flex-direction: column; gap: 14px; max-width: 94%; margin: 0.4em auto; }
@@ -260,7 +270,7 @@
 			.stat .v { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 1.6em; line-height: 1; }
 			.stat .v.ok { color: var(--ok); }
 			.stat .v.fl { color: var(--flow); }
-			.stat .l { font-size: 0.42em; color: var(--faint); margin-top: 8px; line-height: 1.4; }
+			.stat .l { font-size: 0.5em; color: var(--faint); margin-top: 8px; line-height: 1.4; }
 
 			/* ── cost bars ── */
 			.cost-bars { max-width: 90%; margin: 0 auto; }
@@ -286,13 +296,13 @@
 			/* ── legend ── */
 			.legend {
 				display: flex; gap: 18px; justify-content: center;
-				font-family: 'JetBrains Mono', monospace; font-size: 0.42em; color: var(--muted); margin: 0.5em 0;
+				font-family: 'JetBrains Mono', monospace; font-size: 0.5em; color: var(--muted); margin: 0.5em 0;
 			}
 			.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
 
 			/* ── cost table ── */
 			.reveal table.cost-table {
-				width: 90%; border-collapse: collapse; font-size: 0.42em;
+				width: 94%; border-collapse: collapse; font-size: 0.4em;
 				margin: 0.4em auto; font-family: 'JetBrains Mono', monospace;
 			}
 			.reveal table.cost-table th, .reveal table.cost-table td {
@@ -415,7 +425,7 @@
 			}
 			.section-cover .act-num {
 				font-family: 'JetBrains Mono', monospace;
-				font-size: 0.38em; color: var(--faint); letter-spacing: 0.1em;
+				font-size: 0.5em; color: var(--faint); letter-spacing: 0.1em;
 			}
 			.section-cover h2 { font-size: 1.8em; margin-bottom: 0.1em; }
 			.section-cover .act-sub { font-size: 0.52em; color: var(--muted); margin-top: 0.2em; }
@@ -453,7 +463,7 @@
 				/* page takeaway bar at top */
 			.takeaway {
 				font-family: 'JetBrains Mono', monospace;
-				font-size: 0.38em; letter-spacing: 0.08em;
+				font-size: 0.5em; letter-spacing: 0.08em;
 				color: var(--goal); text-transform: uppercase;
 				margin-bottom: 0.3em;
 			}
@@ -469,7 +479,7 @@
 			.closing .big { font-size: 0.82em; line-height: 1.4; max-width: 700px; margin: 0 auto; }
 			.closing .sig {
 				font-family: 'JetBrains Mono', monospace;
-				font-size: 0.38em; color: var(--faint); margin-top: 2em; letter-spacing: 0.05em;
+				font-size: 0.5em; color: var(--faint); margin-top: 2em; letter-spacing: 0.05em;
 			}
 
 			/* ── code / terminal blocks ── */
@@ -618,7 +628,7 @@
 			.hsteps .hstep.on-goal { border-left-color: var(--goal); }
 			.hsteps .hstep.on-flow { border-left-color: var(--flow); }
 			.hsteps .hstep .t { font-weight: 600; font-size: 0.58em; white-space: nowrap; }
-			.hsteps .hstep .d { color: var(--muted); font-size: 0.46em; line-height: 1.4; }
+			.hsteps .hstep .d { color: var(--muted); font-size: 0.5em; line-height: 1.4; }
 			.hsteps .harr { display: flex; align-items: center; justify-content: center;
 				color: var(--faint); font-size: 1.2em; padding: 0 10px; }
 
@@ -629,7 +639,7 @@
 				align-items: center; gap: 10px; text-decoration: none; opacity: 0.9; transition: opacity 0.15s; }
 			.repo-qr:hover { opacity: 1; }
 			.repo-qr svg { width: 78px; height: 78px; background: #fff; padding: 5px; border-radius: 8px; display: block; flex: none; }
-			.repo-qr-label { font-size: 0.32em; line-height: 1.35; color: var(--muted); text-align: right; white-space: nowrap; }
+			.repo-qr-label { font-size: 0.44em; line-height: 1.35; color: var(--muted); text-align: right; white-space: nowrap; }
 			.repo-qr-label .mono { color: var(--skill); font-weight: 600; }
 			.tool { background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
 				padding: 24px 22px; text-align: left; border-top: 3px solid var(--border-2); }
@@ -676,7 +686,7 @@
 			.b-flow .spec-node .sp-col { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
 			.b-flow .spec-node .sk-lbl { font-family: 'JetBrains Mono', monospace; font-size: 0.48em;
 				color: var(--skill); white-space: nowrap; letter-spacing: 0.01em; }
-			.b-flow .spec-node .chip { font-family: 'JetBrains Mono', monospace; font-size: 0.58em;
+			.b-flow .spec-node .chip { font-family: 'JetBrains Mono', monospace; font-size: 0.52em;
 				color: var(--text); background: var(--surface); border: 1px solid var(--border);
 				border-radius: 7px; padding: 7px 16px; white-space: nowrap; }
 			.b-flow .b-arrow { flex: none; color: var(--faint); font-size: 0.9em; }
@@ -688,7 +698,7 @@
 			.b-flow .lane.l-flow { border-left-color: var(--flow); }
 			.b-flow .lane .ln-head { display: flex; align-items: center; gap: 14px; }
 			.b-flow .lane .ln-nm { flex: none; font-family: 'JetBrains Mono', monospace; font-weight: 700;
-				font-size: 0.66em; width: 5.8em; }
+				font-size: 0.66em; width: 6.6em; }
 			.b-flow .lane.l-goal .ln-nm { color: var(--goal); }
 			.b-flow .lane.l-flow .ln-nm { color: var(--flow); }
 			.b-flow .lane .ln-desc { flex: 1; font-size: 0.5em; color: var(--muted); line-height: 1.5; }
@@ -696,9 +706,11 @@
 			.b-flow .lane.l-goal .ln-arr { color: var(--goal); }
 			.b-flow .lane.l-flow .ln-arr { color: var(--flow); }
 			/* per-lane terminal example */
-			.b-flow .lane .ln-eg { width: 100%; margin: 0; padding: 8px 12px; border-radius: 8px;
-				font-size: 0.46em; line-height: 1.5; }
-			.b-flow .lane .ln-eg .pr { display: block; }
+			.b-flow .lane .ln-eg { width: 100%; box-sizing: border-box; margin: 0; padding: 8px 12px;
+				border-radius: 8px; font-size: 0.46em; line-height: 1.5; }
+			/* each command sits on one line, breaking only at its explicit <br>
+			   (the first sentence fits the lane width; this stops a stray wrap of "each.") */
+			.b-flow .lane .ln-eg .pr { display: block; white-space: nowrap; }
 			/* recap on the closing slide — one shared spec feeds three parallel lanes */
 			.recap-flow { display: flex; align-items: center; justify-content: center; gap: 16px;
 				width: fit-content; max-width: 92%; margin: 0.3em auto 0; }
@@ -734,12 +746,12 @@
 			.recap-flow .lane.l-flow .ln-arr { color: var(--flow); }
 			.sp-flow-card .lbl { font-family: 'JetBrains Mono', monospace; font-weight: 700;
 				font-size: 0.68em; color: var(--skill); white-space: nowrap; }
-			.sp-flow { flex: 1; display: flex; align-items: flex-end; justify-content: space-between;
+			.sp-flow { flex: 1; display: flex; align-items: flex-end; justify-content: space-around;
 				gap: 8px; flex-wrap: nowrap; }
 			.sp-flow .sp-col { display: flex; flex-direction: column; align-items: center; gap: 6px; }
 			.sp-flow .sk-lbl { font-family: 'JetBrains Mono', monospace; font-size: 0.48em;
 				color: var(--skill); white-space: nowrap; letter-spacing: 0.01em; }
-			.sp-flow .chip { font-family: 'JetBrains Mono', monospace; font-size: 0.58em;
+			.sp-flow .chip { font-family: 'JetBrains Mono', monospace; font-size: 0.52em;
 				color: var(--text); background: var(--surface); border: 1px solid var(--border);
 				border-radius: 7px; padding: 7px 16px; white-space: nowrap; }
 			.sp-flow .arr { color: var(--flow); font-size: 0.58em; padding-bottom: 6px; }
@@ -773,10 +785,16 @@
 			.lc-stage .st { font-family: 'JetBrains Mono', monospace; font-size: 0.56em;
 				letter-spacing: 0.12em; text-transform: uppercase; color: var(--faint); margin-bottom: 14px; }
 			.lc-stage .sk { font-size: 0.52em; color: var(--muted); padding: 6px 0 6px 16px;
-				position: relative; line-height: 1.5; white-space: nowrap; }
+				position: relative; line-height: 1.5; }
 			.lc-stage .sk::before { content: '›'; position: absolute; left: 2px; color: var(--flow); }
 			.lc-stage .sk.dot::before { content: '·'; color: inherit; }
-			.lc-stage .sk b { color: var(--text); font-weight: 600; }
+			.lc-stage .sk b { color: var(--text); font-weight: 600; white-space: nowrap; }
+			/* the supplementary phrase after a skill name drops to its own indented line
+			   (was "name · hint" on one line, which overran the card) */
+			.lc-stage .sk .hint1 { display: block; color: var(--faint); font-size: 0.88em;
+				margin-top: 1px; }
+			.lc-stage .sk .hint2 { display: block; color: var(--faint); font-size: 1em;
+			margin-top: 1px; }
 			.lc-stage.star { border-color: var(--skill); border-top: 3px solid var(--skill); }
 			.lc-stage.star .st { color: var(--skill); }
 			.lc-stage.star .sk.hero { font-size: 0.72em; color: var(--skill); font-weight: 700; padding-left: 0; margin-bottom: 12px; }
@@ -813,12 +831,15 @@
 			.tl-wrap { max-width: 1000px; margin: 0.3em auto 0; }
 			.tl-curve { display: block; width: 100%; height: auto; }
 			.tl-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px;
-				margin: 0.6em auto 0; align-items: stretch; }
+				margin: 0.6em auto 0; align-items: center; }
 			.tl-cards .pop { white-space: nowrap; }        /* short taglines stay on one line */
-			.tl-cards .step { min-width: 0; align-items: center; text-align: center;
-				padding: 14px 18px; gap: 6px; }            /* compact, centered — title + tagline only */
+			/* each step shrinks to its own content and centers on its axis dot —
+			   so the Harness glow wraps only its text, not the whole third-column */
+			.tl-cards .step { min-width: 0; width: max-content; max-width: 100%;
+				justify-self: center; align-items: center; text-align: center;
+				padding: 14px 22px; gap: 6px; }            /* compact, centered — title + tagline only */
 			.tl-cards .step .t { font-size: 0.82em; }
-			.tl-cards .pop { font-family: 'JetBrains Mono', monospace; font-size: 0.46em;
+			.tl-cards .pop { font-family: 'JetBrains Mono', monospace; font-size: 0.5em;
 				letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); }
 			/* the harness card glows — it's what today's talk actually teaches */
 			.tl-cards .step.tl-focus {
@@ -834,7 +855,7 @@
 				border-left: 4px solid var(--flow); border-radius: 10px; padding: 14px 16px;
 				display: flex; flex-direction: column; gap: 5px; min-width: 0; text-align: left; }
 			.loopv-row .step .t { font-weight: 600; font-size: 0.6em; color: var(--flow); }
-			.loopv-row .step .d { font-size: 0.44em; color: var(--muted); line-height: 1.35; }
+			.loopv-row .step .d { font-size: 0.48em; color: var(--muted); line-height: 1.35; }
 			.loopv-row .step.done { border-left-color: var(--ok); }
 			.loopv-row .step.done .t { color: var(--ok); }
 			/* mini takeaway (2/2) cards embedded in the two middle loop steps */
@@ -843,7 +864,7 @@
 			.loopv-row .step .mm-node { display: flex; align-items: center; gap: 6px; align-self: flex-start;
 				background: var(--surface); border: 1px solid var(--border); border-top: 2px solid var(--skill);
 				border-radius: 7px; padding: 5px 8px; }
-			.loopv-row .step .mm-sk { font-family: 'JetBrains Mono', monospace; font-size: 0.34em;
+			.loopv-row .step .mm-sk { font-family: 'JetBrains Mono', monospace; font-size: 0.42em;
 				color: var(--skill); white-space: nowrap; }
 			.loopv-row .step .mm-lane { display: flex; align-items: center; gap: 6px;
 				background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--border);
@@ -853,12 +874,12 @@
 			.loopv-row .step .mm-lane.l-goal { border-left-color: var(--goal); }
 			.loopv-row .step .mm-lane.l-flow { border-left-color: var(--flow); }
 			.loopv-row .step .mm-nm { font-family: 'JetBrains Mono', monospace; font-weight: 700;
-				font-size: 0.34em; white-space: nowrap; }
+				font-size: 0.42em; white-space: nowrap; }
 			.loopv-row .step .mm-lane.l-sp .mm-nm   { color: var(--skill); }
 			.loopv-row .step .mm-lane.l-goal .mm-nm { color: var(--goal); }
 			.loopv-row .step .mm-lane.l-flow .mm-nm { color: var(--flow); }
 			.loopv-row .step .mm-chips { display: flex; flex-wrap: nowrap; gap: 3px; }
-			.loopv-row .step .mm-chip { font-family: 'JetBrains Mono', monospace; font-size: 0.3em;
+			.loopv-row .step .mm-chip { font-family: 'JetBrains Mono', monospace; font-size: 0.4em;
 				color: var(--text); background: var(--surface); border: 1px solid var(--border);
 				border-radius: 4px; padding: 2px 6px; white-space: nowrap; }
 			.loopv-row .arr { display: flex; align-items: center; color: var(--faint);
@@ -932,15 +953,15 @@
 						</svg>
 						<div class="tl-cards">
 							<div class="step on-warn">
-								<span class="t c-warn">Prompt</span>
-								<span class="pop">the words</span>
+								<span class="t c-warn">Prompt</span><br>
+								<span class="pop">the beginning</span>
 							</div>
 							<div class="step on-goal tl-focus">
-								<span class="t c-goal">Harness</span>
+								<span class="t c-goal">Harness</span><br>
 								<span class="pop">◆ today</span>
 							</div>
 							<div class="step on-flow">
-								<span class="t c-flow">Autopilot</span>
+								<span class="t c-flow">Autopilot</span><br>
 								<span class="pop">the destination</span>
 							</div>
 						</div>
@@ -980,8 +1001,8 @@
 							<span class="d">Tune the prompts &middot; switch to a better model</span>
 						</div>
 						<div id="framing-arrow" class="arr frame-q dim" style="font-size:1.5em;">&darr;</div>
-						<div id="framing-right" class="step on-goal frame-q dim" style="max-width:970px;">
-							<span class="t c-goal">Start asking &mdash; &ldquo;Have I defined it <em>well enough that it can?</em>&rdquo;</span>
+						<div id="framing-right" class="step on-goal frame-q dim" style="max-width:980px;">
+							<span class="t c-goal">Start asking &mdash; &ldquo;Have I defined it <em>well enough that it can?&nbsp;</em>&rdquo;</span>
 							<span class="d">The task, the definition of done, the workspace you hand it</span>
 						</div>
 					</div>
@@ -1107,7 +1128,7 @@
 							<!-- <span class="fragment" data-fragment-index="8" data-lb="subagent/subagent.png" data-origin="#shot-subagent"></span>
 							<span class="fragment" data-fragment-index="9" data-lb="close"></span> -->
 						</div>
-						<p class="mid c-muted fragment fade-in" data-fragment-index="10" style="margin-top:0.5em;"><span class="c-goal mono">/rewind</span> back out · <span class="c-goal mono">/btw</span> look up without growing context · <span class="c-goal mono">subagent</span> type an instruction to spin one up</p>
+						<p class="mid c-muted fragment fade-in" data-fragment-index="10" style="margin-top:0.5em;"><span class="c-goal mono">/rewind</span> rollback · <span class="c-goal mono">/btw</span> look up without growing context · <span class="c-goal mono">subagent</span> side mission</p>
 						<aside class="notes" data-slide="5/1">
 							在執行過程中：
 							<br>/rewind：當你發現 agent 開始走錯方向，或是你後悔剛剛下的prompt，可以直接 /rewind，就可以 rollback 到你想要的 checkpoint。
@@ -1123,7 +1144,7 @@
 							<br>→ <span class="mono">handoff.md</span> + <span class="mono">/clear</span></h3>
 
 						<!-- the prompt: you ask for the handoff instead of letting /compact guess -->
-						<div class="term" style="font-size:0.46em;width:80%;">
+						<div class="term" style="font-size:0.56em;width:84%;">
 							<span class="pr">write a handoff.md: what's done, what's next, key decisions</span>
 							<!-- what the handoff actually looks like -->
 							<span class="ag">
@@ -1137,12 +1158,12 @@
 						</div>
 
 						<!-- the flow: write → clear → fresh agent resumes -->
-						<div class="hsteps" style="margin-top:0.5em;width:80%;margin-left:auto;margin-right:auto;">
-							<div class="hstep on-goal fragment fade-in" data-fragment-index="0"><span class="t">1 · Write <span class="mono">handoff.md</span></span><span class="d">done · next ·<br>key decisions</span></div>
+						<div class="hsteps" style="margin-top:0.5em;width:90%;margin-left:auto;margin-right:auto;">
+							<div class="hstep on-goal fragment fade-in" data-fragment-index="0"><span class="t">1 · Write <span class="mono">handoff.md</span></span><span class="d">done · next · key decisions</span></div>
 							<div class="harr fragment fade-in" data-fragment-index="1">→</div>
-							<div class="hstep fragment fade-in" data-fragment-index="1"><span class="t">2 · <span class="mono">/clear</span></span><span class="d">bloated context gone;<br>cost resets</span></div>
+							<div class="hstep fragment fade-in" data-fragment-index="1"><span class="t">2 · <span class="mono">/clear</span></span><span class="d">bloated context gone, cost resets</span></div>
 							<div class="harr fragment fade-in" data-fragment-index="2">→</div>
-							<div class="hstep on-flow fragment fade-in" data-fragment-index="2"><span class="t">3 · Fresh agent reads it</span><span class="d">resumes —<br>no re-explaining</span></div>
+							<div class="hstep on-flow fragment fade-in" data-fragment-index="2"><span class="t">3 · Fresh agent reads it</span><span class="d">resumes — no re-explaining</span></div>
 						</div>
 
 						<aside class="notes" data-slide="5/2">
@@ -1289,25 +1310,24 @@
 					<section>
 						<div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:0.2em;">
 						  <span class="c-skill mono" style="font-size:1.0em;letter-spacing:0.04em;">SuperPowers</span>
-						  <span class="c-muted mono" style="font-size:0.7em;letter-spacing:0.02em;display:inline-flex;align-items:center;gap:4px;">&nbsp;<svg viewBox="0 0 16 16" style="width:0.9em;height:0.9em;fill:currentColor;" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.02 1.93-.02 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8Z"></path></svg> 250k⭐</span>
+						  <span class="c-muted mono" style="font-size:0.7em;letter-spacing:0.02em;display:inline-flex;align-items:center;gap:4px;">&nbsp;<svg viewBox="0 0 16 16" style="width:0.9em;height:0.9em;fill:currentColor;" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.02 1.93-.02 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8Z"></path></svg> 255k⭐</span>
 						</div>
 						<h3 style="margin-bottom:0.3em;">A skill encodes <em>how</em> to work, not just <em>what</em></h3>
 						<div class="lifecycle">
 							<div class="lc-stage star">
 								<div class="st">Define</div>
-								<div class="sk hero">brainstorming</div>
-								<div class="sk dot">&nbsp;idea → spec + DoD</div>
+								<div class="sk hero">brainstorming<span class="hint1">idea → spec + DoD</span></div>
 							</div>
 							<div class="lc-arr">→</div>
 							<div class="lc-stage">
 								<div class="st">Plan</div>
-								<div class="sk"><b>writing-plans</b> · spec → tasks</div>
-								<div class="sk"><b>using-git-worktrees</b> · isolate</div>
+								<div class="sk"><b>writing-plans</b><span class="hint2">spec → tasks</span></div>
+								<div class="sk"><b>using-git-worktrees</b><span class="hint2">isolate</span></div>
 							</div>
 							<div class="lc-arr">→</div>
 							<div class="lc-stage">
 								<div class="st">Build</div>
-								<div class="sk"><b>subagent TDD</b> · red/green</div>
+								<div class="sk"><b>subagent TDD</b><span class="hint2">red/green</span></div>
 								<div class="sk"><b>systematic-debugging</b></div>
 							</div>
 							<div class="lc-arr">→</div>
@@ -1339,17 +1359,17 @@
 						<h3 style="margin-bottom:0.05em;"><span class="c-skill">★</span> brainstorming</h3>
 						<p class="mid c-faint" style="margin:0 0 0.3em;">Five steps, one gate at the end</p>
 						<div class="flow vert" style="max-width:600px;gap:0;">
-							<div class="step on-skill" style="padding:9px 18px;"><span class="t"><span class="c-skill mono" style="font-size:0.78em;">01</span> &nbsp;Explore project context</span></div>
-							<div class="arr" style="padding:3px 0;">↓</div>
-							<div class="step on-skill" style="padding:9px 18px;"><span class="t"><span class="c-skill mono" style="font-size:0.78em;">02</span> &nbsp;Ask clarifying questions — one at a time</span></div>
-							<div class="arr" style="padding:3px 0;">↓</div>
-							<div class="step on-skill" style="padding:9px 18px;"><span class="t"><span class="c-skill mono" style="font-size:0.78em;">03</span> &nbsp;Propose 2–3 approaches with trade-offs</span></div>
-							<div class="arr" style="padding:3px 0;">↓</div>
-							<div class="step on-skill" style="padding:9px 18px;"><span class="t"><span class="c-skill mono" style="font-size:0.78em;">04</span> &nbsp;Present design, approve section by section</span></div>
-							<div class="arr" style="padding:3px 0;">↓</div>
-							<div class="step on-goal" style="padding:11px 18px;background:linear-gradient(135deg,rgba(227,179,65,0.08),transparent);"><span class="t c-goal"><span class="mono" style="font-size:0.78em;">05</span> &nbsp;Commit a spec — with a Definition of Done</span></div>
+							<div class="step on-skill" style="padding:7px 18px;"><span class="t"><span class="c-skill mono" style="font-size:0.78em;">01</span> &nbsp;Explore project context</span></div>
+							<div class="arr" style="padding:1px 0;">↓</div>
+							<div class="step on-skill" style="padding:7px 18px;"><span class="t"><span class="c-skill mono" style="font-size:0.78em;">02</span> &nbsp;Ask clarifying questions — one at a time</span></div>
+							<div class="arr" style="padding:1px 0;">↓</div>
+							<div class="step on-skill" style="padding:7px 18px;"><span class="t"><span class="c-skill mono" style="font-size:0.78em;">03</span> &nbsp;Propose 2–3 approaches with trade-offs</span></div>
+							<div class="arr" style="padding:1px 0;">↓</div>
+							<div class="step on-skill" style="padding:7px 18px;"><span class="t"><span class="c-skill mono" style="font-size:0.78em;">04</span> &nbsp;Present design, approve section by section</span></div>
+							<div class="arr" style="padding:1px 0;">↓</div>
+							<div class="step on-goal" style="padding:9px 18px;background:linear-gradient(135deg,rgba(227,179,65,0.08),transparent);"><span class="t c-goal"><span class="mono" style="font-size:0.78em;">05</span> &nbsp;Commit a spec — with a Definition of Done</span></div>
 						</div>
-						<p class="mid c-muted flush-note" style="margin-top:0.4em;">
+						<p class="mid c-muted flush-note" style="margin-top:0.3em;">
 							<span class="fl-line">Refuses to write code until the design is approved</span>
 							<span class="fl-line"><strong class="c-text">That gate is the point</strong></span>
 						</p>
@@ -1447,7 +1467,7 @@
 											<span class="ln-desc">Fan out many agents <br>— independent units in parallel, each isolated</span>
 											<span class="ln-arr">▶</span>
 										</div>
-										<div class="term ln-eg"><span class="pr"><span class="cc">/workflow</span> process every independent unit in parallel, then verify each. <br>Spec: docs/superpowers/spec.md</span></div>
+										<div class="term ln-eg"><span class="pr"><span class="cc">/workflow</span> process every independent unit in parallel and verify each. <br>Spec: docs/superpowers/spec.md</span></div>
 									</div>
 								</div>
 							</div>
@@ -1593,7 +1613,7 @@
 					<!-- 4 arms + control D -->
 					<section>
 						<h3 style="margin-bottom:0.2em;">How much method should drive it?</h3>
-						<div class="flow vert" style="max-width:820px;gap:0;">
+						<div class="flow vert method-ladder" style="max-width:940px;gap:0;">
 							<div class="step on-warn" style="padding:11px 18px;border-left-color:var(--naive);"><span class="t"><span class="badge" style="color:var(--naive);border-color:var(--naive);">A</span> &nbsp;Naive</span><span class="d">one-line prompt</span></div>
 							<!-- <div class="arr" style="font-size:0.62em;padding:5px 0;">↓ &nbsp;add the full method</div> -->
 							<br>
@@ -1638,10 +1658,10 @@
 					<section>
 						<h3 style="margin-bottom:0.3em;">How they're compared</h3>
 						<div class="inv">
-							<div class="cell"><div class="k c-ok" style="font-size:0.6em;">Correctness</div><div class="s">47 endpoint test<br>per-row comparison</div></div>
-							<div class="cell"><div class="k c-goal" style="font-size:0.6em;">Cost</div><div class="s">weighted token-units</div></div>
-							<div class="cell"><div class="k c-flow" style="font-size:0.6em;">Completion time</div><div class="s">continuous execution</div></div>
-							<div class="cell"><div class="k c-skill" style="font-size:0.6em;">Code quality</div><div class="s">1. robustness · 2. tests <br>3. structure · 4. review trail</div></div>
+							<div class="cell"><div class="k c-ok" style="font-size:0.72em;">Correctness</div><div class="s">47 endpoint test<br>per-row comparison</div></div>
+							<div class="cell"><div class="k c-goal" style="font-size:0.72em;">Cost</div><div class="s">weighted token-units</div></div>
+							<div class="cell"><div class="k c-flow" style="font-size:0.72em;">Completion time</div><div class="s">continuous execution</div></div>
+							<div class="cell"><div class="k c-skill" style="font-size:0.72em;">Code quality</div><div class="s">1. robustness · 2. tests <br>3. structure · 4. review trail</div></div>
 						</div>
 						<aside class="notes" data-slide="13/2">
 							這邊有四個比較的指標:
@@ -1883,7 +1903,7 @@
 							<div class="arr">→</div>
 							<div class="step">
 								<span class="t">Run the full cycle</span>
-								<span class="d">plan · build · test<br>· verify — on its own</span>
+								<span class="d">plan · build · test · verify<br> — on its own</span>
 								<div class="mini-map">
 									<div class="mm-lane l-sp mm-col">
 										<span class="mm-nm">SuperPowers</span>
@@ -1904,7 +1924,7 @@
 							<path d="M895,4 C895,86 815,98 532,98 C249,98 169,86 169,8"
 								fill="none" stroke="#4ec9c0" stroke-width="2" stroke-dasharray="2 6" stroke-linecap="round"/>
 							<path d="M163,16 L169,4 L175,16" fill="none" stroke="#4ec9c0" stroke-width="2" stroke-linejoin="round"/>
-							<text x="532" y="90" fill="#4ec9c0" font-size="13" font-family="'JetBrains Mono',monospace" text-anchor="middle">then reach for the next one</text>
+							<text x="532" y="90" fill="#4ec9c0" font-size="18" font-family="'JetBrains Mono',monospace" text-anchor="middle">then reach for the next one</text>
 						</svg>
 					</div>
 					<p class="mid c-muted fragment" style="margin-top:0.6em;">Everything today was about earning the right to run <span class="tl-future">on autopilot</span></p>
