@@ -8,6 +8,8 @@
 
 <p align="center">
   <b><a href="https://shlinbrian.github.io/claude_code_practical_workflow_presentation/">▶ 線上觀看簡報 / Open the live presentation</a></b>
+  <br>
+  分享日期 / Presented 2026-07-16
 </p>
 
 用鍵盤 `→` / `←` 換頁,按 `S` 開講者備忘稿(內含中文講稿),`ESC` 看全部投影片總覽。
